@@ -8,7 +8,7 @@
         <x-icon name="arrow-left" class="size-4" /> Toutes les missions
     </a>
 
-    <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         {{-- Contenu --}}
         <div class="min-w-0 space-y-6">
             <x-card>
@@ -23,7 +23,7 @@
                     </x-chip>
                     <span class="text-sm text-ink-muted">Publiée le {{ $mission->created_at->translatedFormat('j F Y') }}</span>
                 </div>
-                <h1 class="mt-4 text-[34px] sm:text-[44px]">{{ $mission->title }}</h1>
+                <h1 class="mt-4 break-words text-[30px] sm:text-[44px]">{{ $mission->title }}</h1>
                 <div class="mt-5 max-w-prose leading-relaxed text-ink-soft">{!! nl2br(e($mission->description)) !!}</div>
                 @if ($mission->skills->isNotEmpty())
                     <div class="mt-6 border-t border-line pt-5">
@@ -95,8 +95,8 @@
         </div>
 
         {{-- Colonne latérale : budget dans le cadre repères, client, candidature --}}
-        <aside class="space-y-6">
-            <x-frame class="bg-surface p-6 sm:p-7">
+        <aside class="min-w-0 space-y-6">
+            <x-frame class="min-w-0 bg-surface p-6 sm:p-7">
                 <x-budget :amount="$mission->budget_fcfa" size="lg" />
                 <dl class="mt-6 grid grid-cols-2 divide-x divide-line border-t border-line pt-4 text-sm">
                     <div class="pr-4">

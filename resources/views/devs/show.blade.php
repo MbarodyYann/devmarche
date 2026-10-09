@@ -18,8 +18,8 @@
     @endif
 
     {{-- En-tête : identité à gauche, compteur de cauris dans le cadre repères à droite --}}
-    <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
-        <x-card class="flex flex-col gap-6 sm:flex-row sm:items-start">
+    <section class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
+        <x-card class="flex min-w-0 flex-col gap-6 sm:flex-row sm:items-start">
             <x-avatar :user="$dev" size="lg" class="shadow-card" />
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-start justify-between gap-3">
@@ -58,7 +58,7 @@
             </div>
         </x-card>
 
-        <x-frame class="flex flex-col justify-between gap-6 bg-surface p-6 sm:p-8">
+        <x-frame class="flex min-w-0 flex-col justify-between gap-6 bg-surface p-6 sm:p-8">
             <x-reputation :points="$dev->reputation" size="lg" />
             <dl class="grid grid-cols-2 divide-x divide-line border-t border-line pt-4 text-sm">
                 <div class="pr-4">
@@ -73,8 +73,8 @@
         </x-frame>
     </section>
 
-    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <div class="space-y-6">
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div class="min-w-0 space-y-6">
             <x-card>
                 <h2 class="text-[28px] sm:text-[32px]">À propos</h2>
                 @if ($profile?->bio)
@@ -105,7 +105,7 @@
             </section>
         </div>
 
-        <aside class="space-y-6">
+        <aside class="min-w-0 space-y-6">
             <x-card padding="p-6">
                 <h2 class="text-2xl">Compétences</h2>
                 @if ($dev->skills->isNotEmpty())

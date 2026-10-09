@@ -80,7 +80,7 @@ test('la bande de preuve sociale affiche les chiffres réels de la base', functi
         ->assertSee('Wave · Orange Money · MTN MoMo');
 });
 
-test('le hero a une seule photo, placée après le CTA, chargée en différé, sans dégradé', function () {
+test('le hero a une seule image, placée après le CTA, chargée en priorité, sans dégradé', function () {
     $html = $this->get('/')->getContent();
     $hero = heroHtml($html);
 
@@ -116,4 +116,12 @@ test('l\'inscription reste courte : nom, e-mail, mot de passe, pays, ville', fun
 
     expect(collect($fields[2])->reject(fn ($f) => in_array($f, ['_token', 'q', 'remember'], true))->values()->all())
         ->toBe(['name', 'email', 'country', 'city', 'password', 'password_confirmation']);
+});
+
+test('la section des dernières missions reprend les textes de 11', function () {
+    $this->get('/')
+        ->assertSee('Missions ouvertes')
+        ->assertSee('Des clients cherchent un dev en ce moment.')
+        ->assertSee('Chaque mission affiche son budget en FCFA : postulez avec votre prix, le client choisit sur votre profil.')
+        ->assertSee('Voir toutes les missions →');
 });

@@ -24,7 +24,7 @@
                         Par et pour les devs d'Afrique francophone
                     </p>
 
-                    <h1 class="mt-6 text-balance text-[38px] leading-[1.1] text-white sm:text-[56px]">
+                    <h1 class="mt-6 text-balance text-[38px] leading-[1.1] text-white sm:text-[48px]">
                         Quittez les groupes WhatsApp,
                         <em class="block font-serif italic text-secondary-400">les missions viennent à vous.</em>
                     </h1>
@@ -47,8 +47,9 @@
                 </div>
 
                 {{-- Colonne visuel : image rassurante (générée par IA, validée par l'inspecteur), portrait 4:5 à partir
-                     de 768 px, paysage 16:9 sur mobile, sous le CTA. Une seule image ; sur ordinateur, elle est
-                     préchargée en priorité haute (slot head). Sources et régénération : scripts/hero-images.php --}}
+                     de 768 px, paysage 16:9 sur mobile, sous le CTA. Une seule image, chargée tout de suite et en priorité
+                     haute (au-dessus de la ligne de flottaison sur ordinateur ; ~38 Ko sur mobile).
+                     Sources et régénération : scripts/hero-images.php --}}
                 <picture class="block min-w-0 md:mx-auto md:w-full md:max-w-md lg:max-w-none">
                     <source media="(min-width: 768px)" type="image/webp"
                             srcset="/images/hero/portrait-480.webp 480w, /images/hero/portrait-800.webp 800w"
@@ -58,7 +59,7 @@
                          sizes="calc(100vw - 32px)"
                          width="960" height="540"
                          alt="Deux développeurs travaillent ensemble devant un ordinateur"
-                         loading="lazy" decoding="async"
+                         loading="eager" fetchpriority="high" decoding="async"
                          class="aspect-video w-full rounded-2xl border border-white/10 object-cover md:aspect-[4/5]">
                 </picture>
             </div>
@@ -124,13 +125,12 @@
     @if ($openMissions->isNotEmpty())
         <section class="pt-16 sm:pt-24">
             <div class="flex flex-wrap items-end justify-between gap-4">
-                <div>
-                    <p class="eyebrow mb-2">Du travail entre devs</p>
-                    <h2 class="text-[32px] sm:text-[44px]">Les dernières missions</h2>
+                <div class="max-w-2xl">
+                    <p class="eyebrow mb-2">Missions ouvertes</p>
+                    <h2 class="text-[32px] sm:text-[44px]">Des clients cherchent un dev en ce moment.</h2>
+                    <p class="mt-3 text-ink-soft">Chaque mission affiche son budget en FCFA : postulez avec votre prix, le client choisit sur votre profil.</p>
                 </div>
-                <x-button :href="route('missions.index')" variant="secondary" size="sm">
-                    Toutes les missions <x-icon name="arrow-right" class="size-4" />
-                </x-button>
+                <a href="{{ route('missions.index') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Voir toutes les missions →</a>
             </div>
             <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($openMissions as $mission)
