@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()" aria-controls="filtres-avances"
-                        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field border border-line bg-bg-alt px-3 text-sm font-semibold text-ink shadow-soft sm:hidden">
+                        class="btn-outline inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field px-3 text-sm font-semibold sm:hidden">
                     <x-icon name="filter" class="size-4" /> Filtres
                     @if ($activeFilters)
                         <span class="inline-flex size-5 items-center justify-center rounded-full bg-primary-600 text-xs text-white dark:bg-secondary-400 dark:text-primary-950">{{ $activeFilters }}</span>

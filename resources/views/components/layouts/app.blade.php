@@ -271,7 +271,7 @@
         </ul>
 
         @if ($publishUrl && $me)
-            <a href="{{ $publishUrl }}" class="btn-accent absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
+            <a href="{{ $publishUrl }}" class="btn-amber absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
                 <x-icon name="plus" class="size-6" />
             </a>
         @endif

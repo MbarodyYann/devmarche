@@ -41,8 +41,8 @@ test('le hero n\'a qu\'un seul bouton principal, en ambre', function () {
     $hero = heroHtml($this->get('/')->getContent());
 
     expect(substr_count($hero, 'data-cta="principal"'))->toBe(1)
-        ->and(substr_count($hero, 'btn-cta'))->toBe(1)
-        ->and(substr_count($hero, 'btn-primary'))->toBe(0);
+        ->and(substr_count($hero, 'btn-amber'))->toBe(1)
+        ->and(substr_count($hero, 'btn-outline'))->toBe(0);
 });
 
 test('pour un membre connecté, le CTA mène aux missions qui lui correspondent', function () {

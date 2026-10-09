@@ -10,7 +10,7 @@
     <x-button :href="$whatsapp" variant="secondary" size="sm" target="_blank" rel="noopener noreferrer" data-share-whatsapp>
         <x-icon name="message" class="size-4" /> Partager sur WhatsApp
     </x-button>
-    <x-button type="button" variant="ghost" size="sm" x-cloak data-share-copy
+    <x-button type="button" variant="secondary" size="sm" x-cloak data-share-copy
               x-data="{ copied: false }"
               x-on:click="
                   const done = () => { copied = true; setTimeout(() => copied = false, 2000) };

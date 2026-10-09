@@ -71,7 +71,7 @@ test('sous 1 024 px, un petit bouton ambre dans la navigation, et le logo rédui
 
     expect($match)->not->toBeEmpty()
         ->and(trim($match[2]))->toBe(Copy::SIGNUP_CTA)
-        ->and($match[1])->toContain('btn-cta')->toContain('min-h-9')->toContain('text-[13px]')
+        ->and($match[1])->toContain('btn-amber')->toContain('min-h-9')->toContain('text-[13px]')
         ->and($html)->toContain('max-lg:hidden');
 })->with(['/', '/missions', '/a-propos']);
 

@@ -1,6 +1,6 @@
 {{-- Pagination Livewire. --}}
 @if ($paginator->hasPages())
-    @php($pageButton = 'inline-flex min-h-10 items-center gap-1 rounded-btn border border-line bg-bg-alt px-3.5 text-sm font-semibold text-ink shadow-soft transition hover:bg-surface')
+    @php($pageButton = 'btn-outline inline-flex min-h-10 items-center gap-1 rounded-btn px-3.5 text-sm font-semibold')
     <nav role="navigation" aria-label="Pagination" class="flex flex-wrap items-center justify-between gap-4">
         <p class="text-sm text-ink-muted">
             {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }} sur {{ $paginator->total() }}
