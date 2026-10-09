@@ -54,8 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/missions/{mission}/candidatures/{application}/paiement', [PaymentController::class, 'store'])->middleware('throttle:20,1')->name('payments.store');
     Route::get('/missions/{mission}/candidatures/{application}/paiement/confirmation', [PaymentController::class, 'confirm'])->name('payments.confirm');
     Route::post('/missions/{mission}/candidatures/{application}/paiement/confirmation', [PaymentController::class, 'verify'])->middleware('throttle:20,1')->name('payments.verify');
-    Route::post('/missions/{mission}/terminer', [MissionStatusController::class, 'complete'])->name('missions.complete');
-    Route::post('/missions/{mission}/annuler', [MissionStatusController::class, 'cancel'])->name('missions.cancel');
+    Route::post('/missions/{mission}/terminer', [MissionStatusController::class, 'complete'])->middleware('throttle:actions')->name('missions.complete');
+    Route::post('/missions/{mission}/annuler', [MissionStatusController::class, 'cancel'])->middleware('throttle:actions')->name('missions.cancel');
     Route::post('/missions/{mission}/avis', [MissionReviewController::class, 'store'])->middleware('throttle:20,1')->name('missions.review');
 });
 
@@ -79,13 +79,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/questions/{question}/reponses', [AnswerController::class, 'store'])
         ->middleware('throttle:answers')
         ->name('answers.store');
-    Route::post('/questions/{question}/reponses/{answer}/accepter', [AnswerController::class, 'accept'])->name('answers.accept');
+    Route::post('/questions/{question}/reponses/{answer}/accepter', [AnswerController::class, 'accept'])->middleware('throttle:actions')->name('answers.accept');
 });
 
 // Notifications
 Route::middleware('auth')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/lire', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('/notifications/lire', [NotificationController::class, 'readAll'])->middleware('throttle:actions')->name('notifications.read-all');
     Route::get('/notifications/{notification}', [NotificationController::class, 'open'])
         ->whereUuid('notification')
         ->name('notifications.open');
@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/signalements', [ReportController::class, 'store'])->middleware('throttle:reports')->name('reports.store');
 });
 
-Route::middleware(['auth', 'can:moderate'])->prefix('moderation')->group(function () {
+Route::middleware(['auth', 'can:moderate', 'throttle:actions'])->prefix('moderation')->group(function () {
     Route::get('/', [ModerationController::class, 'index'])->name('moderation.index');
     Route::post('/{type}/{id}/masquer', [ModerationController::class, 'hide'])->whereIn('type', ['mission', 'question', 'answer'])->whereNumber('id')->name('moderation.hide');
     Route::post('/{type}/{id}/retablir', [ModerationController::class, 'restore'])->whereIn('type', ['mission', 'question', 'answer'])->whereNumber('id')->name('moderation.restore');

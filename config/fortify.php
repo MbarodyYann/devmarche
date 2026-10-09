@@ -101,7 +101,9 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    // Limite de débit sur toutes les routes d'authentification (inscription, mot de passe oublié…),
+    // en plus de la limite propre à la connexion (limiters.login).
+    'middleware' => ['web', 'throttle:auth'],
 
     /*
     |--------------------------------------------------------------------------
