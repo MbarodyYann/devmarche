@@ -60,3 +60,21 @@ test('les membres actifs ne sont pas « Nouveau », les nouveaux venus sans acti
         }
     }
 });
+
+test('la dernière activité est variée et n\'est jamais antérieure au dernier contenu visible', function () {
+    $days = User::all()->map(fn (User $u) => (int) $u->last_seen_at->copy()->startOfDay()->diffInDays(now()->startOfDay()));
+    $share = fn (callable $filter) => $days->filter($filter)->count() / $days->count();
+
+    // Cibles : 40 % aujourd'hui, 20 % hier, 40 % plus ancien (la démo ne couvre que les jours depuis le lancement).
+    expect($share(fn (int $d) => $d === 0))->toBeLessThanOrEqual(0.45)
+        ->and($share(fn (int $d) => $d === 1))->toBeGreaterThanOrEqual(0.15)
+        ->and($share(fn (int $d) => $d >= 2))->toBeGreaterThanOrEqual(0.3);
+
+    foreach ([DevSeeder::DEMO_DEV_EMAIL, DevSeeder::DEMO_STARTUP_EMAIL] as $email) {
+        expect(User::where('email', $email)->sole()->activityLabel())->toBe('Actif aujourd\'hui');
+    }
+
+    foreach (['missions' => 'client_id', 'applications' => 'user_id', 'questions' => 'user_id', 'answers' => 'user_id'] as $table => $column) {
+        expect(countWhere("select c.id from $table c join users u on u.id = c.$column where c.created_at > u.last_seen_at"))->toBe(0, "$table après la dernière activité");
+    }
+});

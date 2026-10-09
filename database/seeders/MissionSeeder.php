@@ -36,12 +36,12 @@ class MissionSeeder extends Seeder
         $user = fn (string $name): User => $users[$name] ?? throw new \RuntimeException("Dev inconnu dans les seeders : $name");
 
         DB::transaction(function () use ($user) {
-            foreach ($this->missions() as $data) {
+            foreach (self::missions() as $data) {
                 $client = $user($data['client']);
 
                 // Publication : plus la mission est « ancienne », plus elle est proche du lancement,
                 // et jamais avant l'inscription du client.
-                $createdAt = $this->at(1 - $data['days'] / 95, $client->created_at->copy()->addHours(3));
+                $createdAt = $this->byActor($client, $this->missionAt($data['days'], $client->created_at), $client->created_at->copy()->addHours(3));
 
                 $mission = $this->travelTo($createdAt, fn () => $this->missions->publish($client, [
                     'title' => $data['title'],
@@ -56,8 +56,14 @@ class MissionSeeder extends Seeder
                 $lastApplicationAt = $createdAt;
                 foreach ($data['applicants'] ?? [] as $i => $name) {
                     $applicant = $user($name);
-                    $appliedAt = $this->between($createdAt, 0.04 + 0.05 * $i)->max($applicant->created_at->copy()->addHour());
-                    $appliedAt = $this->clamp($appliedAt);
+                    if (! $this->requiredApplication($data, $name) && $this->goneBefore($applicant, $createdAt->copy()->addMinutes(20))) {
+                        continue; // parti avant la publication
+                    }
+                    $appliedAt = $this->byActor(
+                        $applicant,
+                        $this->applicationAt($createdAt, $i, $applicant->created_at),
+                        $createdAt->copy()->addMinutes(20)->max($applicant->created_at->copy()->addHour()),
+                    );
                     $lastApplicationAt = $lastApplicationAt->max($appliedAt);
 
                     $applications[$name] = $this->travelTo($appliedAt, function () use ($mission, $data, $i, $applicant) {
@@ -120,12 +126,12 @@ class MissionSeeder extends Seeder
     /**
      * @return list<array<string, mixed>>
      */
-    private function missions(): array
+    public static function missions(): array
     {
         return [
             // La mission de la démo : ouverte, publiée par Aïssatou.
             [
-                'client' => 'Aïssatou Diallo', 'status' => 'open', 'days' => 1, 'deadline' => 21,
+                'client' => 'Aïssatou Diallo', 'status' => 'open', 'days' => 1, 'deadline' => 21, 'demo' => true,
                 'title' => 'Intégration de l\'API de paiement Wave pour une boutique en ligne',
                 'budget' => 150000, 'country' => 'SN', 'skills' => ['Wave API', 'Laravel', 'PHP'],
                 'description' => "Notre boutique Laravel encaisse aujourd'hui uniquement à la livraison. Nous voulons ajouter le paiement Wave : création de la session de paiement, redirection, vérification de la signature du webhook et mise à jour de la commande.\n\nLivrables : le code intégré à notre dépôt, des tests, et une courte documentation pour l'équipe.",

@@ -120,3 +120,11 @@ test('aucun point ni signe décoratif devant un texte sur les pages principales'
             ->not->toContain('h-px w-8');
     }
 });
+
+test('en-tête compact : réassurance sous le CTA visiteur, sur les 3 pages', function (string $url) {
+    $this->get($url)->assertSeeInOrder([Copy::SIGNUP_CTA, 'data-reassurance', Copy::REASSURANCE_RISK], false);
+})->with(['/missions', '/questions', '/devs']);
+
+test('en-tête compact : pas de réassurance d\'inscription pour un membre', function () {
+    $this->actingAs($this->moussa)->get('/missions')->assertDontSee('data-reassurance', false);
+});

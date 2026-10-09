@@ -2,6 +2,7 @@
 
 namespace Database\Seeders\Concerns;
 
+use App\Models\User;
 use Illuminate\Support\Carbon;
 
 /**
@@ -56,6 +57,77 @@ trait Timeline
         $span = max(0, $from->diffInSeconds($this->latest(), false));
 
         return $this->clamp($from->copy()->addSeconds((int) round($span * $share)));
+    }
+
+    /** Publication d'une question « vieille de $days jours » (sur 95), jamais avant l'inscription de son auteur. */
+    protected function questionAt(int $days, Carbon $authorJoined): Carbon
+    {
+        return $this->at(1 - $days / 95, $authorJoined->copy()->addHours(2));
+    }
+
+    /** Publication d'une mission « vieille de $days jours » (sur 95), jamais avant l'inscription du client. */
+    protected function missionAt(int $days, Carbon $clientJoined): Carbon
+    {
+        return $this->at(1 - $days / 95, $clientJoined->copy()->addHours(3));
+    }
+
+    /** $i-ième réponse : quelques heures après la question, et après l'inscription de son auteur. */
+    protected function answerAt(Carbon $askedAt, int $i, string $title, Carbon $answererJoined): Carbon
+    {
+        return $this->clamp($askedAt->copy()->addMinutes(50 + 170 * $i + crc32($title) % 60)->max($answererJoined->copy()->addHour()));
+    }
+
+    /** $i-ième candidature : quelques heures après la publication, et après l'inscription du candidat. */
+    protected function applicationAt(Carbon $publishedAt, int $i, Carbon $applicantJoined): Carbon
+    {
+        return $this->clamp($publishedAt->copy()->addMinutes(40 + 150 * $i)->max($applicantJoined->copy()->addHour()));
+    }
+
+    /**
+     * Ramène l'action d'un membre avant sa dernière activité prévue (ActivitySeeder::plan),
+     * sans jamais passer avant $after (la question à laquelle il répond, la mission à laquelle il postule).
+     */
+    protected function byActor(User $actor, Carbon $moment, Carbon $after): Carbon
+    {
+        if ($actor->last_seen_at === null) {
+            return $moment;
+        }
+
+        return $moment->copy()->min($actor->last_seen_at->copy()->subMinutes(15))->max($after);
+    }
+
+    /** Le membre est-il déjà parti (dernière activité prévue) à cet instant ? */
+    protected function goneBefore(User $actor, Carbon $moment): bool
+    {
+        return $actor->last_seen_at !== null && $actor->last_seen_at->copy()->subMinutes(15)->lt($moment);
+    }
+
+    /**
+     * Réponse indispensable à la démo : la réponse acceptée, ou la première si aucune ne l'est.
+     * Les autres sont facultatives : un membre parti avant la question ne répond pas.
+     *
+     * @param  array<string, mixed>  $question
+     */
+    protected function requiredAnswer(array $question, int $i): bool
+    {
+        $accepted = collect($question['answers'])->search(fn (array $a) => $a['accepted'] ?? false);
+
+        return $i === ($accepted === false ? 0 : $accepted);
+    }
+
+    /**
+     * Candidature indispensable : celle du dev retenu, la première de chaque mission ouverte,
+     * et toutes celles de la mission de la démo (Aïssatou compare les candidats). Les autres sont facultatives.
+     *
+     * @param  array<string, mixed>  $mission
+     */
+    protected function requiredApplication(array $mission, string $name): bool
+    {
+        $rank = array_search($name, $mission['applicants'] ?? [], true);
+
+        return ($mission['demo'] ?? false)
+            || ($mission['status'] === 'open' && $rank === 0)
+            || $name === ($mission['freelancer'] ?? null);
     }
 
     /**

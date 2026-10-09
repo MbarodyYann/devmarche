@@ -61,6 +61,11 @@ class DevSeeder extends Seeder
                 collect($dev['skills'])->map(fn (string $name) => Skill::firstOrCreate(['slug' => Str::slug($name)], ['name' => $name])->id)
             );
         }
+
+        // Dernière activité prévue de chacun : les seeders de contenu s'y tiennent (Timeline::byActor).
+        foreach ((new ActivitySeeder)->plan(User::query()->get()) as $id => $lastSeen) {
+            User::query()->whereKey($id)->update(['last_seen_at' => $lastSeen]);
+        }
     }
 
     /**

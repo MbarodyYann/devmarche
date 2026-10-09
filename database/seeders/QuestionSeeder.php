@@ -57,13 +57,20 @@ class QuestionSeeder extends Seeder
             foreach (require __DIR__.'/data/questions.php' as $data) {
                 $author = $user($data['author']);
                 // Question : jamais avant l'inscription de son auteur.
-                $askedAt = $this->at(1 - $data['days'] / 95, $author->created_at->copy()->addHours(2));
+                $askedAt = $this->byActor($author, $this->questionAt($data['days'], $author->created_at), $author->created_at->copy()->addHours(2));
                 $question = $this->travelTo($askedAt, fn () => $this->answers->ask($author, $data['title'], $data['body'], $data['tags']));
 
                 foreach ($data['answers'] as $i => $answerData) {
                     $answerer = $user($answerData['author']);
-                    // Réponse : après la question et après l'inscription de son auteur.
-                    $answeredAt = $this->clamp($this->between($askedAt, 0.05 + 0.08 * $i)->max($answerer->created_at->copy()->addHour()));
+                    if (! $this->requiredAnswer($data, $i) && $this->goneBefore($answerer, $askedAt->copy()->addMinutes(20))) {
+                        continue; // parti avant la question
+                    }
+                    // Réponse : après la question et après l'inscription de son auteur, avant sa dernière activité prévue.
+                    $answeredAt = $this->byActor(
+                        $answerer,
+                        $this->answerAt($askedAt, $i, $data['title'], $answerer->created_at),
+                        $askedAt->copy()->addMinutes(20)->max($answerer->created_at->copy()->addHour()),
+                    );
                     $answer = $this->travelTo($answeredAt, fn () => $this->answers->answer($answerer, $question, $answerData['body']));
 
                     if ($answerData['accepted'] ?? false) {

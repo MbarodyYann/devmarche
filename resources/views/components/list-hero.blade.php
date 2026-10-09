@@ -27,7 +27,11 @@
         @guest
             {{-- Sur mobile, le bouton et le lien tiennent sur une ligne : l'en-tête reste compact. --}}
             <div class="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 lg:flex-col lg:items-end">
-                <x-button :href="route('register')" variant="cta" size="sm" class="sm:min-h-11 sm:px-4 sm:text-[15px]" data-cta="principal" data-page-cta>{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                {{-- Réassurance sous le bouton (règle 4 de 11-redaction.md) --}}
+                <div class="flex flex-col items-start gap-1.5 lg:items-end">
+                    <x-button :href="route('register')" variant="cta" size="sm" class="sm:min-h-11 sm:px-4 sm:text-[15px]" data-cta="principal" data-page-cta>{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                    <x-reassurance :items="[App\Support\Copy::REASSURANCE_RISK]" on-dark class="text-[13px]!" data-reassurance />
+                </div>
                 @if ($recruit)
                     <a href="{{ route('missions.create') }}" class="text-sm text-white/70 underline-offset-4 hover:text-white hover:underline">{{ App\Support\Copy::RECRUIT_LINK }}</a>
                 @endif
