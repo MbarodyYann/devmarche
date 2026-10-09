@@ -1,0 +1,13 @@
+# Planificateur Laravel (demo:reset chaque nuit à 3 h, routes/console.php).
+# Lancé chaque minute par devmarche-scheduler.timer. Installation : 12-deploiement.md
+[Unit]
+Description=DevMarché : planificateur Laravel (schedule:run)
+After=network.target postgresql.service
+
+[Service]
+Type=oneshot
+User=devmarche
+Group=devmarche
+WorkingDirectory=/var/www/devmarche
+ExecStart=/usr/bin/php8.2 artisan schedule:run --no-interaction
+Nice=10

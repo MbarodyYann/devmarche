@@ -1,0 +1,10 @@
+[Unit]
+Description=DevMarché : lance le planificateur Laravel chaque minute
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+AccuracySec=1s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
