@@ -1,12 +1,15 @@
-<x-layouts.app :title="$mission->title" :description="Str::limit($mission->description, 150)">
+<x-layouts.app :title="$mission->title" :description="$mission->description">
     @php
         $user = auth()->user();
         $isClient = $user && $user->id === $mission->client_id;
     @endphp
 
-    <a href="{{ route('missions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
-        <x-icon name="arrow-left" class="size-4" /> Toutes les missions
-    </a>
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <a href="{{ route('missions.index') }}" class="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
+            <x-icon name="arrow-left" class="size-4" /> Toutes les missions
+        </a>
+        <x-share :title="$mission->title.' · '.App\Support\Money::fcfa($mission->budget_fcfa).' FCFA'" :url="route('missions.show', $mission)" />
+    </div>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         {{-- Contenu --}}

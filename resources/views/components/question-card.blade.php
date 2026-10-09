@@ -23,7 +23,7 @@
             @if ($question->user->isNewMember())
                 <x-chip tone="warm" class="px-2! py-0.5! text-xs!">Nouveau</x-chip>
             @endif
-            <span>· {{ $question->created_at->translatedFormat('j M') }}</span>
+            <span class="shrink-0 whitespace-nowrap">· {{ $question->created_at->translatedFormat('j M') }}</span>
         </span>
     </div>
 </x-card>

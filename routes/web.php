@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\AnswerController;
+use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MissionApplicationController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\MissionStatusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\Devs\Directory;
 use App\Livewire\Missions\Index as MissionIndex;
 use App\Livewire\Questions\Create as QuestionCreate;
@@ -14,6 +16,19 @@ use App\Livewire\Questions\Index as QuestionIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+// À propos (projet, équipe, stack, licences, usage de l'IA)
+Route::view('/a-propos', 'about')->name('about');
+
+// SEO : plan du site et consignes aux robots (dynamiques pour donner l'URL absolue du plan)
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
+// Démo pour le jury : connexion en un clic (404 si APP_DEMO=false)
+Route::post('/demo/{persona}', DemoLoginController::class)
+    ->middleware(['guest', 'throttle:demo'])
+    ->where('persona', '[a-z]+')
+    ->name('demo.login');
 
 // Missions
 Route::get('/missions', MissionIndex::class)->name('missions.index');

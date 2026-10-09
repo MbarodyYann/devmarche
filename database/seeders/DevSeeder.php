@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\Availability;
 use App\Models\Skill;
 use App\Models\User;
+use App\Support\Demo;
 use Database\Seeders\Concerns\Timeline;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -24,9 +25,9 @@ class DevSeeder extends Seeder
      */
     public const NEWCOMERS = ['Rasmata Compaoré', 'Brenda Tchoupo', 'Mariama Ba', 'Nadège Dossou', 'Oumou Dembélé', 'Hawa Soumah', 'Alpha Barry', 'Elom Kpodar'];
 
-    public const DEMO_STARTUP_EMAIL = 'aissatou@demo.devmarche.test';
+    public const DEMO_STARTUP_EMAIL = Demo::STARTUP_EMAIL;
 
-    public const DEMO_DEV_EMAIL = 'moussa@demo.devmarche.test';
+    public const DEMO_DEV_EMAIL = Demo::DEV_EMAIL;
 
     public function run(): void
     {

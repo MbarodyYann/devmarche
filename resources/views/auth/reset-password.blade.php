@@ -1,4 +1,4 @@
-<x-layouts.app title="Nouveau mot de passe">
+<x-layouts.app title="Nouveau mot de passe" :noindex="true">
     <x-auth-card eyebrow="Presque fini" title="Choisir un nouveau mot de passe">
         <form method="post" action="{{ route('password.update') }}" class="space-y-5" novalidate>
             @csrf

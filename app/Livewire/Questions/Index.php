@@ -22,7 +22,6 @@ use Livewire\WithPagination;
     'end' => 'dans un groupe WhatsApp.',
     'subtitle' => 'Posez-la en français avec les bons tags : la communauté répond et vote, et la meilleure réponse reste trouvable par tous.',
     'action' => ['route' => 'questions.create', 'label' => 'Poser ma question'],
-    'recruit' => false,
 ]])]
 class Index extends Component
 {

@@ -18,4 +18,17 @@ return [
     /** Un membre est « Nouveau » pendant ce nombre de jours, tant qu'il n'est pas « Confirmé ». */
     'new_member_days' => 14,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Mode démo (jury)
+    |--------------------------------------------------------------------------
+    |
+    | Connexion en un clic avec les comptes de démonstration, bandeau « mode démo »
+    | et réinitialisation chaque nuit (php artisan demo:reset). À n'activer que
+    | sur l'environnement présenté au jury.
+    |
+    */
+
+    'demo' => (bool) env('APP_DEMO', false),
+
 ];

@@ -7,7 +7,7 @@
         <div class="mb-3 flex flex-col gap-3 border-b border-line pb-3 sm:flex-row sm:items-center sm:justify-between">
             @php($total = $this->missions->total())
             <p class="text-sm font-medium text-ink">
-                <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}@if ($forMe) · selon vos compétences <button type="button" wire:click="$set('forMe', false)" class="ml-1 font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">voir toutes</button>@endif</span>
+                <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}@if ($categoryLabel = App\Support\Categories::find($category)['label'] ?? null) · {{ $categoryLabel }} <button type="button" wire:click="$set('category', '')" class="ml-1 font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">toutes les catégories</button>@endif@if ($forMe) · selon vos compétences <button type="button" wire:click="$set('forMe', false)" class="ml-1 font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">voir toutes</button>@endif</span>
                 <span wire:loading>Recherche…</span>
             </p>
             <x-segmented label="Statut" model="status" :options="$statuses" />

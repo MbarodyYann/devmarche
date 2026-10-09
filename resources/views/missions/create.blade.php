@@ -1,4 +1,4 @@
-<x-layouts.app title="Publier une mission">
+<x-layouts.app title="Publier une mission" :noindex="true">
     <div class="mx-auto max-w-2xl">
         <a href="{{ route('missions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
             <x-icon name="arrow-left" class="size-4" /> Retour aux missions

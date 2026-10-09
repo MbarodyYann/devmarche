@@ -1,7 +1,8 @@
-@props(['start', 'end', 'subtitle', 'action' => null, 'recruit' => true])
+@props(['start', 'end', 'subtitle', 'action' => null])
 
 {{-- En-tête compact des pages de liste (08, dernière section) : bandeau primary-800 avec arcs,
-     H1 dont la fin est en italique ambre, sous-titre (masqué sur mobile), CTA visiteur ou action membre.
+     H1 dont la fin est en italique ambre, sous-titre (masqué sur mobile), action du membre à droite.
+     Aucun CTA visiteur ici : celui de la navigation suffit et reste visible.
      Le bas est laissé libre pour la carte de filtres « à cheval » (pb). --}}
 <section id="hero" @class([
     'relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950',
@@ -12,36 +13,24 @@
         @endforeach
     </svg>
 
-    <div @class([
-        'relative mx-auto flex max-w-page flex-col gap-4 px-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-10',
-        'pb-9 pt-2 sm:pb-16 sm:pt-8' => auth()->guest(),
-        'pb-9 pt-1 sm:pb-14 sm:pt-5' => auth()->check(),
-    ])>
+    {{-- Respiration (08) : 32 px sous la navigation sur mobile, 60 px sur ordinateur ; en bas, l'espace
+         de la carte de filtres qui chevauche le bandeau (24 / 40 px) plus 40 / 72 px d'air. --}}
+    <div class="relative mx-auto flex max-w-page flex-col gap-4 px-4 pb-16 pt-8 sm:px-6 sm:pb-24 sm:pt-12 lg:flex-row lg:items-center lg:justify-between lg:gap-10 lg:pb-28 lg:pt-[60px]">
         <div class="min-w-0">
             <h1 class="text-balance text-[30px] leading-[1.1] text-white sm:text-[40px]">
                 {{ $start }} <em class="font-serif italic text-secondary-400">{{ $end }}</em>
             </h1>
-            <p class="mt-2 hidden max-w-2xl text-white/80 sm:block">{{ $subtitle }}</p>
+            <p class="mt-4 hidden max-w-2xl leading-[1.6] text-white/80 sm:block">{{ $subtitle }}</p>
         </div>
 
-        @guest
-            {{-- Sur mobile, le bouton et le lien tiennent sur une ligne : l'en-tête reste compact. --}}
-            <div class="flex shrink-0 flex-wrap items-center gap-x-4 gap-y-2 lg:flex-col lg:items-end">
-                {{-- Réassurance sous le bouton (règle 4 de 11-redaction.md) --}}
-                <div class="flex flex-col items-start gap-1.5 lg:items-end">
-                    <x-button :href="route('register')" variant="cta" size="sm" class="sm:min-h-11 sm:px-4 sm:text-[15px]" data-cta="principal" data-page-cta>{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
-                    <x-reassurance :items="[App\Support\Copy::REASSURANCE_RISK]" on-dark class="text-[13px]!" data-reassurance />
-                </div>
-                @if ($recruit)
-                    <a href="{{ route('missions.create') }}" class="text-sm text-white/70 underline-offset-4 hover:text-white hover:underline">{{ App\Support\Copy::RECRUIT_LINK }}</a>
-                @endif
-            </div>
-        @else
+        {{-- Visiteur : pas de CTA ici, celui de la navigation reste visible (décision du représentant).
+             Membre : l'action de la page (publier, poser une question). --}}
+        @auth
             @if ($action)
                 <div class="shrink-0">
                     <x-button :href="route($action['route'])" variant="cta" size="sm" class="sm:min-h-11 sm:px-4 sm:text-[15px]" data-cta="principal"><x-icon name="plus" class="size-4" /> {{ $action['label'] }}</x-button>
                 </div>
             @endif
-        @endguest
+        @endauth
     </div>
 </section>

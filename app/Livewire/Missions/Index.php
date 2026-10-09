@@ -5,6 +5,7 @@ namespace App\Livewire\Missions;
 use App\Enums\MissionStatus;
 use App\Models\Mission;
 use App\Models\Skill;
+use App\Support\Categories;
 use App\Support\Countries;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,6 +37,10 @@ class Index extends Component
     #[Url(as: 'competence', except: '')]
     public string $skill = '';
 
+    /** Catégorie populaire de l'accueil (config/categories.php) : un groupe de compétences. */
+    #[Url(as: 'categorie', except: '')]
+    public string $category = '';
+
     #[Url(as: 'pays', except: '')]
     public string $country = '';
 
@@ -62,14 +67,14 @@ class Index extends Component
 
     public function resetFilters(): void
     {
-        $this->reset('skill', 'country', 'budgetMin', 'budgetMax', 'status', 'sort', 'forMe');
+        $this->reset('skill', 'category', 'country', 'budgetMin', 'budgetMax', 'status', 'sort', 'forMe');
         $this->resetPage();
     }
 
     #[Computed]
     public function hasFilters(): bool
     {
-        return collect([$this->skill, $this->country, $this->budgetMin, $this->budgetMax, $this->forMe])->filter()->isNotEmpty()
+        return collect([$this->skill, $this->category, $this->country, $this->budgetMin, $this->budgetMax, $this->forMe])->filter()->isNotEmpty()
             || $this->status !== 'open';
     }
 
@@ -104,6 +109,7 @@ class Index extends Component
         return Mission::query()
             ->when($status, fn (Builder $q, MissionStatus $status) => $q->where('status', $status))
             ->when($this->skill !== '', fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->where('slug', $this->skill)))
+            ->when(Categories::find($this->category), fn (Builder $q) => Categories::scope($q, $this->category))
             ->when($mySkillIds !== null, fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->whereKey($mySkillIds)))
             ->when($this->country === self::REMOTE, fn (Builder $q) => $q->whereNull('country'))
             ->when($this->country !== '' && $this->country !== self::REMOTE, fn (Builder $q) => $q->where('country', $this->country))

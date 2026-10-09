@@ -1,4 +1,4 @@
-@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null, 'pageHero' => null])
+@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null, 'pageHero' => null, 'canonical' => null, 'noindex' => false])
 
 @php
     $navigation = [
@@ -20,8 +20,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ? $title.' · ' : '' }}DevMarché</title>
-    <meta name="description" content="La plateforme d'échange par et pour les développeurs d'Afrique francophone.">
+    @php
+        $fullTitle = ($title ? $title.' · ' : '').'DevMarché';
+        // Description : celle de la page, sinon le sous-titre de l'en-tête compact, sinon celle du site.
+        $metaDescription = App\Support\Seo::excerpt($description ?? $pageHero['subtitle'] ?? App\Support\Seo::DEFAULT_DESCRIPTION);
+        $canonicalUrl = $canonical ?? url()->current();
+        $metaImage = $ogImage ?? asset('images/og-default.png');
+    @endphp
+    <title>{{ $fullTitle }}</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    @if ($noindex)
+        <meta name="robots" content="noindex">
+    @endif
     <meta name="theme-color" content="#314A82">
 
     {{-- Icônes (générées par php artisan brand:export puis scripts/brand-png.sh) --}}
@@ -34,19 +45,21 @@
     <meta property="og:site_name" content="DevMarché">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $title ? $title.' · ' : '' }}DevMarché">
-    <meta property="og:description" content="{{ $description ?? 'La plateforme d\'échange par et pour les développeurs d\'Afrique francophone.' }}">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="{{ $ogImage ?? asset('images/og-default.png') }}">
+    <meta property="og:title" content="{{ $fullTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:image" content="{{ $metaImage }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="DevMarché, par et pour les devs d'Afrique francophone">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $fullTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
 
     {{-- Anti-flash : applique le thème avant le premier rendu. --}}
     <script>
         (function () {
-            document.documentElement.classList.add('js');
             var theme = null;
             try { theme = localStorage.getItem('theme'); } catch (e) {}
             if (theme === 'dark' || (theme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -65,6 +78,13 @@
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-btn focus:bg-surface focus:px-4 focus:py-2 focus:shadow-card">
         Aller au contenu
     </a>
+
+    {{-- Bandeau discret du mode démo (comptes de démonstration, APP_DEMO=true) --}}
+    @if ($demoPersona = App\Support\Demo::personaName(auth()->user()))
+        <p role="status" data-demo-banner class="bg-primary-950 px-4 py-1.5 text-center text-[13px] text-white/80">
+            Vous êtes en mode démo ({{ $demoPersona }}). Les données sont réinitialisées chaque nuit.
+        </p>
+    @endif
 
     {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
     <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6"
@@ -140,18 +160,10 @@
                     </div>
                 @endauth
 
-                {{-- Visiteur : le CTA principal de la page d'accueil, mot pour mot. Membre : l'accent « Publier ».
-                     Sur les pages qui ont leur propre CTA (data-page-cta), celui de la navigation reste masqué
-                     tant que le CTA de la page est à l'écran, puis apparaît quand il sort par le haut.
-                     Sans JS, il reste visible (classe js posée dans le <head>). --}}
+                {{-- Visiteur : le CTA principal, mot pour mot, visible en permanence sur toutes les pages
+                     (il coexiste avec celui du hero de l'accueil). Membre : l'accent « Publier ». --}}
                 @guest
-                    <div class="hidden md:block" data-nav-cta
-                         @if ($hasHero)
-                             data-follows-page-cta
-                             x-data="{ shown: false }"
-                             x-init="const target = document.querySelector('[data-page-cta]'); if (! target) { shown = true; return } new IntersectionObserver(([entry]) => { shown = ! entry.isIntersecting && entry.boundingClientRect.top < 0 }).observe(target)"
-                             x-bind:class="{ 'is-shown': shown }"
-                         @endif>
+                    <div class="hidden md:block" data-nav-cta>
                         <x-button :href="route('register')" size="sm">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                     </div>
                 @else
@@ -169,7 +181,7 @@
     @isset($hero)
         {{ $hero }}
     @elseif ($pageHero)
-        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" :recruit="$pageHero['recruit'] ?? true" />
+        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" />
     @endisset
 
     <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! $hasHero, 'pt-0' => $hasHero])>
@@ -209,11 +221,12 @@
                     <a href="{{ route($item['route']) }}" class="block text-ink-muted hover:text-ink">{{ $item['label'] }}</a>
                 @endforeach
             </nav>
-            <div class="space-y-2 text-sm">
+            <nav aria-label="Le projet" class="space-y-2 text-sm">
                 <p class="font-semibold text-ink">Le projet</p>
-                <p class="text-ink-muted">Équipe Baobab Stack</p>
-                <p class="text-ink-muted">Concours CADEV 2026</p>
-            </div>
+                <a href="{{ route('about') }}" class="block text-ink-muted hover:text-ink">À propos</a>
+                <a href="{{ route('about') }}#equipe" class="block text-ink-muted hover:text-ink">Équipe Baobab Stack</a>
+                <a href="{{ route('about') }}#licences" class="block text-ink-muted hover:text-ink">Licences et usage de l'IA</a>
+            </nav>
         </div>
     </footer>
 

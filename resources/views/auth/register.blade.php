@@ -1,5 +1,5 @@
-<x-layouts.app title="Inscription">
-    <x-auth-card eyebrow="Inscription" title="Votre profil en ligne en 2 minutes." subtitle="Nom, e-mail, pays et ville : c'est tout. Vous ajouterez vos compétences ensuite.">
+<x-layouts.app title="Inscription" description="Créez votre profil gratuit sur DevMarché : nom, e-mail, pays et ville, et votre profil est en ligne en 2 minutes. Sans carte bancaire.">
+    <x-auth-card :demo="true" eyebrow="Inscription" title="Votre profil en ligne en 2 minutes." subtitle="Nom, e-mail, pays et ville : c'est tout. Vous ajouterez vos compétences ensuite.">
         <form method="post" action="{{ route('register') }}" class="space-y-5" novalidate>
             @csrf
 

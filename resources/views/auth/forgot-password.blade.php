@@ -1,4 +1,4 @@
-<x-layouts.app title="Mot de passe oublié">
+<x-layouts.app title="Mot de passe oublié" :noindex="true">
     <x-auth-card eyebrow="Pas de panique" title="Mot de passe oublié" subtitle="Indiquez votre adresse e-mail : nous vous envoyons un lien pour en choisir un nouveau.">
         <form method="post" action="{{ route('password.email') }}" class="space-y-5" novalidate>
             @csrf

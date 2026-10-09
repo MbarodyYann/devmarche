@@ -1,4 +1,4 @@
-@props(['title', 'subtitle' => null, 'eyebrow' => 'Bienvenue'])
+@props(['title', 'subtitle' => null, 'eyebrow' => 'Bienvenue', 'demo' => false])
 
 <div class="mx-auto w-full max-w-md">
     <div class="mb-8 text-center">
@@ -8,6 +8,9 @@
             <p class="mt-4 text-ink-soft">{{ $subtitle }}</p>
         @endif
     </div>
+    @if ($demo)
+        <x-demo-panel class="mb-6" />
+    @endif
     <x-card padding="p-6 sm:p-8">
         {{ $slot }}
     </x-card>

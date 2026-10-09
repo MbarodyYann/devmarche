@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Enums\MissionStatus;
 use App\Models\Mission;
 use App\Models\Profile;
-use App\Models\ReputationEvent;
+use App\Models\Question;
 use App\Models\User;
-use App\Support\Countries;
+use App\Support\Categories;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
@@ -18,20 +18,11 @@ class HomeController extends Controller
 
     public function __invoke(): View
     {
-        $stats = Cache::remember('home.stats', self::STATS_TTL, function () {
-            $countries = Profile::query()->distinct()->pluck('country')->all();
-
-            return [
-                'devs' => User::query()->whereHas('profile')->count(),
-                'countries' => count($countries),
-                // Drapeaux dans l'ordre de config/countries.php (Afrique francophone d'abord).
-                'flags' => array_values(array_map(Countries::flag(...), array_keys(array_intersect_key(Countries::all(), array_flip($countries))))),
-                'missions' => Mission::query()->count(),
-                // Cauris gagnés : la somme des gains (les pertes éventuelles ne sont pas soustraites).
-                'cauris' => (int) ReputationEvent::query()->where('points', '>', 0)->sum('points'),
-                'avatarIds' => User::query()->whereHas('profile')->orderByDesc('reputation')->limit(4)->pluck('id')->all(),
-            ];
-        });
+        $stats = Cache::remember('home.stats', self::STATS_TTL, fn () => [
+            'devs' => User::query()->whereHas('profile')->count(),
+            'countries' => Profile::query()->distinct()->count('country'),
+            'missions' => Mission::query()->count(),
+        ]);
 
         $openMissions = Mission::query()
             ->where('status', MissionStatus::Open)
@@ -41,9 +32,20 @@ class HomeController extends Controller
             ->limit(3)
             ->get();
 
+        $resolvedQuestions = Question::query()
+            ->whereNotNull('accepted_answer_id')
+            ->with(['skills', 'user' => fn ($q) => $q->withLevel(), 'user.profile'])
+            ->latest()
+            ->limit(3)
+            ->get();
+
+        // Nombre réel de missions ouvertes par catégorie (non mis en cache : il doit être exact).
+        $openByCategory = Categories::openMissionCounts();
+
         return view('home', [
+            'categories' => collect(Categories::all())->map(fn (array $category, string $key) => $category + ['open' => $openByCategory[$key]])->all(),
+            'resolvedQuestions' => $resolvedQuestions,
             'stats' => $stats,
-            'avatars' => User::query()->with('profile')->findMany($stats['avatarIds'])->sortByDesc('reputation')->values(),
             'openMissions' => $openMissions,
         ]);
     }

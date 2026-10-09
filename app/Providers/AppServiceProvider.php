@@ -58,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('questions', fn (Request $request) => Limit::perHour(10)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('answers', fn (Request $request) => Limit::perHour(30)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('votes', fn (Request $request) => Limit::perMinute(30)->by($request->user()?->id ?: $request->ip()));
+        RateLimiter::for('demo', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
         RateLimiter::for('applications', fn (Request $request) => Limit::perHour(30)->by($request->user()?->id ?: $request->ip()));
 
         Carbon::setLocale(config('app.locale'));

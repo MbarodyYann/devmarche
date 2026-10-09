@@ -1,4 +1,4 @@
-<x-layouts.app title="Modifier mon profil">
+<x-layouts.app title="Modifier mon profil" :noindex="true">
     @php($profile = $dev->profile)
 
     <div class="mx-auto max-w-2xl">

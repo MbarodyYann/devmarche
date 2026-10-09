@@ -362,6 +362,13 @@ class MissionSeeder extends Seeder
                 'description' => "Écrire les tests widget et d'intégration des parcours critiques (inscription, paiement) et les brancher dans notre intégration continue.",
                 'applicants' => ['Fatou Sow'],
             ],
+            [
+                'client' => 'Salimata Sawadogo', 'status' => 'open', 'days' => 6, 'deadline' => 25,
+                'title' => 'Menu USSD pour consulter son solde de cotisations',
+                'budget' => 220000, 'country' => 'BF', 'skills' => ['USSD', 'Node.js'],
+                'description' => "Les membres de la coopérative n'ont pas tous un smartphone. Nous voulons un menu USSD (*123#) pour consulter son solde, ses dernières cotisations et recevoir un SMS de confirmation. L'agrégateur USSD est déjà choisi.",
+                'applicants' => ['Abdoul Kaboré', 'Boukary Ouédraogo'],
+            ],
         ];
     }
 }

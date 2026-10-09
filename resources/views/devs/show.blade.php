@@ -1,4 +1,4 @@
-<x-layouts.app :title="$dev->name">
+<x-layouts.app :title="$dev->name" :description="collect([$dev->profile?->headline, $dev->profile?->bio])->filter()->join('. ') ?: $dev->name.', dev sur DevMarché'">
     @php($profile = $dev->profile)
 
     @php($isOwner = auth()->id() === $dev->id)
@@ -48,6 +48,7 @@
                 @if ($profile?->languagesLabel() || $dev->activityLabel())
                     <p class="mt-3 text-sm text-ink-muted">{{ collect([$profile?->languagesLabel(), $dev->activityLabel()])->filter()->join(' · ') }}</p>
                 @endif
+                <x-share class="mt-5" :title="collect([$dev->name, $profile?->headline])->filter()->join(', ')" :url="route('devs.show', $dev)" />
                 @can('update', $profile)
                     {{-- Sur mobile, le bouton passe sous les puces, en pleine largeur. --}}
                     <div class="mt-5 sm:hidden">

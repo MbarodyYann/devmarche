@@ -22,7 +22,7 @@ test('missions : titre, mécanisme et CTA visiteur', function () {
         ->assertSee('Votre prochain client <em class="font-serif italic text-secondary-400">est déjà ici.</em>', false)
         ->assertSee('Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.')
         ->assertSee(Copy::SIGNUP_CTA)
-        ->assertSee(Copy::RECRUIT_LINK);
+        ->assertDontSee(Copy::RECRUIT_LINK);
 });
 
 test('annuaire : titre, mécanisme et CTA visiteur', function () {
@@ -121,10 +121,17 @@ test('aucun point ni signe décoratif devant un texte sur les pages principales'
     }
 });
 
-test('en-tête compact : réassurance sous le CTA visiteur, sur les 3 pages', function (string $url) {
-    $this->get($url)->assertSeeInOrder([Copy::SIGNUP_CTA, 'data-reassurance', Copy::REASSURANCE_RISK], false);
+test('en-tête compact des listes : ni CTA, ni lien recruteur, ni réassurance (le CTA de la navigation suffit)', function (string $url) {
+    $html = $this->get($url)->assertOk()->getContent();
+    $hero = substr($html, strpos($html, 'id="hero"'), strpos($html, '<main') - strpos($html, 'id="hero"'));
+
+    expect($hero)->not->toContain(Copy::SIGNUP_CTA)
+        ->not->toContain(Copy::RECRUIT_LINK)
+        ->not->toContain(Copy::REASSURANCE_RISK)
+        ->and(substr_count($html, Copy::SIGNUP_CTA))->toBe(1);
 })->with(['/missions', '/questions', '/devs']);
 
-test('en-tête compact : pas de réassurance d\'inscription pour un membre', function () {
-    $this->actingAs($this->moussa)->get('/missions')->assertDontSee('data-reassurance', false);
+test('en-tête compact : le membre garde l\'action de la page', function () {
+    $this->actingAs($this->moussa)->get('/missions')->assertSee('Publier une mission');
+    $this->actingAs($this->moussa)->get('/questions')->assertSee('Poser ma question');
 });

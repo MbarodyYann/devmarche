@@ -1,12 +1,15 @@
-<x-layouts.app :title="$question->title" :description="Str::limit(trim(strip_tags($question->body_html)), 150)">
+<x-layouts.app :title="$question->title" :description="$question->body_html">
     @php
         $user = auth()->user();
         $isAuthor = $user && $user->id === $question->user_id;
     @endphp
 
-    <a href="{{ route('questions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
-        <x-icon name="arrow-left" class="size-4" /> Toutes les questions
-    </a>
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <a href="{{ route('questions.index') }}" class="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
+            <x-icon name="arrow-left" class="size-4" /> Toutes les questions
+        </a>
+        <x-share :title="$question->title" :url="route('questions.show', $question)" />
+    </div>
 
     <div class="mx-auto max-w-4xl space-y-6">
         {{-- La question --}}
