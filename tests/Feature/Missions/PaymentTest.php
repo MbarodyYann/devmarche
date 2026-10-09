@@ -113,3 +113,14 @@ test('seul le client de la mission ouverte peut sécuriser les fonds', function 
 test('la bande de garanties de l\'accueil annonce les fonds sécurisés, en précisant la simulation', function () {
     $this->get('/')->assertSee('Fonds sécurisés jusqu&#039;à la livraison', false)->assertSee('simulé dans cette version');
 });
+
+test('Z1 : sur une mission attribuée, plus d\'aide au choix ni de délai moyen', function () {
+    $this->actingAs($this->client)->get(route('missions.show', $this->mission))
+        ->assertSee('Choisissez votre dev')->assertSee('Délai moyen proposé')->assertSee('Comparez les prix');
+
+    secureFunds($this);
+
+    $this->actingAs($this->client)->get(route('missions.show', $this->mission))
+        ->assertSee('Candidatures')->assertDontSee('Choisissez votre dev')
+        ->assertDontSee('Délai moyen proposé')->assertDontSee('Comparez les prix');
+});
