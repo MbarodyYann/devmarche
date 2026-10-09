@@ -5,6 +5,7 @@
         ['label' => 'Missions', 'route' => 'missions.index', 'icon' => 'briefcase', 'active' => 'missions.*'],
         ['label' => 'Q&R', 'route' => 'questions.index', 'icon' => 'message', 'active' => 'questions.*'],
         ['label' => 'Devs', 'route' => 'devs.index', 'icon' => 'users', 'active' => 'devs.index'],
+        ['label' => 'Le Pouls', 'route' => 'pulse', 'icon' => 'chart', 'active' => 'pulse'],
     ];
     $me = auth()->user()?->loadMissing('profile');
     $meUrl = $me ? route('devs.show', $me) : route('login');
@@ -274,7 +275,7 @@
     {{-- Barre du bas (mobile) : flottante, même matière que la navigation --}}
     <nav class="fixed inset-x-3 bottom-3 z-40 lg:hidden" aria-label="Navigation principale" style="margin-bottom: env(safe-area-inset-bottom)">
         {{-- Opaque : le texte de la page ne doit pas se lire à travers. --}}
-        <ul class="grid grid-cols-4 rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
+        <ul class="grid grid-cols-5 rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
             @foreach ($navigation as $item)
                 @php($active = request()->routeIs($item['active']))
                 <li>

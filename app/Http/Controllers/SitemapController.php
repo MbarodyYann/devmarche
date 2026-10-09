@@ -20,6 +20,7 @@ class SitemapController extends Controller
             ['loc' => route('missions.index'), 'changefreq' => 'hourly', 'priority' => '0.9'],
             ['loc' => route('questions.index'), 'changefreq' => 'hourly', 'priority' => '0.9'],
             ['loc' => route('devs.index'), 'changefreq' => 'daily', 'priority' => '0.8'],
+            ['loc' => route('pulse'), 'changefreq' => 'daily', 'priority' => '0.6'],
             ['loc' => route('about'), 'changefreq' => 'monthly', 'priority' => '0.5'],
         ]);
 

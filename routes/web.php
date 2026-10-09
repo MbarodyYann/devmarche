@@ -10,6 +10,7 @@ use App\Http\Controllers\MissionStatusController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PulseController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SitemapController;
 use App\Livewire\Devs\Directory;
@@ -19,6 +20,9 @@ use App\Livewire\Questions\Index as QuestionIndex;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+// Le Pouls : statistiques réelles du marché
+Route::get('/le-pouls', PulseController::class)->name('pulse');
 
 // À propos (projet, équipe, stack, licences, usage de l'IA)
 Route::view('/a-propos', 'about')->name('about');

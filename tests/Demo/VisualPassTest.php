@@ -23,7 +23,7 @@ test('V1 : verre de la navigation à 90 % (clair et sombre)', function () {
 test('V2 : barre du bas opaque', function () {
     $html = $this->get('/missions')->getContent();
 
-    expect($html)->toContain('<ul class="grid grid-cols-4 rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">');
+    expect($html)->toContain('<ul class="grid grid-cols-5 rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">');
 });
 
 test('V3 : sous 1 024 px, la bascule de thème est dans le pied de page, et le nom reste dans l\'en-tête', function () {

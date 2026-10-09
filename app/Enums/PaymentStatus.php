@@ -22,7 +22,7 @@ enum PaymentStatus: string
     {
         return match ($this) {
             self::Held => 'info',
-            self::Released => 'done',
+            self::Released => 'info',
             self::Refunded => 'muted',
         };
     }
