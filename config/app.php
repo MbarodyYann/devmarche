@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'DevMarché'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +27,18 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mode démo
+    |--------------------------------------------------------------------------
+    |
+    | Active la connexion en un clic avec les comptes de démonstration.
+    | À n'activer que sur l'environnement de démo présenté au jury.
+    |
+    */
+
+    'demo' => (bool) env('APP_DEMO', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -78,11 +90,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'fr'),
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'fr'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'fr_FR'),
 
     /*
     |--------------------------------------------------------------------------
