@@ -1,8 +1,8 @@
 <x-layouts.app>
     <x-slot:head>
-        <link rel="preload" as="image" type="image/webp" media="(min-width: 1024px)" fetchpriority="high"
-              imagesrcset="/images/hero/devs-portrait-480.webp 480w, /images/hero/devs-portrait-800.webp 800w"
-              imagesizes="(min-width: 1280px) 520px, 45vw">
+        <link rel="preload" as="image" type="image/webp" media="(min-width: 768px)" fetchpriority="high"
+              imagesrcset="/images/hero/portrait-480.webp 480w, /images/hero/portrait-800.webp 800w"
+              imagesizes="(min-width: 1280px) 520px, (min-width: 1024px) 40vw, 448px">
     </x-slot:head>
 
     {{-- Accueil (08-design.md, « Hero de l'accueil » : modèle stiesas.com, en aplats indigo et ambre). --}}
@@ -46,19 +46,20 @@
                     </div>
                 </div>
 
-                {{-- Colonne visuel : photo rassurante (Unsplash), 4:5 sur ordinateur, 16:9 sur mobile, sous le CTA.
-                     Une seule image ; sur ordinateur, elle est préchargée en priorité haute (voir le slot head). --}}
-                <picture class="block min-w-0">
-                    <source media="(min-width: 1024px)" type="image/webp"
-                            srcset="/images/hero/devs-portrait-480.webp 480w, /images/hero/devs-portrait-800.webp 800w"
-                            sizes="(min-width: 1280px) 520px, 45vw">
-                    <img src="/images/hero/devs-paysage-800.webp"
-                         srcset="/images/hero/devs-paysage-480.webp 480w, /images/hero/devs-paysage-800.webp 800w"
-                         sizes="(min-width: 640px) 600px, calc(100vw - 32px)"
-                         width="800" height="450"
-                         alt="Deux développeurs travaillent ensemble sur du code"
+                {{-- Colonne visuel : image rassurante (générée par IA, validée par l'inspecteur), portrait 4:5 à partir
+                     de 768 px, paysage 16:9 sur mobile, sous le CTA. Une seule image ; sur ordinateur, elle est
+                     préchargée en priorité haute (slot head). Sources et régénération : scripts/hero-images.php --}}
+                <picture class="block min-w-0 md:mx-auto md:w-full md:max-w-md lg:max-w-none">
+                    <source media="(min-width: 768px)" type="image/webp"
+                            srcset="/images/hero/portrait-480.webp 480w, /images/hero/portrait-800.webp 800w"
+                            sizes="(min-width: 1280px) 520px, (min-width: 1024px) 40vw, 448px">
+                    <img src="/images/hero/paysage-960.webp"
+                         srcset="/images/hero/paysage-640.webp 640w, /images/hero/paysage-960.webp 960w"
+                         sizes="calc(100vw - 32px)"
+                         width="960" height="540"
+                         alt="Deux développeurs travaillent ensemble devant un ordinateur"
                          loading="lazy" decoding="async"
-                         class="aspect-video w-full rounded-2xl border border-white/10 object-cover lg:aspect-[4/5]">
+                         class="aspect-video w-full rounded-2xl border border-white/10 object-cover md:aspect-[4/5]">
                 </picture>
             </div>
         </section>

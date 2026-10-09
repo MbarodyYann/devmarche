@@ -196,7 +196,6 @@
                 <p class="font-semibold text-ink">Le projet</p>
                 <p class="text-ink-muted">Équipe Baobab Stack</p>
                 <p class="text-ink-muted">Concours CADEV 2026</p>
-                <p class="text-ink-muted">Photo : <a href="https://unsplash.com/photos/kwzWjTnDPLk" rel="noopener" class="underline-offset-4 hover:underline">Unsplash</a></p>
             </div>
         </div>
     </footer>

@@ -88,23 +88,25 @@ test('le hero a une seule photo, placée après le CTA, chargée en différé, s
         ->and(strpos($hero, '<img'))->toBeGreaterThan(strpos($hero, 'data-cta="principal"'))
         ->and($hero)->toContain('loading="lazy"')
         ->toContain('decoding="async"')
-        ->toContain('alt="Deux développeurs travaillent ensemble sur du code"')
-        ->toContain('width="800" height="450"')
+        ->toContain('alt="Deux développeurs travaillent ensemble devant un ordinateur"')
+        ->toContain('width="960" height="540"')
         ->not->toContain('gradient');
 
     // Sur ordinateur, la photo 4:5 est préchargée en priorité haute.
-    expect($html)->toContain('rel="preload" as="image" type="image/webp" media="(min-width: 1024px)" fetchpriority="high"');
+    expect($html)->toContain('rel="preload" as="image" type="image/webp" media="(min-width: 768px)" fetchpriority="high"');
 });
 
-test('les variantes de la photo existent et respectent leur budget de poids', function () {
-    foreach (['portrait', 'paysage'] as $crop) {
-        expect(filesize(public_path("images/hero/devs-$crop-480.webp")))->toBeLessThanOrEqual(40_000)
-            ->and(filesize(public_path("images/hero/devs-$crop-800.webp")))->toBeLessThanOrEqual(80_000);
+test('les variantes de l\'image existent et respectent leur budget de poids', function () {
+    $budgets = ['portrait-480' => 40_000, 'portrait-800' => 80_000, 'paysage-640' => 40_000, 'paysage-960' => 70_000];
+
+    foreach ($budgets as $file => $max) {
+        expect(public_path("images/hero/$file.webp"))->toBeFile()
+            ->and(filesize(public_path("images/hero/$file.webp")))->toBeLessThanOrEqual($max);
     }
 });
 
-test('le crédit de la photo figure dans le pied de page', function () {
-    $this->get('/')->assertSee('Photo : <a href="https://unsplash.com/photos/kwzWjTnDPLk"', false);
+test('plus aucune trace de la photo Unsplash', function () {
+    expect($this->get('/')->getContent())->not->toContain('unsplash')->not->toContain('devs-portrait');
 });
 
 test('l\'inscription reste courte : nom, e-mail, mot de passe, pays, ville', function () {
