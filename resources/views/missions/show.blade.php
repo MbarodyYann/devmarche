@@ -70,7 +70,7 @@
             {{-- Candidatures : vue du client --}}
             @if ($isClient)
                 <x-card id="candidatures" class="scroll-mt-24">
-                    <h2 class="text-[28px]">Choisissez votre dev <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
+                    <h2 class="text-[28px]">{{ $mission->isOpen() ? 'Choisissez votre dev' : 'Candidatures' }} <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
                     @if ($applications->whereNotNull('delivery_days')->isNotEmpty())
                         <p class="mt-1 text-sm text-ink-muted">Délai moyen proposé : <strong class="font-semibold text-ink">{{ (int) round($applications->avg('delivery_days')) }} jours</strong></p>
                     @endif

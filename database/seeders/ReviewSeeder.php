@@ -52,7 +52,15 @@ class ReviewSeeder extends Seeder
             ->get();
 
         foreach ($missions as $i => $mission) {
-            [$rating, $communication, $quality, $timeliness, $comment] = self::REVIEWS[$i % count(self::REVIEWS)];
+            // « Deuxième mission avec lui » : seulement pour un client qui lui a déjà confié une mission terminée.
+            $repeat = Mission::query()
+                ->where('client_id', $mission->client_id)
+                ->where('freelancer_id', $mission->freelancer_id)
+                ->where('status', MissionStatus::Completed)
+                ->where('completed_at', '<', $mission->completed_at)
+                ->exists();
+            $pool = array_values(array_filter(self::REVIEWS, fn (array $r) => str_starts_with($r[4], 'Deuxième mission') === $repeat));
+            [$rating, $communication, $quality, $timeliness, $comment] = $pool[$i % count($pool)];
 
             // Quelques heures après la fin, et avant la dernière activité prévue du client.
             $reviewedAt = $this->byActor(

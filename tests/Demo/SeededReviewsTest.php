@@ -21,3 +21,9 @@ test('la démo montre au moins un « Client fidèle »', function () {
 
     expect($loyal)->toBeGreaterThanOrEqual(1);
 });
+
+test('« Deuxième mission avec lui » seulement pour un client qui a déjà confié une mission au dev', function () {
+    foreach (Review::where('comment', 'like', 'Deuxième mission%')->with('mission')->get() as $review) {
+        expect(Mission::where('client_id', $review->reviewer_id)->where('freelancer_id', $review->reviewee_id)->count())->toBeGreaterThanOrEqual(2);
+    }
+});
