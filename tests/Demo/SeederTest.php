@@ -11,7 +11,6 @@ use Database\Seeders\DevSeeder;
 use Illuminate\Support\Facades\Hash;
 
 test('les seeders créent environ 40 devs de 8 pays et les deux comptes de démo', function () {
-    $this->seed(DatabaseSeeder::class);
 
     expect(User::count())->toBeGreaterThanOrEqual(40)
         ->and(Profile::distinct()->count('country'))->toBeGreaterThanOrEqual(8);
@@ -26,7 +25,6 @@ test('les seeders créent environ 40 devs de 8 pays et les deux comptes de démo
 });
 
 test('les seeders peuvent être relancés sans doublon', function () {
-    $this->seed(DatabaseSeeder::class);
     $count = User::count();
 
     $this->seed(DatabaseSeeder::class);
@@ -35,7 +33,6 @@ test('les seeders peuvent être relancés sans doublon', function () {
 });
 
 test('les seeders créent environ 25 missions dans tous les statuts, et la mission Wave d\'Aïssatou est ouverte', function () {
-    $this->seed(DatabaseSeeder::class);
 
     expect(Mission::count())->toBeGreaterThanOrEqual(25)
         ->and(Mission::distinct()->pluck('status')->map->value->sort()->values()->all())
@@ -48,7 +45,6 @@ test('les seeders créent environ 25 missions dans tous les statuts, et la missi
 });
 
 test('les seeders créent environ 40 questions locales, sans historique fictif, avec une réputation variée et cohérente', function () {
-    $this->seed(DatabaseSeeder::class);
 
     expect(Question::count())->toBeGreaterThanOrEqual(35)
         ->and(Question::whereNotNull('accepted_answer_id')->count())->toBeGreaterThan(20)

@@ -3,7 +3,6 @@
 use App\Models\Mission;
 use App\Models\User;
 use App\Support\Copy;
-use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DevSeeder;
 
 /*
@@ -11,7 +10,6 @@ use Database\Seeders\DevSeeder;
 */
 
 beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
     $this->wave = Mission::where('title', 'like', '%API de paiement Wave%')->sole();
     $this->moussa = User::where('email', DevSeeder::DEMO_DEV_EMAIL)->sole();
     $this->aissatou = User::where('email', DevSeeder::DEMO_STARTUP_EMAIL)->sole();

@@ -8,16 +8,11 @@ use App\Models\Skill;
 use App\Models\User;
 use App\Support\Categories;
 use App\Support\Copy;
-use Database\Seeders\DatabaseSeeder;
 
 /*
 | Accueil complet (lot 4) : catégories populaires, missions ouvertes, « Comment ça marche »,
 | questions résolues, CTA final ; pas de témoignages (règle 5 : aucune promesse fausse).
 */
-
-beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
-});
 
 test('les sections sont dans l\'ordre prévu, après la bande de preuve sociale', function () {
     $this->get('/')->assertOk()->assertSeeInOrder([

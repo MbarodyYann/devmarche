@@ -3,17 +3,12 @@
 use App\Models\Mission;
 use App\Models\User;
 use App\Support\Copy;
-use Database\Seeders\DatabaseSeeder;
 
 /*
 | CTA « Créer mon profil gratuit » (décision du représentant) : celui de la navigation est visible
 | en permanence pour un visiteur, sur toutes les pages. L'accueil garde aussi le CTA de son hero ;
 | les pages de liste n'ont aucun CTA dans leur en-tête compact.
 */
-
-beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
-});
 
 function navCta(string $html): string
 {

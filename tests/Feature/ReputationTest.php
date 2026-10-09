@@ -3,7 +3,6 @@
 use App\Models\Mission;
 use App\Models\User;
 use App\Services\ReputationService;
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\DB;
 
 test('ReputationService trace l\'événement et met à jour le total', function () {
@@ -29,16 +28,4 @@ test('reputation:recalculate remet chaque total en accord avec les événements'
     expect($user->fresh()->reputation)->toBe(25);
 
     $this->artisan('reputation:recalculate')->expectsOutputToContain('cohérentes')->assertSuccessful();
-});
-
-test('après les seeders, la réputation de chacun est la somme de ses événements', function () {
-    $this->seed(DatabaseSeeder::class);
-
-    $incoherent = User::query()
-        ->whereRaw('reputation <> (select coalesce(sum(points), 0) from reputation_events where reputation_events.user_id = users.id)')
-        ->count();
-
-    expect($incoherent)->toBe(0)
-        ->and(User::max('reputation'))->toBeBetween(1200, 1600)
-        ->and(User::where('reputation', 0)->count())->toBeGreaterThan(0);
 });

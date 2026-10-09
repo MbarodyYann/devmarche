@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DevSeeder;
 use Illuminate\Support\Facades\DB;
 
@@ -9,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 | Cohérence temporelle du jeu de démonstration (le jury le remarquerait) :
 | rien avant le lancement (29 sept.), rien dans le futur, et chaque chose après ce dont elle dépend.
 */
-
-beforeEach(fn () => $this->seed(DatabaseSeeder::class));
 
 function countWhere(string $sql): int
 {

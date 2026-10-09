@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\DemoTestCase;
 use Tests\TestCase;
 
 /*
@@ -19,3 +20,7 @@ pest()->extend(TestCase::class)
 
 pest()->extend(TestCase::class)
     ->in('Unit');
+
+// Tests sur le jeu de démo complet : semé une fois par processus, une transaction par test.
+pest()->extend(DemoTestCase::class)
+    ->in('Demo');

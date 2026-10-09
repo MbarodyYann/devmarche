@@ -6,12 +6,10 @@ use App\Models\ReputationEvent;
 use App\Models\User;
 use App\Support\Copy;
 use App\Support\Countries;
-use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\DevSeeder;
 use Illuminate\Support\Facades\Cache;
 
 beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
     Cache::flush();
 });
 

@@ -3,7 +3,6 @@
 use App\Models\Mission;
 use App\Models\User;
 use App\Support\Demo;
-use Database\Seeders\DatabaseSeeder;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\RateLimiter;
 
@@ -12,7 +11,6 @@ use Illuminate\Support\Facades\RateLimiter;
 */
 
 beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
     RateLimiter::clear('demo');
 });
 

@@ -5,15 +5,10 @@ use App\Models\Mission;
 use App\Models\Question;
 use App\Models\User;
 use App\Support\Seo;
-use Database\Seeders\DatabaseSeeder;
 
 /*
 | Partage (WhatsApp, copie du lien), balises Open Graph et Twitter par page, SEO de base.
 */
-
-beforeEach(function () {
-    $this->seed(DatabaseSeeder::class);
-});
 
 dataset('fiches', [
     'mission' => fn () => [route('missions.show', $m = Mission::first()), $m->title],
