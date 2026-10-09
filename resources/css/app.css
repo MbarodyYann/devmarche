@@ -153,6 +153,12 @@
         -webkit-tap-highlight-color: transparent;
     }
 
+    /* Aucun défilement horizontal, quoi qu'il arrive (360 px). */
+    html,
+    body {
+        overflow-x: clip;
+    }
+
     body {
         @apply bg-bg font-sans text-base text-ink-soft antialiased;
     }
@@ -186,38 +192,32 @@
     }
 }
 
-/* Surtitre serif italique en dégradé primary → secondary. */
+/* Surtitre serif italique, couleur unie (aucun dégradé, voir 08). */
 @utility eyebrow {
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 500;
     font-size: 1rem;
     letter-spacing: 0;
-    background-image: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-600));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-primary-600);
 
     &:where(.dark, .dark *) {
-        background-image: linear-gradient(90deg, var(--color-primary-400), var(--color-secondary-400));
+        color: var(--color-primary-400);
     }
 }
 
-/* Bouton principal « brillant » (recette worksbuddy, en indigo profond). */
-@utility btn-gloss {
+/* Bouton principal en aplat indigo, anneau et ombre portée (aucun dégradé ni reflet). */
+@utility btn-primary {
     color: var(--color-white);
-    border: 1px solid var(--color-secondary-700);
-    background:
-        radial-gradient(64% 50% at 50% 100%, rgb(255 255 255 / 0.15), transparent),
-        linear-gradient(var(--color-secondary-800), var(--color-secondary-950));
+    background-color: var(--color-secondary-800);
+    border: 1px solid var(--color-secondary-900);
     box-shadow:
-        0 0 0 3px rgb(22 26 56 / 0.35),
-        0 8px 24px rgb(22 26 56 / 0.35),
-        inset 0 1px 4px 2px rgb(255 255 255 / 0.08);
-    transition: filter 150ms, transform 150ms;
+        0 0 0 3px rgb(22 26 56 / 0.18),
+        0 6px 16px rgb(22 26 56 / 0.22);
+    transition: background-color 150ms, transform 150ms;
 
     &:hover {
-        filter: brightness(1.15);
+        background-color: var(--color-secondary-900);
     }
 
     &:active {
@@ -225,33 +225,22 @@
     }
 
     &:where(.dark, .dark *) {
+        background-color: var(--color-secondary-500);
         border-color: var(--color-secondary-400);
-        background:
-            radial-gradient(64% 50% at 50% 100%, rgb(255 255 255 / 0.18), transparent),
-            linear-gradient(var(--color-secondary-500), var(--color-secondary-700));
-        box-shadow:
-            0 0 0 3px rgb(118 132 210 / 0.25),
-            0 8px 24px rgb(0 0 0 / 0.4),
-            inset 0 1px 4px 2px rgb(255 255 255 / 0.1);
+
+        &:hover {
+            background-color: var(--color-secondary-600);
+        }
     }
 }
 
-/* Trame de points discrète. */
+/* Trame de points discrète : petit SVG en fond, teinte de l'encre (claire ou sombre). */
 @utility dots {
-    background-image: radial-gradient(color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px);
+    background-image: url('/images/dots.svg');
     background-size: 18px 18px;
-}
-
-/* Halo coloré flou (2 par page maximum). */
-@utility halo {
-    position: absolute;
-    pointer-events: none;
-    border-radius: 9999px;
-    filter: blur(80px);
-    opacity: 0.3;
 
     &:where(.dark, .dark *) {
-        opacity: 0.4;
+        background-image: url('/images/dots-dark.svg');
     }
 }
 

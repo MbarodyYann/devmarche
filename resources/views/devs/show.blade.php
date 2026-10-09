@@ -1,11 +1,6 @@
 <x-layouts.app :title="$dev->name">
     @php($profile = $dev->profile)
 
-    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[480px] overflow-hidden" aria-hidden="true">
-        <div class="halo -left-24 top-16 size-72 bg-primary-200 dark:bg-primary-900"></div>
-        <div class="halo -right-24 top-8 size-72 bg-secondary-200 dark:bg-secondary-800"></div>
-    </div>
-
     {{-- En-tête : identité à gauche, compteur de cauris dans le cadre repères à droite --}}
     <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
         <x-card class="flex flex-col gap-6 sm:flex-row sm:items-start">
@@ -17,9 +12,11 @@
                         <h1 class="text-[40px] sm:text-5xl">{{ $dev->name }}</h1>
                     </div>
                     @can('update', $profile)
-                        <x-button :href="route('profile.edit', $dev)" variant="secondary" size="sm">
-                            <x-icon name="pencil" class="size-4" /> Modifier mon profil
-                        </x-button>
+                        <div class="hidden sm:block">
+                            <x-button :href="route('profile.edit', $dev)" variant="secondary" size="sm">
+                                <x-icon name="pencil" class="size-4" /> Modifier mon profil
+                            </x-button>
+                        </div>
                     @endcan
                 </div>
                 @if ($profile?->headline)
@@ -34,6 +31,14 @@
                         <x-new-badge />
                     @endif
                 </div>
+                @can('update', $profile)
+                    {{-- Sur mobile, le bouton passe sous les puces, en pleine largeur. --}}
+                    <div class="mt-5 sm:hidden">
+                        <x-button :href="route('profile.edit', $dev)" variant="secondary" class="w-full">
+                            <x-icon name="pencil" class="size-4" /> Modifier mon profil
+                        </x-button>
+                    </div>
+                @endcan
             </div>
         </x-card>
 

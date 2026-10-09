@@ -1,17 +1,11 @@
 <div>
-    {{-- Halos d'arrière-plan (2 maximum par page) --}}
-    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] overflow-hidden" aria-hidden="true">
-        <div class="halo -left-24 top-10 size-80 bg-primary-200 dark:bg-primary-900"></div>
-        <div class="halo -right-24 top-24 size-80 bg-secondary-200 dark:bg-secondary-800"></div>
-    </div>
-
-    <x-page-intro eyebrow="La communauté" title="Les devs d'Afrique francophone">
+    <x-page-intro eyebrow="La communauté" title="Les devs d'Afrique francophone" list>
         Trouvez le bon profil près de chez vous, par pays, ville ou compétence.
     </x-page-intro>
 
     {{-- Barre d'outils : compteur à gauche, disponibilité en contrôle segmenté à droite --}}
     @php($total = $this->devs->total())
-    <div class="mt-12 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
+    <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
         <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
             <span class="size-1.5 rounded-full bg-primary-500" aria-hidden="true"></span>
             <span wire:loading.remove>
@@ -23,15 +17,29 @@
     </div>
 
     {{-- Filtres --}}
-    <x-card padding="p-4 sm:p-5" class="mt-4">
+    {{-- Sur mobile, seuls la recherche et le bouton « Filtres » sont visibles : les premiers devs restent à l'écran. --}}
+    @php($activeFilters = collect([$country, $city, $skill])->filter()->count())
+    <x-card padding="p-3 sm:p-5" class="mt-4"
+            x-data="{ open: false, desktop: window.matchMedia('(min-width: 640px)').matches }"
+            x-init="window.matchMedia('(min-width: 640px)').addEventListener('change', e => desktop = e.matches)">
         <form wire:submit.prevent role="search" aria-label="Filtrer les devs" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:items-end">
-            <div class="sm:col-span-2 lg:col-span-1">
-                <label for="filtre-q" class="mb-1.5 block text-sm font-medium text-ink">Recherche</label>
-                <div class="relative">
-                    <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
-                    <x-input name="q" id="filtre-q" type="search" wire:model.live.debounce.400ms="q" placeholder="Nom, titre, techno…" class="pl-9" />
+            <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
+                <div class="min-w-0 flex-1">
+                    <label for="filtre-q" class="mb-1.5 block text-sm font-medium text-ink max-sm:sr-only">Recherche</label>
+                    <div class="relative">
+                        <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
+                        <x-input name="q" id="filtre-q" type="search" wire:model.live.debounce.400ms="q" placeholder="Nom, titre, techno…" class="pl-9" />
+                    </div>
                 </div>
+                <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()" aria-controls="filtres-avances"
+                        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field border border-line bg-bg-alt px-3 text-sm font-semibold text-ink shadow-soft sm:hidden">
+                    <x-icon name="filter" class="size-4" /> Filtres
+                    @if ($activeFilters)
+                        <span class="inline-flex size-5 items-center justify-center rounded-full bg-secondary-700 text-xs text-white dark:bg-secondary-400 dark:text-night">{{ $activeFilters }}</span>
+                    @endif
+                </button>
             </div>
+            <div id="filtres-avances" class="contents" x-show="open || desktop" x-cloak>
             <div>
                 <label for="filtre-pays" class="mb-1.5 block text-sm font-medium text-ink">Pays</label>
                 <x-select name="pays" id="filtre-pays" wire:model.live="country" :options="$this->countryOptions" placeholder="Tous les pays" />
@@ -49,6 +57,7 @@
                 <label for="filtre-competence" class="mb-1.5 block text-sm font-medium text-ink">Compétence</label>
                 <x-select name="competence" id="filtre-competence" wire:model.live="skill"
                           :options="$this->skillOptions->pluck('name', 'slug')->all()" placeholder="Toutes" />
+            </div>
             </div>
         </form>
         @if ($this->hasFilters)
@@ -117,7 +126,7 @@
             {{-- Mobile et tablette : cartes --}}
             <ul class="grid gap-4 sm:grid-cols-2 lg:hidden">
                 @foreach ($this->devs as $dev)
-                    <li wire:key="dev-card-{{ $dev->id }}"><x-dev-card :dev="$dev" /></li>
+                    <li wire:key="dev-card-{{ $dev->id }}" class="min-w-0"><x-dev-card :dev="$dev" /></li>
                 @endforeach
             </ul>
 

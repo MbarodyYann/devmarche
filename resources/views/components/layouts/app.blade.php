@@ -20,8 +20,26 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ? $title.' · ' : '' }}DevMarché</title>
     <meta name="description" content="La plateforme d'échange par et pour les développeurs d'Afrique francophone.">
-    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0F1126" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#2F3A8F">
+
+    {{-- Icônes (générées par php artisan brand:export puis scripts/brand-png.sh) --}}
+    <link rel="icon" href="/favicon.ico" sizes="32x32">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    {{-- Partage (WhatsApp, réseaux) : valeurs par défaut, remplaçables par page --}}
+    <meta property="og:site_name" content="DevMarché">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $title ? $title.' · ' : '' }}DevMarché">
+    <meta property="og:description" content="{{ $description ?? 'La plateforme d\'échange par et pour les développeurs d\'Afrique francophone.' }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="{{ $ogImage ?? asset('images/og-default.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="DevMarché, par et pour les devs d'Afrique francophone">
+    <meta name="twitter:card" content="summary_large_image">
 
     {{-- Anti-flash : applique le thème avant le premier rendu. --}}
     <script>
@@ -109,14 +127,20 @@
                         </div>
                     </div>
                 @else
-                    <x-button :href="route('login')" variant="secondary" size="sm" class="hidden md:inline-flex">Connexion</x-button>
+                    <div class="hidden md:block">
+                        <x-button :href="route('login')" variant="secondary" size="sm">Connexion</x-button>
+                    </div>
                 @endauth
 
                 @if ($publishUrl)
-                    <x-button :href="$publishUrl" size="sm" class="hidden md:inline-flex">Publier une mission</x-button>
+                    <div class="hidden md:block">
+                        <x-button :href="$publishUrl" size="sm">Publier une mission</x-button>
+                    </div>
                 @else
                     @guest
-                        <x-button :href="route('register')" size="sm" class="hidden md:inline-flex">Créer un compte</x-button>
+                        <div class="hidden md:block">
+                            <x-button :href="route('register')" size="sm">Créer un compte</x-button>
+                        </div>
                     @endguest
                 @endif
             </div>
@@ -142,7 +166,7 @@
             <div class="defile flex w-max gap-12 whitespace-nowrap font-serif text-5xl font-medium tracking-tight text-ink/10 sm:text-7xl dark:text-ink/15">
                 @foreach (range(1, 2) as $copy)
                     <span>Du travail, de l'aide, des pairs.</span>
-                    <span class="bg-linear-to-r from-primary-500 to-secondary-600 bg-clip-text italic text-transparent opacity-60 dark:from-primary-400 dark:to-secondary-400">Par et pour les devs d'Afrique.</span>
+                    <span class="italic text-primary-500/40 dark:text-primary-400/40">Par et pour les devs d'Afrique.</span>
                 @endforeach
             </div>
         </div>
@@ -196,7 +220,7 @@
         </ul>
 
         @if ($publishUrl)
-            <a href="{{ $publishUrl }}" class="btn-gloss absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
+            <a href="{{ $publishUrl }}" class="btn-primary absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
                 <x-icon name="plus" class="size-6" />
             </a>
         @endif
