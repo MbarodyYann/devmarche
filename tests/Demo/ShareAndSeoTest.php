@@ -105,3 +105,15 @@ test('/robots.txt pointe vers le plan du site et exclut les formulaires privés'
         ->assertSee('Disallow: /demo/')
         ->assertSee('Disallow: /missions/publier');
 });
+
+test('« Copier le lien » reçoit l\'URL par data-url (aucune directive Blade non compilée dans l\'attribut)', function () {
+    $url = route('questions.show', Question::first());
+    $html = $this->get($url)->getContent();
+
+    preg_match('/<button[^>]*data-share-copy[^>]*>/s', $html, $button);
+
+    expect($button[0] ?? '')->toContain('data-url="'.$url.'"')
+        ->toContain('$el.dataset.url')
+        ->not->toContain('@js')
+        ->not->toContain('{{');
+});

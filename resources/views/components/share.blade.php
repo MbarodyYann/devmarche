@@ -10,12 +10,14 @@
     <x-button :href="$whatsapp" variant="secondary" size="sm" target="_blank" rel="noopener noreferrer" data-share-whatsapp>
         <x-icon name="message" class="size-4" /> Partager sur WhatsApp
     </x-button>
-    <x-button type="button" variant="secondary" size="sm" x-cloak data-share-copy
+    {{-- L'URL passe par data-url : les directives Blade (@js) ne sont pas compilées dans les attributs d'un composant. --}}
+    <x-button type="button" variant="secondary" size="sm" x-cloak data-share-copy :data-url="$url"
               x-data="{ copied: false }"
               x-on:click="
+                  const url = $el.dataset.url;
                   const done = () => { copied = true; setTimeout(() => copied = false, 2000) };
-                  if (navigator.clipboard) { navigator.clipboard.writeText(@js($url)).then(done) }
-                  else { const field = Object.assign(document.createElement('textarea'), { value: @js($url) }); document.body.append(field); field.select(); document.execCommand('copy'); field.remove(); done() }
+                  const fallback = () => { const field = Object.assign(document.createElement('textarea'), { value: url }); document.body.append(field); field.select(); document.execCommand('copy'); field.remove(); done() };
+                  navigator.clipboard ? navigator.clipboard.writeText(url).then(done, fallback) : fallback()
               ">
         <x-icon name="copy" class="size-4" />
         <span aria-live="polite" x-text="copied ? 'Lien copié' : 'Copier le lien'">Copier le lien</span>
