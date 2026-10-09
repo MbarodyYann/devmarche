@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Database\Seeders\DevSeeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /*
@@ -62,10 +63,12 @@ test('la dernière activité est variée et n\'est jamais antérieure au dernier
     $days = User::all()->map(fn (User $u) => (int) $u->last_seen_at->copy()->startOfDay()->diffInDays(now()->startOfDay()));
     $share = fn (callable $filter) => $days->filter($filter)->count() / $days->count();
 
-    // Cibles : 40 % aujourd'hui, 20 % hier, 40 % plus ancien (la démo ne couvre que les jours depuis le lancement).
-    expect($share(fn (int $d) => $d === 0))->toBeLessThanOrEqual(0.45)
+    // Cibles : 40 % aujourd'hui, 20 % hier, 40 % plus ancien. Les premiers jours après le lancement, la démo
+    // couvre moins de 20 jours : les contenus (et donc l'activité) sont plus resserrés, d'où une marge.
+    $windowDays = Carbon::parse(config('devmarche.launched_at'))->max(now()->subDays(30))->diffInDays(now());
+    expect($share(fn (int $d) => $d === 0))->toBeLessThanOrEqual($windowDays < 20 ? 0.55 : 0.45)
         ->and($share(fn (int $d) => $d === 1))->toBeGreaterThanOrEqual(0.15)
-        ->and($share(fn (int $d) => $d >= 2))->toBeGreaterThanOrEqual(0.3);
+        ->and($share(fn (int $d) => $d >= 2))->toBeGreaterThanOrEqual($windowDays < 20 ? 0.15 : 0.3);
 
     foreach ([DevSeeder::DEMO_DEV_EMAIL, DevSeeder::DEMO_STARTUP_EMAIL] as $email) {
         expect(User::where('email', $email)->sole()->activityLabel())->toBe('Actif aujourd\'hui');

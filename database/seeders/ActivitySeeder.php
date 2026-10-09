@@ -67,6 +67,13 @@ class ActivitySeeder extends Seeder
 
         foreach (MissionSeeder::missions() as $mission) {
             $publishedAt = $this->missionAt($mission['days'], $joined[$mission['client']]);
+
+            // Mission terminée : le client revient la noter après la fin (estimée d'après le délai proposé).
+            if ($mission['status'] === 'completed') {
+                $after($mission['client'], $publishedAt->copy()->min($this->latest()->subDays((int) round((MissionSeeder::deliveryDays($mission['budget'], 3) + 4) * $this->durationScale())))
+                    ->addDays((int) round(MissionSeeder::deliveryDays($mission['budget'], 0) * $this->durationScale()) + 1)
+                    ->min($this->latest()));
+            }
             foreach (array_filter($mission['applicants'] ?? [], fn (string $name) => $this->requiredApplication($mission, $name)) as $name) {
                 $after($name, $publishedAt->max($joined[$name]->copy()->addHour()));
             }
@@ -121,5 +128,20 @@ class ActivitySeeder extends Seeder
                 (select max(created_at) from reviews where reviewer_id = users.id)
             ))
             SQL, [Carbon::now()->subMinutes(5)->toDateTimeString()]);
+
+        // Notifications : lues si elles datent de plus d'un jour avant la dernière visite ; les plus
+        // récentes restent non lues (la cloche montre un compteur crédible).
+        DB::update(<<<'SQL'
+            update notifications set read_at = notifications.created_at + interval '2 hours'
+            from users
+            where users.id = notifications.notifiable_id
+              and notifications.notifiable_type = 'user'
+              and notifications.created_at < users.last_seen_at - interval '1 day'
+            SQL);
+
+        // Comptes de démo : leurs 2 notifications les plus récentes restent non lues, pour montrer la cloche.
+        foreach (User::whereIn('email', [DevSeeder::DEMO_DEV_EMAIL, DevSeeder::DEMO_STARTUP_EMAIL])->get() as $persona) {
+            $persona->notifications()->latest()->limit(2)->get()->each->markAsUnread();
+        }
     }
 }

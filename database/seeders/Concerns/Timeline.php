@@ -63,6 +63,15 @@ trait Timeline
         return $this->clamp($from->copy()->addSeconds((int) round($span * $share)));
     }
 
+    /**
+     * Les premiers jours après le lancement, la période de démo est plus courte que les 30 jours habituels :
+     * les durées de mission sont ramenées à l'échelle, pour que les missions terminées le soient vraiment.
+     */
+    protected function durationScale(): float
+    {
+        return min(1.0, $this->launch()->diffInHours($this->latest()) / (24 * (int) config('devmarche.demo_window_days')));
+    }
+
     /** Publication d'une question « vieille de $days jours » (sur 95), jamais avant l'inscription de son auteur. */
     protected function questionAt(int $days, Carbon $authorJoined): Carbon
     {

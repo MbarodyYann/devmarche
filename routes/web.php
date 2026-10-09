@@ -7,6 +7,7 @@ use App\Http\Controllers\MissionApplicationController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\MissionReviewController;
 use App\Http\Controllers\MissionStatusController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SitemapController;
@@ -69,4 +70,13 @@ Route::middleware('auth')->group(function () {
         ->middleware('throttle:answers')
         ->name('answers.store');
     Route::post('/questions/{question}/reponses/{answer}/accepter', [AnswerController::class, 'accept'])->name('answers.accept');
+});
+
+// Notifications
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/lire', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::get('/notifications/{notification}', [NotificationController::class, 'open'])
+        ->whereUuid('notification')
+        ->name('notifications.open');
 });

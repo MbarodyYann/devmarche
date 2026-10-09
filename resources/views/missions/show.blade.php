@@ -70,7 +70,7 @@
                     @if ($applications->whereNotNull('delivery_days')->isNotEmpty())
                         <p class="mt-1 text-sm text-ink-muted">Délai moyen proposé : <strong class="font-semibold text-ink">{{ (int) round($applications->avg('delivery_days')) }} jours</strong></p>
                     @endif
-                    <p class="mt-2 text-ink-soft">Comparez les prix, les messages et les cauris. Quand vous retenez un dev, les autres candidatures passent automatiquement en « Non retenue ».</p>
+                    <p class="mt-2 text-ink-soft">Comparez les prix, les messages et les cauris. Quand vous retenez un dev, les autres candidats sont prévenus.</p>
 
                     @can('complete', $mission)
                         <div class="mt-5 flex flex-col gap-3 rounded-2xl bg-bg-alt p-4 ring-1 ring-line sm:flex-row sm:items-center sm:justify-between">
@@ -193,7 +193,7 @@
                 <x-card padding="p-6" id="postuler" class="scroll-mt-24">
                     @if ($myApplication)
                         <h2 class="text-2xl">Votre candidature</h2>
-                        <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA{{ $myApplication->delivery_days ? ', livrée en '.$myApplication->delivery_days.' jours' : '' }}. Le client choisira parmi les candidats ; vous verrez le statut ici.</p>
+                        <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA{{ $myApplication->delivery_days ? ', livrée en '.$myApplication->delivery_days.' jours' : '' }}. Le client choisira parmi les candidats ; vous serez prévenu de sa décision.</p>
                         <x-chip :tone="$myApplication->status->tone()" class="mt-4">{{ $myApplication->status->label() }}</x-chip>
                     @elseif (! $mission->isOpen())
                         <h2 class="text-2xl">Candidatures closes</h2>

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Mission;
 use App\Models\Review;
 use App\Models\User;
+use App\Notifications\ReviewReceived;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -29,9 +30,13 @@ class ReviewService
             $review->reviewee()->associate($mission->freelancer_id);
             $review->save();
 
+            $freelancer = $mission->freelancer()->firstOrFail();
             if ($bonus = self::BONUS[$review->rating] ?? 0) {
-                $this->reputation->award($mission->freelancer()->firstOrFail(), $bonus, 'review_bonus', $review);
+                $this->reputation->award($freelancer, $bonus, 'review_bonus', $review);
             }
+
+            $review->setRelation('reviewer', $client)->setRelation('mission', $mission);
+            $freelancer->notify(new ReviewReceived($review));
 
             return $review;
         });

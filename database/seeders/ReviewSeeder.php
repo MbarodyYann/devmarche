@@ -10,7 +10,7 @@ use Illuminate\Database\Seeder;
 
 /**
  * Avis des clients sur les missions terminées : écrits à la main, variés, datés quelques heures
- * après la fin de la mission et avant la dernière activité du client.
+ * après la fin de la mission et avant la dernière activité du client (prévue en conséquence par ActivitySeeder::plan).
  */
 class ReviewSeeder extends Seeder
 {
@@ -52,7 +52,7 @@ class ReviewSeeder extends Seeder
             ->get();
 
         foreach ($missions as $i => $mission) {
-            [$rating, $communication, $quality, $timeliness, $comment] = self::REVIEWS[(crc32($mission->title) + $i) % count(self::REVIEWS)];
+            [$rating, $communication, $quality, $timeliness, $comment] = self::REVIEWS[$i % count(self::REVIEWS)];
 
             // Quelques heures après la fin, et avant la dernière activité prévue du client.
             $reviewedAt = $this->byActor(

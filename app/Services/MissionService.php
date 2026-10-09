@@ -8,7 +8,11 @@ use App\Models\Application;
 use App\Models\Mission;
 use App\Models\Skill;
 use App\Models\User;
+use App\Notifications\ApplicationDecided;
+use App\Notifications\ApplicationReceived;
+use App\Notifications\MissionCompleted;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 /**
@@ -36,7 +40,25 @@ class MissionService
     }
 
     /**
-     * Retient un candidat : la mission passe en cours, les autres candidatures sont refusées.
+     * Candidature d'un dev ; le client est prévenu.
+     *
+     * @param  array{message: string, proposed_fcfa: int, delivery_days?: int|null}  $data
+     */
+    public function apply(Mission $mission, User $dev, array $data): Application
+    {
+        $application = $mission->applications()->make($data);
+        $application->user()->associate($dev);
+        $application->save();
+
+        $application->setRelation('mission', $mission);
+        $mission->client()->firstOrFail()->notify(new ApplicationReceived($application));
+
+        return $application;
+    }
+
+    /**
+     * Retient un candidat : la mission passe en cours, les autres candidatures sont refusées,
+     * et tous les candidats sont prévenus.
      */
     public function accept(Mission $mission, Application $application): void
     {
@@ -52,10 +74,14 @@ class MissionService
 
             $application->forceFill(['status' => ApplicationStatus::Accepted])->save();
 
-            $mission->applications()
+            $others = $mission->applications()
                 ->whereKeyNot($application->getKey())
-                ->where('status', ApplicationStatus::Pending)
-                ->update(['status' => ApplicationStatus::Rejected, 'updated_at' => now()]);
+                ->where('status', ApplicationStatus::Pending);
+            $rejected = User::whereIn('id', (clone $others)->select('user_id'))->get();
+            $others->update(['status' => ApplicationStatus::Rejected, 'updated_at' => now()]);
+
+            User::findOrFail($application->user_id)->notify(new ApplicationDecided($mission, accepted: true));
+            Notification::send($rejected, new ApplicationDecided($mission, accepted: false));
         });
     }
 
@@ -70,12 +96,9 @@ class MissionService
                 'completed_at' => now(),
             ])->save();
 
-            $this->reputation->award(
-                $mission->freelancer()->firstOrFail(),
-                ReputationService::MISSION_COMPLETED,
-                'mission_completed',
-                $mission,
-            );
+            $freelancer = $mission->freelancer()->firstOrFail();
+            $this->reputation->award($freelancer, ReputationService::MISSION_COMPLETED, 'mission_completed', $mission);
+            $freelancer->notify(new MissionCompleted($mission));
         });
     }
 
@@ -84,9 +107,11 @@ class MissionService
         DB::transaction(function () use ($mission) {
             $mission->forceFill(['status' => MissionStatus::Cancelled])->save();
 
-            $mission->applications()
-                ->where('status', ApplicationStatus::Pending)
-                ->update(['status' => ApplicationStatus::Rejected, 'updated_at' => now()]);
+            $pending = $mission->applications()->where('status', ApplicationStatus::Pending);
+            $applicants = User::whereIn('id', (clone $pending)->select('user_id'))->get();
+            $pending->update(['status' => ApplicationStatus::Rejected, 'updated_at' => now()]);
+
+            Notification::send($applicants, new ApplicationDecided($mission, accepted: false, cancelled: true));
         });
     }
 }

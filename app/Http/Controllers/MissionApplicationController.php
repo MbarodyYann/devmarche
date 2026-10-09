@@ -11,15 +11,13 @@ use Illuminate\Support\Facades\Gate;
 
 class MissionApplicationController extends Controller
 {
-    public function store(StoreApplicationRequest $request, Mission $mission): RedirectResponse
+    public function store(StoreApplicationRequest $request, Mission $mission, MissionService $missions): RedirectResponse
     {
-        $application = $mission->applications()->make($request->validated());
-        $application->user()->associate($request->user());
-        $application->save();
+        $missions->apply($mission, $request->user(), $request->validated());
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Candidature envoyée. Le client choisira parmi les candidats ; vous verrez le statut ici.');
+            ->with('status', 'Candidature envoyée. Le client choisira parmi les candidats ; vous serez prévenu de sa décision.');
     }
 
     public function accept(Mission $mission, Application $application, MissionService $missions): RedirectResponse

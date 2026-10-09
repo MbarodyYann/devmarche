@@ -6,6 +6,7 @@ use App\Models\Answer;
 use App\Models\Mission;
 use App\Models\Question;
 use App\Models\Review;
+use App\Models\User;
 use App\Policies\VotePolicy;
 use App\Services\MarkdownRenderer;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -43,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
             'answer' => Answer::class,
             'mission' => Mission::class,
             'review' => Review::class,
+            'user' => User::class,
         ]);
 
         // Les identifiants sont numériques : évite une erreur de cast PostgreSQL sur /devs/abc.

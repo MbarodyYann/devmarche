@@ -6,6 +6,8 @@ use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Skill;
 use App\Models\User;
+use App\Notifications\AnswerAccepted;
+use App\Notifications\AnswerPosted;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -42,6 +44,11 @@ class AnswerService
 
             $question->newQuery()->whereKey($question->getKey())->increment('answers_count');
 
+            if ($question->user_id !== $user->id) {
+                $answer->setRelation('user', $user)->setRelation('question', $question);
+                $question->user()->firstOrFail()->notify(new AnswerPosted($answer));
+            }
+
             return $answer;
         });
     }
@@ -66,6 +73,11 @@ class AnswerService
 
             if ($accepting) {
                 $this->reward($question, $answer, self::ANSWER_ACCEPTED, 'answer_accepted');
+
+                if ($answer->user_id !== $question->user_id) {
+                    $answer->setRelation('question', $question);
+                    $answer->user()->firstOrFail()->notify(new AnswerAccepted($answer));
+                }
             }
 
             return $accepting;

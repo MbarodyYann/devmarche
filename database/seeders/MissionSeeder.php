@@ -42,6 +42,11 @@ class MissionSeeder extends Seeder
                 // Publication : plus la mission est « ancienne », plus elle est proche du lancement,
                 // et jamais avant l'inscription du client.
                 $createdAt = $this->byActor($client, $this->missionAt($data['days'], $client->created_at), $client->created_at->copy()->addHours(3));
+                if ($data['status'] === 'completed') {
+                    // Une mission terminée est publiée assez tôt pour que son délai tienne avant « maintenant ».
+                    $createdAt = $createdAt->min($this->latest()->subDays((int) round((self::deliveryDays($data['budget'], 3) + 4) * $this->durationScale())))
+                        ->max($client->created_at->copy()->addHours(3));
+                }
 
                 $mission = $this->travelTo($createdAt, fn () => $this->missions->publish($client, [
                     'title' => $data['title'],
@@ -64,26 +69,27 @@ class MissionSeeder extends Seeder
                         $this->applicationAt($createdAt, $i, $applicant->created_at),
                         $createdAt->copy()->addMinutes(20)->max($applicant->created_at->copy()->addHour()),
                     );
+                    // Une mission déjà attribuée a reçu ses candidatures dans les premiers jours : un candidat
+                    // facultatif arrivé bien plus tard (inscrit après coup) n'a pas pu postuler.
+                    if (in_array($data['status'], ['assigned', 'completed'], true)
+                        && ! $this->requiredApplication($data, $name)
+                        && $appliedAt->gt($createdAt->copy()->addDays(2))) {
+                        continue;
+                    }
                     $lastApplicationAt = $lastApplicationAt->max($appliedAt);
 
-                    $applications[$name] = $this->travelTo($appliedAt, function () use ($mission, $data, $i, $applicant) {
-                        $application = $mission->applications()->make([
-                            'message' => $this->message($data, $i),
-                            'proposed_fcfa' => (int) round($data['budget'] * [1, 0.9, 1.1, 0.95, 1.05][$i % 5] / 1000) * 1000,
-                            'delivery_days' => $this->deliveryDays($data['budget'], $i),
-                        ]);
-                        $application->user()->associate($applicant);
-                        $application->save();
-
-                        return $application;
-                    });
+                    $applications[$name] = $this->travelTo($appliedAt, fn () => $this->missions->apply($mission, $applicant, [
+                        'message' => $this->message($data, $i),
+                        'proposed_fcfa' => (int) round($data['budget'] * [1, 0.9, 1.1, 0.95, 1.05][$i % 5] / 1000) * 1000,
+                        'delivery_days' => self::deliveryDays($data['budget'], $i),
+                    ]));
                 }
 
                 // Attribution, puis fin de mission : toujours après les candidatures, jamais dans le futur.
                 $assignedAt = $this->between($lastApplicationAt, 0.3);
                 match ($data['status']) {
                     'assigned' => $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $applications[$data['freelancer']])),
-                    'completed' => $this->complete($mission, $applications[$data['freelancer']], $assignedAt),
+                    'completed' => $this->complete($mission, $applications[$data['freelancer']], $lastApplicationAt),
                     'cancelled' => $this->travelTo($this->between($lastApplicationAt, 0.4), fn () => $this->missions->cancel($mission)),
                     default => null,
                 };
@@ -91,14 +97,25 @@ class MissionSeeder extends Seeder
         });
     }
 
-    private function complete(Mission $mission, Application $application, Carbon $assignedAt): void
+    /**
+     * Mission terminée : le client retient son dev quelques heures après les candidatures, puis la mission
+     * dure à peu près le délai proposé dans la candidature retenue (à un ou deux jours près), sans dépasser maintenant.
+     */
+    private function complete(Mission $mission, Application $application, Carbon $lastApplicationAt): void
     {
+        $assignedAt = $this->clamp($lastApplicationAt->copy()->addHours(6 + $mission->id % 30));
+        $days = (int) round(max(5, $application->delivery_days + [-1, 0, 1, 2, -2][$mission->id % 5]) * $this->durationScale());
+        // Quand la période de démo est courte (les premiers jours après le lancement), les fins de mission
+        // s'étalent sur les derniers jours au lieu de toutes tomber sur « maintenant ».
+        $latestEnd = $this->latest()->subHours(($mission->id % 6) * 19);
+        $completedAt = $this->clamp($assignedAt->copy()->addDays($days)->setTime(9 + $mission->id % 9, ($mission->id * 13) % 60)->min($latestEnd));
+
         $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $application));
-        $this->travelTo($this->between($assignedAt, 0.6), fn () => $this->missions->complete($mission->refresh()));
+        $this->travelTo($this->clamp($completedAt->max($assignedAt->copy()->addDay())), fn () => $this->missions->complete($mission->refresh()));
     }
 
     /** Délai proposé crédible, selon l'ampleur de la mission. */
-    private function deliveryDays(int $budget, int $i): int
+    public static function deliveryDays(int $budget, int $i): int
     {
         $base = match (true) {
             $budget <= 100_000 => 5,
@@ -322,7 +339,7 @@ class MissionSeeder extends Seeder
             [
                 'client' => 'Aya Koné', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 85,
                 'title' => 'Mise en place de l\'intégration continue pour une appli mobile',
-                'budget' => 280000, 'country' => 'CI', 'skills' => ['DevOps', 'Docker'],
+                'budget' => 220000, 'country' => 'CI', 'skills' => ['DevOps', 'Docker'],
                 'description' => 'Tests automatiques à chaque envoi de code, construction des versions de test et publication sur le store en un clic.',
                 'applicants' => ['Jean-Marc N\'Guessan', 'Yawo Amegbor'],
             ],
@@ -336,14 +353,14 @@ class MissionSeeder extends Seeder
             [
                 'client' => 'Mathieu Ahouansou', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 75,
                 'title' => 'Audit de sécurité d\'un back-office d\'ONG',
-                'budget' => 320000, 'country' => 'BJ', 'skills' => ['Symfony', 'DevOps'],
+                'budget' => 180000, 'country' => 'BJ', 'skills' => ['Symfony', 'DevOps'],
                 'description' => "Revue des droits d'accès, des mots de passe, des sauvegardes et des dépendances. Correctifs prioritaires appliqués avec l'équipe.",
                 'applicants' => ['Jean-Marc N\'Guessan', 'Rodrigue Hounsou'],
             ],
             [
                 'client' => 'Aya Koné', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 70,
                 'title' => 'Migration d\'une base MySQL vers PostgreSQL sans interruption',
-                'budget' => 380000, 'country' => null, 'skills' => ['PostgreSQL', 'Docker'],
+                'budget' => 600000, 'country' => null, 'skills' => ['PostgreSQL', 'Docker'],
                 'description' => "Migration d'une base de 40 Go vers PostgreSQL, avec réplication et bascule de nuit en moins de 10 minutes d'interruption.",
                 'applicants' => ['Jean-Marc N\'Guessan'],
             ],

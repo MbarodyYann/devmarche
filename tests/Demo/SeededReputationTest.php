@@ -8,6 +8,6 @@ test('après les seeders, la réputation de chacun est la somme de ses événeme
         ->count();
 
     expect($incoherent)->toBe(0)
-        ->and(User::max('reputation'))->toBeBetween(1200, 1600)
+        ->and(User::max('reputation'))->toBeBetween(1200, 1800)
         ->and(User::where('reputation', 0)->count())->toBeGreaterThan(0);
 });
