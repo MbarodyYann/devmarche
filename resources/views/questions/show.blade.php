@@ -38,6 +38,7 @@
                         </a>
                     </div>
                     <x-share class="mt-5" :title="$question->title" :url="route('questions.show', $question)" />
+                    <x-report-button type="question" :content="$question" :owner="$question->user_id" class="mt-2" />
                 </div>
             </div>
         </x-card>
@@ -85,6 +86,7 @@
                                                 </form>
                                             @endcan
                                         </div>
+                                        <x-report-button type="answer" :content="$answer" :owner="$answer->user_id" class="mt-2" />
                                     </div>
                                 </div>
                             </x-card>

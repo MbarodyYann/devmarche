@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MissionStatus;
+use App\Models\Concerns\Moderatable;
 use App\Models\Concerns\RendersMarkdown;
 use App\Support\Countries;
 use Database\Factories\MissionFactory;
@@ -18,6 +19,8 @@ class Mission extends Model
 {
     /** @use HasFactory<MissionFactory> */
     use HasFactory, RendersMarkdown;
+
+    use Moderatable;
 
     /** Budget minimal accepté, en FCFA. */
     public const MIN_BUDGET = 5000;

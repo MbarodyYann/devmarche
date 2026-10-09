@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             MissionSeeder::class,
             QuestionSeeder::class,
             ReviewSeeder::class,
+            ModerationSeeder::class,
             ActivitySeeder::class,
         ]);
     }

@@ -23,6 +23,10 @@ class DemoLoginController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        if ($user->is_admin) {
+            return redirect()->route('moderation.index');
+        }
+
         // Chacun arrive là où la démo commence : Aïssatou sur sa mission ouverte (elle compare
         // les candidats), Moussa sur les missions qui correspondent à ses compétences.
         $mission = $user->missions()->where('status', MissionStatus::Open)->has('applications')->latest()->first();

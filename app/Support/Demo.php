@@ -14,6 +14,8 @@ class Demo
 
     public const DEV_EMAIL = 'moussa@demo.devmarche.test';
 
+    public const ADMIN_EMAIL = 'moderation@demo.devmarche.test';
+
     /**
      * Personas, dans l'ordre d'affichage.
      *
@@ -22,6 +24,7 @@ class Demo
     public const PERSONAS = [
         'aissatou' => ['email' => self::STARTUP_EMAIL, 'name' => 'Aïssatou', 'label' => 'Entrer comme Aïssatou (startup, Dakar)'],
         'moussa' => ['email' => self::DEV_EMAIL, 'name' => 'Moussa', 'label' => 'Entrer comme Moussa (dev, Thiès)'],
+        'moderation' => ['email' => self::ADMIN_EMAIL, 'name' => 'modération', 'label' => 'Entrer comme modérateur'],
     ];
 
     public static function enabled(): bool

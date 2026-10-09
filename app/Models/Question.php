@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Moderatable;
 use App\Models\Concerns\RendersMarkdown;
 use Database\Factories\QuestionFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,6 +17,8 @@ class Question extends Model
 {
     /** @use HasFactory<QuestionFactory> */
     use HasFactory, RendersMarkdown;
+
+    use Moderatable;
 
     public const MAX_TAGS = 5;
 

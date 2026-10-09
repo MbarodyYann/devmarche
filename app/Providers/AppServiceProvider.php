@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Answer;
 use App\Models\Mission;
 use App\Models\Question;
+use App\Models\Report;
 use App\Models\Review;
 use App\Models\User;
 use App\Policies\VotePolicy;
@@ -45,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
             'mission' => Mission::class,
             'review' => Review::class,
             'user' => User::class,
+            'report' => Report::class,
         ]);
 
         // Les identifiants sont numériques : évite une erreur de cast PostgreSQL sur /devs/abc.
@@ -57,12 +59,14 @@ class AppServiceProvider extends ServiceProvider
 
         // Le vote porte sur une question OU une réponse : on déclare la policy explicitement.
         Gate::define('vote', [VotePolicy::class, 'vote']);
+        Gate::define('moderate', fn (User $user) => $user->is_admin);
 
         // Limites anti-abus : publication de missions et candidatures, par membre.
         RateLimiter::for('missions', fn (Request $request) => Limit::perHour(10)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('questions', fn (Request $request) => Limit::perHour(10)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('answers', fn (Request $request) => Limit::perHour(30)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('votes', fn (Request $request) => Limit::perMinute(30)->by($request->user()?->id ?: $request->ip()));
+        RateLimiter::for('reports', fn (Request $request) => Limit::perHour(20)->by($request->user()?->id ?: $request->ip()));
         RateLimiter::for('demo', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
         RateLimiter::for('applications', fn (Request $request) => Limit::perHour(30)->by($request->user()?->id ?: $request->ip()));
 

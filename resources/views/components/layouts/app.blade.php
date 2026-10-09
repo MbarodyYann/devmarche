@@ -177,12 +177,19 @@
                         <div x-cloak x-show="open" x-transition.opacity
                              class="nav-menu absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
                             <p class="truncate px-3 py-2 text-sm text-ink-muted">{{ $me->name }}</p>
-                            <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
-                                <x-icon name="user" class="size-4" /> Mon profil
-                            </a>
-                            <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
-                                <x-icon name="pencil" class="size-4" /> Modifier mon profil
-                            </a>
+                            @if ($me->profile)
+                                <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
+                                    <x-icon name="user" class="size-4" /> Mon profil
+                                </a>
+                                <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
+                                    <x-icon name="pencil" class="size-4" /> Modifier mon profil
+                                </a>
+                            @endif
+                            @can('moderate')
+                                <a href="{{ route('moderation.index') }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
+                                    <x-icon name="alert" class="size-4" /> Modération
+                                </a>
+                            @endcan
                             <form method="post" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit" class="flex w-full items-center gap-2 rounded-btn px-3 py-2 text-left font-medium text-ink hover:bg-bg-alt">
@@ -314,12 +321,19 @@
                                 <span class="inline-flex min-w-5 items-center justify-center rounded-full bg-secondary-400 px-1.5 text-xs font-semibold text-primary-950">{{ $unreadCount }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2.5 font-medium text-ink hover:bg-bg-alt">
-                            <x-icon name="user" class="size-4" /> Mon profil
-                        </a>
-                        <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2.5 font-medium text-ink hover:bg-bg-alt">
-                            <x-icon name="pencil" class="size-4" /> Modifier mon profil
-                        </a>
+                        @if ($me->profile)
+                            <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2.5 font-medium text-ink hover:bg-bg-alt">
+                                <x-icon name="user" class="size-4" /> Mon profil
+                            </a>
+                            <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2.5 font-medium text-ink hover:bg-bg-alt">
+                                <x-icon name="pencil" class="size-4" /> Modifier mon profil
+                            </a>
+                        @endif
+                        @can('moderate')
+                            <a href="{{ route('moderation.index') }}" class="flex items-center gap-2 rounded-btn px-3 py-2.5 font-medium text-ink hover:bg-bg-alt">
+                                <x-icon name="alert" class="size-4" /> Modération
+                            </a>
+                        @endcan
                         <form method="post" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="flex w-full items-center gap-2 rounded-btn px-3 py-2.5 text-left font-medium text-ink hover:bg-bg-alt">

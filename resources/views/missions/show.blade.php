@@ -36,6 +36,7 @@
                     </div>
                 @endif
                 <x-share class="mt-6 border-t border-line pt-5" :title="$mission->title.' · '.App\Support\Money::fcfa($mission->budget_fcfa).' FCFA'" :url="route('missions.show', $mission)" />
+                <x-report-button type="mission" :content="$mission" :owner="$mission->client_id" class="mt-2" />
             </x-card>
 
             {{-- Avis : le client note le freelance une fois la mission terminée ; l'avis est ensuite public. --}}

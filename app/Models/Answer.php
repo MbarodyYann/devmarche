@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Moderatable;
 use App\Models\Concerns\RendersMarkdown;
 use Database\Factories\AnswerFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,8 @@ class Answer extends Model
 {
     /** @use HasFactory<AnswerFactory> */
     use HasFactory, RendersMarkdown;
+
+    use Moderatable;
 
     /**
      * @var list<string>

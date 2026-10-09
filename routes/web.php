@@ -7,11 +7,13 @@ use App\Http\Controllers\MissionApplicationController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\MissionReviewController;
 use App\Http\Controllers\MissionStatusController;
+use App\Http\Controllers\ModerationController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PulseController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SitemapController;
 use App\Livewire\Devs\Directory;
 use App\Livewire\Missions\Index as MissionIndex;
@@ -87,4 +89,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications/{notification}', [NotificationController::class, 'open'])
         ->whereUuid('notification')
         ->name('notifications.open');
+});
+
+// Signalement (membres) et modération (is_admin)
+Route::middleware('auth')->group(function () {
+    Route::post('/signalements', [ReportController::class, 'store'])->middleware('throttle:reports')->name('reports.store');
+});
+
+Route::middleware(['auth', 'can:moderate'])->prefix('moderation')->group(function () {
+    Route::get('/', [ModerationController::class, 'index'])->name('moderation.index');
+    Route::post('/{type}/{id}/masquer', [ModerationController::class, 'hide'])->whereIn('type', ['mission', 'question', 'answer'])->whereNumber('id')->name('moderation.hide');
+    Route::post('/{type}/{id}/retablir', [ModerationController::class, 'restore'])->whereIn('type', ['mission', 'question', 'answer'])->whereNumber('id')->name('moderation.restore');
 });

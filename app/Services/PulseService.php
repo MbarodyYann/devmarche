@@ -28,7 +28,7 @@ class PulseService
             'medianBySkill' => $this->medianBySkill(),
             'resolvedThisWeek' => $this->resolvedThisWeek(),
             'firstApplicationHours' => $this->firstApplicationHours(),
-            'missionsLast30' => DB::table('missions')->where('created_at', '>=', now()->subDays(30))->count(),
+            'missionsLast30' => DB::table('missions')->whereNull('hidden_at')->where('created_at', '>=', now()->subDays(30))->count(),
         ]);
     }
 
@@ -61,6 +61,7 @@ class PulseService
         return DB::table('mission_skill')
             ->join('missions', 'missions.id', '=', 'mission_skill.mission_id')
             ->join('skills', 'skills.id', '=', 'mission_skill.skill_id')
+            ->whereNull('missions.hidden_at')
             ->where('missions.created_at', '>=', now()->subDays(30))
             ->select('skills.name', DB::raw('count(*) as total'))
             ->groupBy('skills.name')
@@ -82,6 +83,7 @@ class PulseService
         return DB::table('mission_skill')
             ->join('missions', 'missions.id', '=', 'mission_skill.mission_id')
             ->join('skills', 'skills.id', '=', 'mission_skill.skill_id')
+            ->whereNull('missions.hidden_at')
             ->select('skills.name', DB::raw('percentile_cont(0.5) within group (order by missions.budget_fcfa) as median'), DB::raw('count(*) as total'))
             ->groupBy('skills.name')
             ->havingRaw('count(*) >= ?', [self::MIN_COMPARABLE])
@@ -106,6 +108,7 @@ class PulseService
         }
 
         $row = DB::table('missions')
+            ->whereNull('hidden_at')
             ->whereExists(fn ($q) => $q->select(DB::raw(1))
                 ->from('mission_skill')
                 ->join('skills', 'skills.id', '=', 'mission_skill.skill_id')
@@ -134,6 +137,7 @@ class PulseService
     public function firstApplicationHours(): ?float
     {
         $hours = DB::table('missions')
+            ->whereNull('missions.hidden_at')
             ->joinSub(
                 DB::table('applications')->select('mission_id', DB::raw('min(created_at) as first_at'))->groupBy('mission_id'),
                 'first',
