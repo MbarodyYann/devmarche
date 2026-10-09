@@ -11,7 +11,7 @@
         </form>
 
         <x-slot:footer>
-            <a href="{{ route('login') }}" class="font-semibold text-primary-strong underline-offset-4 hover:underline">Retour à la connexion</a>
+            <a href="{{ route('login') }}" class="font-bold text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary">Retour à la connexion</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

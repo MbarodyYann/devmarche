@@ -13,12 +13,14 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Annuaire des devs')]
+#[Layout('components.layouts.app', ['search' => false])]
 class Directory extends Component
 {
     use WithPagination;

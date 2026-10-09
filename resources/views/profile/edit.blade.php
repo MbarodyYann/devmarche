@@ -2,13 +2,13 @@
     @php($profile = $dev->profile)
 
     <div class="mx-auto max-w-2xl">
-        <a href="{{ route('devs.show', $dev) }}" class="mb-4 inline-flex min-h-11 items-center gap-1 font-medium text-ink-muted hover:text-ink">
+        <a href="{{ route('devs.show', $dev) }}" class="etiquette mb-4 inline-flex min-h-11 items-center gap-1 text-ink-muted hover:text-ink">
             <x-icon name="arrow-left" class="size-4" /> Retour au profil
         </a>
-        <h1 class="text-2xl sm:text-3xl">Modifier mon profil</h1>
+        <h1 class="text-3xl sm:text-4xl">Modifier mon profil</h1>
         <p class="mt-1 text-ink-muted">Un profil complet attire plus de clients et de coéquipiers.</p>
 
-        <x-card class="mt-6" padding="p-5 sm:p-8">
+        <x-block class="mt-6" padding="p-5 sm:p-8" main>
             <form method="post" action="{{ route('profile.update', $dev) }}" enctype="multipart/form-data" class="space-y-6" novalidate>
                 @csrf
                 @method('put')
@@ -17,7 +17,7 @@
                     <x-avatar :user="$dev" size="lg" />
                     <x-field label="Photo" name="avatar" hint="JPG, PNG ou WebP, 4 Mo maximum. Recadrée en carré." optional class="flex-1">
                         <input type="file" name="avatar" id="avatar" accept="image/jpeg,image/png,image/webp"
-                               class="block w-full text-sm text-ink-muted file:mr-3 file:min-h-11 file:rounded-btn file:border file:border-secondary file:bg-surface file:px-4 file:font-semibold file:text-secondary hover:file:bg-secondary-soft">
+                               class="block w-full text-sm text-ink-muted file:mr-3 file:min-h-11 file:rounded-btn file:border-2 file:border-ink file:bg-surface file:px-4 file:font-bold file:text-ink hover:file:bg-accent/25">
                     </x-field>
                 </div>
 
@@ -64,11 +64,11 @@
                     </x-field>
                 </div>
 
-                <div class="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
+                <div class="flex flex-col-reverse items-center gap-4 border-t-2 border-ink pt-6 sm:flex-row sm:justify-end">
                     <x-button :href="route('devs.show', $dev)" variant="ghost">Annuler</x-button>
                     <x-button type="submit">Enregistrer</x-button>
                 </div>
             </form>
-        </x-card>
+        </x-block>
     </div>
 </x-layouts.app>

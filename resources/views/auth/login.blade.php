@@ -13,10 +13,10 @@
 
             <div class="flex items-center justify-between gap-4">
                 <label class="inline-flex min-h-11 items-center gap-2">
-                    <input type="checkbox" name="remember" class="size-5 rounded border-border accent-primary">
+                    <input type="checkbox" name="remember" class="size-5 rounded-stamp border-2 border-ink accent-primary">
                     <span>Se souvenir de moi</span>
                 </label>
-                <a href="{{ route('password.request') }}" class="font-medium text-primary-strong underline-offset-4 hover:underline">Mot de passe oublié ?</a>
+                <a href="{{ route('password.request') }}" class="font-bold text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary">Mot de passe oublié ?</a>
             </div>
 
             <x-button type="submit" class="w-full">Se connecter</x-button>
@@ -24,7 +24,7 @@
 
         <x-slot:footer>
             Pas encore de compte ?
-            <a href="{{ route('register') }}" class="font-semibold text-primary-strong underline-offset-4 hover:underline">Rejoindre DevMarché</a>
+            <a href="{{ route('register') }}" class="font-bold text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary">Rejoindre DevMarché</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>
