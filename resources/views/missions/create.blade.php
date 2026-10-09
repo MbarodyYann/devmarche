@@ -3,9 +3,9 @@
         <a href="{{ route('missions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
             <x-icon name="arrow-left" class="size-4" /> Retour aux missions
         </a>
-        <p class="eyebrow mb-3">Trouvez le bon dev</p>
-        <h1 class="text-[40px] sm:text-5xl">Publier une mission</h1>
-        <p class="mt-3 text-ink-soft">Décrivez le besoin, fixez un budget en FCFA : les candidatures arrivent sur la fiche de la mission.</p>
+        <p class="eyebrow mb-3">Publier une mission</p>
+        <h1 class="text-[40px] sm:text-5xl">Décrivez votre besoin, les devs viennent à vous.</h1>
+        <p class="mt-3 text-ink-soft">Publiez gratuitement : les devs postulent avec leur prix, vous comparez leurs profils et leurs cauris, puis vous choisissez.</p>
 
         <x-card class="mt-8">
             <form method="post" action="{{ route('missions.store') }}" class="space-y-6" novalidate
@@ -16,13 +16,13 @@
                     <x-input name="title" maxlength="120" required autofocus />
                 </x-field>
 
-                <x-field label="Description" name="description" hint="Le contexte, ce qui est attendu, les livrables. 30 caractères minimum.">
+                <x-field label="Description" name="description" hint="Livrables attendus, délais, contraintes techniques. Plus c'est précis, meilleures sont les candidatures.">
                     <x-textarea name="description" rows="7" maxlength="5000" required />
                 </x-field>
 
                 <div class="grid gap-6 sm:grid-cols-2">
-                    <x-field label="Budget (FCFA)" name="budget_fcfa" hint="5 000 FCFA minimum.">
-                        <x-input name="budget_fcfa" inputmode="numeric" placeholder="150 000" required />
+                    <x-field label="Budget (FCFA)" name="budget_fcfa" hint="Montant total en FCFA, sans espace ni point : 150000">
+                        <x-input name="budget_fcfa" inputmode="numeric" placeholder="150000" required />
                     </x-field>
                     <x-field label="Échéance" name="deadline" optional>
                         <x-input name="deadline" type="date" :min="now()->addDay()->toDateString()" />
@@ -48,9 +48,9 @@
                     </datalist>
                 </x-field>
 
-                <div class="flex flex-col-reverse items-center gap-3 border-t border-line pt-6 sm:flex-row sm:justify-end">
-                    <x-button :href="route('missions.index')" variant="secondary">Annuler</x-button>
-                    <x-button type="submit">Publier la mission</x-button>
+                <div class="flex flex-col items-center gap-3 border-t border-line pt-6 sm:items-end">
+                    <x-button type="submit" size="lg" class="w-full sm:w-auto">Publier ma mission</x-button>
+                    <p class="text-sm text-ink-muted">Gratuit · Aucun paiement avant d'avoir choisi votre dev.</p>
                 </div>
             </form>
         </x-card>

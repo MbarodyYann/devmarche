@@ -295,6 +295,111 @@
     }
 }
 
+/* CTA de l'accueil, posé sur l'aplat indigo : ambre plein dans les deux thèmes, texte primary-950. */
+@utility btn-cta {
+    color: var(--color-primary-950);
+    background-color: var(--color-secondary-400);
+    border: 1px solid var(--color-secondary-500);
+    box-shadow:
+        0 0 0 3px rgb(249 178 24 / 0.18),
+        0 8px 20px rgb(0 0 0 / 0.25);
+    transition: background-color 150ms, transform 150ms;
+
+    &:hover {
+        background-color: var(--color-secondary-300);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+}
+
+/* Navigation posée sur le bandeau hero (aplat primary-800) : on redéfinit localement les jetons
+   neutres pour que tous ses composants passent en version claire, sans classes spéciales. */
+@utility nav-on-hero {
+    --color-ink: #ffffff;
+    --color-ink-soft: rgb(255 255 255 / 0.85);
+    --color-ink-muted: rgb(255 255 255 / 0.75);
+    --color-line: rgb(255 255 255 / 0.12);
+    --color-surface: rgb(255 255 255 / 0.12);
+    --color-bg-alt: rgb(255 255 255 / 0.08);
+    background-color: rgb(255 255 255 / 0.08);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: none;
+
+    /* Sur l'indigo, le CTA principal de la navigation passe en ambre (comme celui du hero). */
+    & .btn-primary {
+        color: var(--color-primary-950);
+        background-color: var(--color-secondary-400);
+        border-color: var(--color-secondary-500);
+        box-shadow: 0 0 0 3px rgb(249 178 24 / 0.18);
+    }
+
+    & .btn-primary:hover {
+        background-color: var(--color-secondary-300);
+    }
+
+    /* Une fois le bandeau dépassé : jetons normaux et matière de .nav-glass. */
+    &.is-scrolled {
+        --color-ink: #141a2e;
+        --color-ink-soft: #3f4659;
+        --color-ink-muted: #5f6679;
+        --color-line: rgb(20 26 46 / 0.08);
+        --color-surface: #ffffff;
+        --color-bg-alt: #f7f8fb;
+        background-color: color-mix(in srgb, var(--color-bg-alt) 97%, transparent);
+        border-color: rgb(255 255 255 / 0.6);
+
+        @media (min-width: 768px) {
+            background-color: color-mix(in srgb, var(--color-bg-alt) 60%, transparent);
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+
+        & .btn-primary {
+            color: var(--color-white);
+            background-color: var(--color-primary-600);
+            border-color: var(--color-primary-700);
+            box-shadow: 0 0 0 3px rgb(49 74 130 / 0.16), 0 6px 16px rgb(20 26 46 / 0.18);
+        }
+    }
+
+    &.is-scrolled:where(.dark, .dark *) {
+        --color-ink: #f3f4f8;
+        --color-ink-soft: #c5ccdc;
+        --color-ink-muted: #97a1b8;
+        --color-line: rgb(255 255 255 / 0.08);
+        --color-surface: #141c38;
+        --color-bg-alt: #10172e;
+        border-color: var(--color-line);
+
+        & .btn-primary {
+            color: var(--color-primary-950);
+            background-color: var(--color-secondary-400);
+            border-color: var(--color-secondary-500);
+        }
+    }
+}
+
+/* Le menu déroulant du compte retrouve les jetons normaux, même posé sur le bandeau hero. */
+@utility nav-menu {
+    --color-ink: #141a2e;
+    --color-ink-soft: #3f4659;
+    --color-ink-muted: #5f6679;
+    --color-line: rgb(20 26 46 / 0.08);
+    --color-surface: #ffffff;
+    --color-bg-alt: #f7f8fb;
+
+    &:where(.dark, .dark *) {
+        --color-ink: #f3f4f8;
+        --color-ink-soft: #c5ccdc;
+        --color-ink-muted: #97a1b8;
+        --color-line: rgb(255 255 255 / 0.08);
+        --color-surface: #141c38;
+        --color-bg-alt: #10172e;
+    }
+}
+
 /* Texte défilant du pied de page. */
 @keyframes defile {
     to {

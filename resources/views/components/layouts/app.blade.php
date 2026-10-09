@@ -63,9 +63,14 @@
         Aller au contenu
     </a>
 
-    {{-- Navigation flottante --}}
-    <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6">
-        <header class="nav-glass mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 sm:h-16 sm:px-4">
+    {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
+    <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6"
+         @isset($hero)
+             x-data="{ onHero: true }"
+             x-init="const hero = document.getElementById('hero'); const update = () => onHero = hero && window.scrollY < hero.offsetHeight - 80; update(); window.addEventListener('scroll', update, { passive: true })"
+         @endisset>
+        <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! isset($hero), 'nav-on-hero' => isset($hero)])
+                @isset($hero) x-bind:class="{ 'is-scrolled': ! onHero }" @endisset>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
                 <x-logo />
             </a>
@@ -110,7 +115,7 @@
                             <span class="sr-only">Ouvrir le menu du compte</span>
                         </button>
                         <div x-cloak x-show="open" x-transition.opacity
-                             class="absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
+                             class="nav-menu absolute right-0 mt-2 w-60 overflow-hidden rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
                             <p class="truncate px-3 py-2 text-sm text-ink-muted">{{ $me->name }}</p>
                             <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 font-medium text-ink hover:bg-bg-alt">
                                 <x-icon name="user" class="size-4" /> Mon profil
@@ -148,7 +153,12 @@
         </header>
     </div>
 
-    <main id="contenu" class="mx-auto max-w-page px-4 pb-16 pt-10 sm:px-6 sm:pt-16">
+    {{-- Bandeau hero pleine largeur (accueil), glissé sous la navigation flottante --}}
+    @isset($hero)
+        {{ $hero }}
+    @endisset
+
+    <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! isset($hero), 'pt-0' => isset($hero)])>
         @if (session('status'))
             <div role="status" class="mb-8 flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 font-medium text-ink shadow-card">
                 <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white dark:bg-secondary-400 dark:text-primary-950">
@@ -174,7 +184,7 @@
         <div class="mx-auto grid max-w-page gap-8 border-t border-line px-4 py-10 sm:grid-cols-[2fr_1fr_1fr] sm:px-6">
             <div class="space-y-3">
                 <x-logo />
-                <p class="max-w-sm text-sm text-ink-muted">La plateforme d'échange par et pour les développeurs d'Afrique francophone.</p>
+                <p class="max-w-sm text-sm text-ink-muted">Par et pour les devs d'Afrique francophone.</p>
             </div>
             <nav aria-label="Plateforme" class="space-y-2 text-sm">
                 <p class="font-semibold text-ink">Plateforme</p>
@@ -186,6 +196,7 @@
                 <p class="font-semibold text-ink">Le projet</p>
                 <p class="text-ink-muted">Équipe Baobab Stack</p>
                 <p class="text-ink-muted">Concours CADEV 2026</p>
+                <p class="text-ink-muted">Photo : <a href="https://unsplash.com/photos/kwzWjTnDPLk" rel="noopener" class="underline-offset-4 hover:underline">Unsplash</a></p>
             </div>
         </div>
     </footer>

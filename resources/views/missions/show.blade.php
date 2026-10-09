@@ -13,7 +13,7 @@
         <div class="min-w-0 space-y-6">
             <x-card>
                 <div class="flex flex-wrap items-center gap-2">
-                    <x-chip :tone="$mission->status->tone()" :dot="$mission->status->tone() !== 'done'">{{ $mission->status->label() }}</x-chip>
+                    <x-chip :tone="$mission->status->tone()">{{ $mission->status->label() }}</x-chip>
                     <x-chip tone="neutral">
                         @if ($mission->isRemote())
                             Télétravail
@@ -36,28 +36,24 @@
             {{-- Candidatures : vue du client --}}
             @if ($isClient)
                 <x-card>
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <h2 class="text-[28px]">Candidatures <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
-                        @can('cancel', $mission)
-                            <form method="post" action="{{ route('missions.cancel', $mission) }}">
-                                @csrf
-                                <x-button type="submit" variant="danger" size="sm">Annuler la mission</x-button>
-                            </form>
-                        @endcan
-                    </div>
+                    <h2 class="text-[28px]">Choisissez votre dev <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
+                    <p class="mt-2 text-ink-soft">Comparez les prix, les messages et les cauris. Quand vous retenez un dev, les autres candidatures passent automatiquement en « Non retenue ».</p>
 
                     @can('complete', $mission)
                         <div class="mt-5 flex flex-col gap-3 rounded-2xl bg-bg-alt p-4 ring-1 ring-line sm:flex-row sm:items-center sm:justify-between">
-                            <p class="text-ink-soft">Le travail est livré ? Clôturez la mission : {{ $mission->freelancer->name }} gagnera 20 cauris.</p>
+                            <div>
+                                <p class="font-semibold text-ink">{{ $mission->freelancer->name }} travaille sur votre mission.</p>
+                                <p class="text-sm text-ink-muted">Le dev reçoit +20 cauris de réputation.</p>
+                            </div>
                             <form method="post" action="{{ route('missions.complete', $mission) }}">
                                 @csrf
-                                <x-button type="submit" class="w-full sm:w-auto"><x-icon name="check" class="size-4" /> Marquer terminée</x-button>
+                                <x-button type="submit" class="w-full sm:w-auto"><x-icon name="check" class="size-4" /> Confirmer la fin de la mission</x-button>
                             </form>
                         </div>
                     @endcan
 
                     @if ($applications->isEmpty())
-                        <p class="mt-5 text-ink-muted">Pas encore de candidature. Partagez la mission pour la faire connaître.</p>
+                        <p class="mt-5 text-ink-muted">Les candidatures arriveront ici. Partagez la mission pour la faire connaître.</p>
                     @else
                         <ul class="mt-5 divide-y divide-line">
                             @foreach ($applications as $application)
@@ -79,7 +75,7 @@
                                         @can('accept', [$mission, $application])
                                             <form method="post" action="{{ route('missions.accept', [$mission, $application]) }}">
                                                 @csrf
-                                                <x-button type="submit" size="sm">Retenir</x-button>
+                                                <x-button type="submit" size="sm">Retenir ce dev</x-button>
                                             </form>
                                         @endcan
                                     </div>
@@ -87,6 +83,13 @@
                             @endforeach
                         </ul>
                     @endif
+
+                    @can('cancel', $mission)
+                        <form method="post" action="{{ route('missions.cancel', $mission) }}" class="mt-6 border-t border-line pt-4 text-right">
+                            @csrf
+                            <button type="submit" class="text-sm text-ink-muted underline-offset-4 hover:text-ink hover:underline">Annuler la mission</button>
+                        </form>
+                    @endcan
                 </x-card>
             @endif
         </div>
@@ -131,29 +134,31 @@
                 <x-card padding="p-6" id="postuler">
                     @if ($myApplication)
                         <h2 class="text-2xl">Votre candidature</h2>
-                        <p class="mt-3 text-ink-soft">Vous avez postulé le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA.</p>
+                        <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA. Le client choisira parmi les candidats ; vous verrez le statut ici.</p>
                         <x-chip :tone="$myApplication->status->tone()" class="mt-4">{{ $myApplication->status->label() }}</x-chip>
                     @elseif (! $mission->isOpen())
                         <h2 class="text-2xl">Candidatures closes</h2>
-                        <p class="mt-3 text-ink-soft">Cette mission n'accepte plus de candidatures.</p>
+                        <p class="mt-3 text-ink-soft">Le client a déjà choisi son dev. D'autres missions vous attendent.</p>
+                        <x-button :href="route('missions.index')" variant="secondary" class="mt-5 w-full">Voir les missions</x-button>
                     @elseif (! $user)
-                        <h2 class="text-2xl">Cette mission vous intéresse ?</h2>
-                        <p class="mt-3 text-ink-soft">Connectez-vous pour postuler en deux minutes.</p>
-                        <div class="mt-5 flex flex-col gap-3">
-                            <x-button :href="route('login')">Se connecter pour postuler</x-button>
-                            <x-button :href="route('register')" variant="secondary">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
-                        </div>
+                        <h2 class="text-2xl">Décrochez cette mission</h2>
+                        <p class="mt-3 text-ink-soft">Un message et votre prix : le client voit votre profil, vos compétences et vos cauris.</p>
+                        <x-button :href="route('register')" size="lg" class="mt-5 w-full" data-cta="principal">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                        <x-reassurance :items="App\Support\Copy::SIGNUP_REASSURANCE" class="mt-3 justify-center" />
+                        <p class="mt-4 text-center text-sm"><a href="{{ route('login') }}" class="text-ink-muted underline-offset-4 hover:text-ink hover:underline">Déjà membre ? Se connecter</a></p>
                     @else
-                        <h2 class="text-2xl">Postuler</h2>
+                        <h2 class="text-2xl">Décrochez cette mission</h2>
+                        <p class="mt-3 text-ink-soft">Un message et votre prix : le client voit votre profil, vos compétences et vos cauris.</p>
                         <form method="post" action="{{ route('missions.apply', $mission) }}" class="mt-5 space-y-5" novalidate>
                             @csrf
                             <x-field label="Votre message" name="message" hint="Votre expérience utile, votre approche, vos disponibilités.">
                                 <x-textarea name="message" rows="5" maxlength="2000" required />
                             </x-field>
-                            <x-field label="Prix proposé (FCFA)" name="proposed_fcfa">
+                            <x-field label="Votre prix (FCFA)" name="proposed_fcfa">
                                 <x-input name="proposed_fcfa" inputmode="numeric" :value="App\Support\Money::fcfa($mission->budget_fcfa)" required />
                             </x-field>
-                            <x-button type="submit" class="w-full">Envoyer ma candidature</x-button>
+                            <x-button type="submit" class="w-full">Postuler à cette mission</x-button>
+                            <p class="text-center text-sm text-ink-muted">Gratuit · Une seule candidature par mission, soignez-la.</p>
                         </form>
                     @endif
                 </x-card>

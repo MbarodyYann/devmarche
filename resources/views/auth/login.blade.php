@@ -1,5 +1,5 @@
 <x-layouts.app title="Connexion">
-    <x-auth-card eyebrow="Connexion" title="Bon retour parmi nous" subtitle="Connectez-vous pour retrouver vos missions et vos échanges.">
+    <x-auth-card eyebrow="Connexion" title="Content de vous revoir.">
         <form method="post" action="{{ route('login') }}" class="space-y-5" novalidate>
             @csrf
 
@@ -23,8 +23,7 @@
         </form>
 
         <x-slot:footer>
-            Pas encore de compte ?
-            <a href="{{ route('register') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Rejoindre DevMarché</a>
+            <a href="{{ route('register') }}" class="text-sm text-ink-muted underline-offset-4 hover:text-ink hover:underline">Pas encore membre ? {{ App\Support\Copy::SIGNUP_CTA }}</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

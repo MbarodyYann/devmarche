@@ -1,5 +1,5 @@
-<x-layouts.app title="Créer un compte">
-    <x-auth-card eyebrow="Rejoindre la communauté" title="Rejoindre DevMarché" subtitle="Un seul compte pour publier des missions, postuler et échanger avec les devs.">
+<x-layouts.app title="Inscription">
+    <x-auth-card eyebrow="Inscription" title="Votre profil en ligne en 2 minutes." subtitle="Nom, e-mail, pays et ville : c'est tout. Vous ajouterez vos compétences ensuite.">
         <form method="post" action="{{ route('register') }}" class="space-y-5" novalidate>
             @csrf
 
@@ -28,12 +28,12 @@
                 <x-input name="password_confirmation" type="password" autocomplete="new-password" required />
             </x-field>
 
-            <x-button type="submit" class="w-full">Créer mon compte</x-button>
+            <x-button type="submit" size="lg" class="w-full">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+            <x-reassurance :items="[App\Support\Copy::REASSURANCE_RISK]" class="justify-center" />
         </form>
 
         <x-slot:footer>
-            Déjà inscrit ?
-            <a href="{{ route('login') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Se connecter</a>
+            <a href="{{ route('login') }}" class="text-sm text-ink-muted underline-offset-4 hover:text-ink hover:underline">Déjà membre ? Se connecter</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

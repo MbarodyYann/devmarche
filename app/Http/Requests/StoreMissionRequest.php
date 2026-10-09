@@ -94,7 +94,8 @@ class StoreMissionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'budget_fcfa.min' => 'Le budget minimum est de 5 000 FCFA.',
+            'budget_fcfa.min' => 'Le budget doit être d\'au moins 5 000 FCFA.',
+            'budget_fcfa.integer' => 'Indiquez le budget en chiffres, par exemple 150000.',
             'country.required' => 'Choisissez un pays, ou cochez « Télétravail ».',
             'deadline.after' => 'L\'échéance doit être une date future.',
         ];

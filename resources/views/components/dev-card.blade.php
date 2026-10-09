@@ -22,7 +22,7 @@
     <x-skills :skills="$dev->skills" :limit="4" :link="false" />
     <div class="mt-auto flex flex-wrap items-center gap-2">
         @if ($profile)
-            <x-chip :tone="$profile->availability->tone()" dot>{{ $profile->availability->label() }}</x-chip>
+            <x-chip :tone="$profile->availability->tone()">{{ $profile->availability->label() }}</x-chip>
         @endif
         @if ($dev->isNewMember())
             <x-new-badge />

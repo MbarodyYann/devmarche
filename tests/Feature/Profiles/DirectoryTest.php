@@ -108,7 +108,7 @@ test('un état vide s\'affiche quand aucun dev ne correspond', function () {
     Livewire::test(Directory::class)
         ->set('country', 'SN')
         ->set('availability', 'employed')
-        ->assertSee('Aucun dev ne correspond à ces filtres.')
+        ->assertSee('Aucun dev ne correspond')
         ->call('resetFilters')
         ->assertSee('Moussa Ndiaye');
 });

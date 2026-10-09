@@ -1,106 +1,127 @@
 <x-layouts.app>
-    @php($reassurance = [App\Support\Copy::REASSURANCE_RISK, App\Support\Copy::REASSURANCE_NEXT])
+    <x-slot:head>
+        <link rel="preload" as="image" type="image/webp" media="(min-width: 1024px)" fetchpriority="high"
+              imagesrcset="/images/hero/devs-portrait-480.webp 480w, /images/hero/devs-portrait-800.webp 800w"
+              imagesizes="(min-width: 1280px) 520px, 45vw">
+    </x-slot:head>
 
-    {{-- Hero (08-design.md, « Hero de l'accueil ») : la douleur, le mécanisme, UN CTA principal,
-         la réassurance et le produit en action. Aucune image au-dessus de la ligne de flottaison. --}}
-    <section class="dots -mx-4 -mt-10 px-4 pb-4 pt-12 text-center sm:-mx-6 sm:-mt-16 sm:px-6 sm:pt-20">
-        <p class="eyebrow mb-4">Par et pour les devs d'Afrique francophone</p>
+    {{-- Accueil (08-design.md, « Hero de l'accueil » : modèle stiesas.com, en aplats indigo et ambre). --}}
 
-        <h1 class="mx-auto max-w-4xl text-[40px] sm:text-[64px]">
-            Arrêtez de chercher vos missions
-            <br class="hidden sm:block">
-            dans les groupes <span class="whitespace-nowrap underline decoration-secondary-400 decoration-4 underline-offset-[10px]">WhatsApp</span>.
-        </h1>
-
-        <p class="mx-auto mt-6 max-w-2xl text-lg text-ink-soft">
-            Les startups d'Afrique francophone publient leurs missions en FCFA sur DevMarché :
-            vous postulez en 2 minutes, et vous êtes payé en Mobile Money.
-        </p>
-
-        {{-- Un seul CTA principal ; le second profil (qui recrute) a un simple lien texte. --}}
-        <div class="mx-auto mt-8 flex max-w-sm flex-col items-center gap-4 sm:max-w-none">
-            @auth
-                <x-button :href="route('missions.index', ['pour_moi' => 1])" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::MEMBER_CTA }}</x-button>
-                <a href="{{ route('missions.create') }}" class="text-[15px] text-ink-muted underline-offset-4 hover:text-ink hover:underline">Publier une mission →</a>
-            @else
-                <x-button :href="route('register')" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
-                <a href="{{ route('missions.create') }}" class="text-[15px] text-ink-muted underline-offset-4 hover:text-ink hover:underline">Vous recrutez ? Publier une mission →</a>
-            @endauth
-        </div>
-
-        @guest
-            <ul class="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm text-ink-muted">
-                @foreach ($reassurance as $item)
-                    <li class="flex items-center gap-1.5"><x-icon name="check" class="size-4 text-primary-600 dark:text-secondary-400" /> {{ $item }}</li>
+    <x-slot:hero>
+        {{-- Bloc 1 : bandeau hero, aplat primary-800, glissé sous la navigation flottante --}}
+        <section id="hero" class="relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950">
+            {{-- Décor : 3 arcs concentriques, trait de 1 px blanc à 6 %, coin inférieur gauche --}}
+            <svg class="pointer-events-none absolute bottom-0 left-0 h-[560px] w-[560px] sm:h-[760px] sm:w-[760px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
+                @foreach ([340, 500, 660] as $radius)
+                    <circle cx="0" cy="760" r="{{ $radius }}" stroke="white" stroke-opacity=".06" stroke-width="1" />
                 @endforeach
-            </ul>
-        @endguest
+            </svg>
 
-        {{-- Preuve sociale : de vrais devs, des chiffres réels (mis en cache 10 min) --}}
-        <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <div class="flex -space-x-2.5" aria-hidden="true">
-                @foreach ($avatars as $avatar)
-                    <x-avatar :user="$avatar" size="sm" />
-                @endforeach
-            </div>
-            <p class="text-ink-soft">
-                Rejoignez <strong class="font-semibold text-ink">{{ $stats['devs'] }} devs</strong>
-                de <strong class="font-semibold text-ink">{{ $stats['countries'] }} pays</strong>
-                <span class="ml-1 tracking-widest" aria-hidden="true">{{ implode('', $stats['flags']) }}</span>
-                @if ($stats['completedMissions'] > 0)
-                    · <strong class="font-semibold text-ink">{{ $stats['completedMissions'] }} {{ $stats['completedMissions'] > 1 ? 'missions' : 'mission' }}</strong> {{ $stats['completedMissions'] > 1 ? 'terminées' : 'terminée' }}
-                @endif
-            </p>
-        </div>
+            <div class="relative mx-auto grid max-w-page items-center gap-10 px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:grid-cols-[55fr_45fr] lg:gap-12">
+                {{-- Colonne texte --}}
+                <div>
+                    <p class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[.18em] text-secondary-400">
+                        Par et pour les devs d'Afrique francophone
+                    </p>
 
-        {{-- Maquette de l'application, faite de vrais composants et de vraies données --}}
-        @if ($mockMission && $mockDev)
-            <x-frame class="mx-auto mt-14 max-w-4xl bg-bg-alt p-4 text-left sm:mt-16 sm:p-8 lg:p-10">
-                <div class="relative lg:pb-16 lg:pr-56">
-                    <x-mission-card :mission="$mockMission" class="lg:max-w-lg" />
+                    <h1 class="mt-6 text-balance text-[38px] leading-[1.1] text-white sm:text-[56px]">
+                        Quittez les groupes WhatsApp,
+                        <em class="block font-serif italic text-secondary-400">les missions viennent à vous.</em>
+                    </h1>
 
-                    <div class="hidden lg:block">
-                        {{-- Candidature retenue, en léger chevauchement --}}
-                        <x-card padding="p-5" class="absolute right-0 top-10 w-72 shadow-card-hover">
-                            <p class="text-sm font-medium text-ink-muted">Candidature retenue</p>
-                            <div class="mt-3 flex items-center gap-3">
-                                <x-avatar :user="$mockDev" />
-                                <div class="min-w-0">
-                                    <p class="truncate font-semibold text-ink">{{ $mockDev->name }}</p>
-                                    <x-reputation :points="$mockDev->reputation" />
-                                </div>
-                            </div>
-                            <div class="mt-4 flex items-center justify-between border-t border-line pt-3">
-                                <x-chip tone="warm" dot>En cours</x-chip>
-                                <span class="font-serif text-lg font-medium text-ink">{{ App\Support\Money::fcfa((int) round($mockMission->budget_fcfa * 0.93 / 1000) * 1000) }} <span class="font-sans text-xs text-ink-muted">FCFA</span></span>
-                            </div>
-                        </x-card>
+                    <p class="mt-6 max-w-xl text-[17px] leading-relaxed text-white/80">
+                        Les startups d'Afrique francophone publient leurs missions en FCFA :
+                        vous postulez en 2 minutes, et vous êtes payé en Mobile Money.
+                    </p>
 
-                        {{-- Notification de réputation --}}
-                        <div class="absolute bottom-0 right-6 flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 shadow-card-hover">
-                            <x-cauri class="size-7 text-secondary-400" />
-                            <p class="text-sm text-ink-soft"><strong class="font-semibold text-ink">+20 cauris</strong> · Mission terminée</p>
-                        </div>
+                    {{-- Un seul CTA principal (ambre) ; le second profil a un simple lien texte. --}}
+                    <div class="mt-8 flex flex-col items-start gap-4">
+                        @auth
+                            <x-button :href="route('missions.index', ['pour_moi' => 1])" variant="cta" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::MEMBER_CTA }}</x-button>
+                            <a href="{{ route('missions.create') }}" class="text-[15px] text-white/70 underline-offset-4 hover:text-white hover:underline">Publier une mission →</a>
+                        @else
+                            <x-button :href="route('register')" variant="cta" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                            <a href="{{ route('missions.create') }}" class="text-[15px] text-white/70 underline-offset-4 hover:text-white hover:underline">{{ App\Support\Copy::RECRUIT_LINK }}</a>
+                        @endauth
                     </div>
                 </div>
-            </x-frame>
-        @endif
 
-        {{-- Pensé pour le Mobile Money (noms en texte, aucun logo de marque) --}}
-        <div class="mx-auto mt-12 max-w-3xl">
-            <p class="text-sm text-ink-muted">Pensé pour le Mobile Money</p>
-            <p class="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 font-semibold text-ink-muted">
-                @foreach (['Wave', 'Orange Money', 'Free Money', 'MTN MoMo', 'Moov Money'] as $provider)
-                    <span>{{ $provider }}</span>
-                    @if (! $loop->last)<span aria-hidden="true">·</span>@endif
+                {{-- Colonne visuel : photo rassurante (Unsplash), 4:5 sur ordinateur, 16:9 sur mobile, sous le CTA.
+                     Une seule image ; sur ordinateur, elle est préchargée en priorité haute (voir le slot head). --}}
+                <picture class="block min-w-0">
+                    <source media="(min-width: 1024px)" type="image/webp"
+                            srcset="/images/hero/devs-portrait-480.webp 480w, /images/hero/devs-portrait-800.webp 800w"
+                            sizes="(min-width: 1280px) 520px, 45vw">
+                    <img src="/images/hero/devs-paysage-800.webp"
+                         srcset="/images/hero/devs-paysage-480.webp 480w, /images/hero/devs-paysage-800.webp 800w"
+                         sizes="(min-width: 640px) 600px, calc(100vw - 32px)"
+                         width="800" height="450"
+                         alt="Deux développeurs travaillent ensemble sur du code"
+                         loading="lazy" decoding="async"
+                         class="aspect-video w-full rounded-2xl border border-white/10 object-cover lg:aspect-[4/5]">
+                </picture>
+            </div>
+        </section>
+
+        {{-- Bloc 2 : bande de garanties (la réassurance), aplat primary-900 --}}
+        <section aria-label="Nos garanties" class="bg-primary-900 text-white">
+            <dl class="mx-auto grid max-w-page gap-6 px-4 py-8 text-center sm:grid-cols-3 sm:px-6">
+                @foreach ([
+                    ['Payé en Mobile Money', 'Wave, Orange Money, MTN MoMo, Free, Moov'],
+                    [App\Support\Copy::REASSURANCE_RISK, 'votre profil est en ligne en 2 minutes'],
+                    ['Une réputation qui vous suit', 'chaque mission et chaque réponse vous rapportent des cauris'],
+                ] as [$title, $line])
+                    <div>
+                        <dt class="font-serif text-lg font-medium text-secondary-400">{{ $title }}</dt>
+                        <dd class="mt-1 text-sm text-white/75">{{ $line }}</dd>
+                    </div>
                 @endforeach
-            </p>
-        </div>
-    </section>
+            </dl>
+        </section>
+
+        {{-- Bloc 3 : bande de preuve sociale, chiffres réels mis en cache 10 min --}}
+        <section aria-label="DevMarché en chiffres" class="border-b border-line bg-bg-alt">
+            <dl class="mx-auto grid max-w-page grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 text-center sm:px-6 lg:grid-cols-5">
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Devs inscrits</dt>
+                    <dd class="mt-2 flex items-center gap-2">
+                        <span class="flex -space-x-2" aria-hidden="true">
+                            @foreach ($avatars as $avatar)
+                                <x-avatar :user="$avatar" size="xs" />
+                            @endforeach
+                        </span>
+                        <span class="font-serif text-xl font-medium text-ink" data-stat="devs">{{ $stats['devs'] }}</span>
+                    </dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pays</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink">
+                        <span data-stat="countries">{{ $stats['countries'] }}</span>
+                        <span class="ml-1 font-sans text-base tracking-wider" aria-hidden="true">{{ implode('', $stats['flags']) }}</span>
+                    </dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Missions publiées</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink" data-stat="missions">{{ App\Support\Money::fcfa($stats['missions']) }}</dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Cauris gagnés</dt>
+                    <dd class="mt-2 flex items-center gap-1.5 font-serif text-xl font-medium text-ink">
+                        <x-cauri class="size-5 text-secondary-400" />
+                        <span data-stat="cauris">{{ App\Support\Money::fcfa($stats['cauris']) }}</span>
+                    </dd>
+                </div>
+                <div class="col-span-2 flex flex-col items-center lg:col-span-1">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pensé pour</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink">Wave · Orange Money · MTN MoMo</dd>
+                </div>
+            </dl>
+        </section>
+    </x-slot:hero>
 
     {{-- Dernières missions ouvertes (les questions récentes arrivent au lot 4) --}}
     @if ($openMissions->isNotEmpty())
-        <section class="mt-20 sm:mt-28">
+        <section class="pt-16 sm:pt-24">
             <div class="flex flex-wrap items-end justify-between gap-4">
                 <div>
                     <p class="eyebrow mb-2">Du travail entre devs</p>
@@ -118,18 +139,18 @@
         </section>
     @endif
 
-    {{-- Bloc de CTA final : la douleur en version courte, le même bouton, la même réassurance. --}}
+    {{-- CTA final : même aplat que le hero, même bouton ambre --}}
     @guest
-        <section class="dots mt-20 rounded-2xl border border-line bg-bg-alt px-6 py-14 text-center sm:mt-28 sm:rounded-card sm:py-20">
-            <h2 class="mx-auto max-w-2xl text-[32px] sm:text-[44px]">Votre prochaine mission n'est pas dans un groupe WhatsApp.</h2>
-            <div class="mt-8">
-                <x-button :href="route('register')" size="lg" class="w-full sm:w-auto">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
-            </div>
-            <ul class="mt-5 flex flex-wrap justify-center gap-x-5 gap-y-1 text-sm text-ink-muted">
-                @foreach ($reassurance as $item)
-                    <li class="flex items-center gap-1.5"><x-icon name="check" class="size-4 text-primary-600 dark:text-secondary-400" /> {{ $item }}</li>
+        <section class="relative mt-20 overflow-hidden rounded-2xl bg-primary-800 px-6 py-14 text-center text-white sm:mt-28 sm:rounded-card sm:py-20 dark:bg-primary-950">
+            <svg class="pointer-events-none absolute bottom-0 left-0 h-[420px] w-[420px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
+                @foreach ([340, 500, 660] as $radius)
+                    <circle cx="0" cy="760" r="{{ $radius }}" stroke="white" stroke-opacity=".06" stroke-width="1" />
                 @endforeach
-            </ul>
+            </svg>
+            <h2 class="relative mx-auto max-w-2xl text-[32px] text-white sm:text-[44px]">Votre prochaine mission n'est pas dans un groupe WhatsApp.</h2>
+            <div class="relative mt-8">
+                <x-button :href="route('register')" variant="cta" size="lg" class="w-full sm:w-auto">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+            </div>
         </section>
     @endguest
 </x-layouts.app>

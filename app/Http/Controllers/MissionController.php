@@ -32,7 +32,7 @@ class MissionController extends Controller
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Mission publiée. Les devs arrivent !');
+            ->with('status', 'Mission publiée. Les devs arrivent : vous verrez leurs candidatures ici.');
     }
 
     public function show(Request $request, Mission $mission): View

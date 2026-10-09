@@ -76,14 +76,14 @@ test('la carte mission affiche le budget en FCFA et le nombre de candidatures', 
 });
 
 test('un état vide s\'affiche quand rien ne correspond', function () {
-    Livewire::test(Index::class)->set('country', 'TG')->assertSee('Aucune mission pour ce filtre.');
+    Livewire::test(Index::class)->set('country', 'TG')->assertSee('Aucune mission ne correspond');
 });
 
 test('la fiche d\'une mission est publique', function () {
     $this->get(route('missions.show', $this->wave))
         ->assertOk()
         ->assertSee('Intégration Wave à Dakar')
-        ->assertSee('Se connecter pour postuler');
+        ->assertSee('Décrochez cette mission');
 
     $this->get('/missions/abc')->assertNotFound();
 });

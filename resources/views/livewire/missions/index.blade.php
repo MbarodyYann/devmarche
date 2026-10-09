@@ -1,14 +1,11 @@
 <div>
-    <x-page-intro eyebrow="Du travail entre devs" title="Les missions" list>
-        Des missions payées en FCFA, publiées par des startups et des devs de la communauté.
-        @auth
-            <x-slot:actions>
-                <x-button :href="route('missions.create')" variant="accent" class="hidden sm:inline-flex">
-                    <x-icon name="plus" class="size-4" /> Publier une mission
-                </x-button>
-            </x-slot:actions>
-        @endauth
+    <x-page-intro eyebrow="Missions" title="Votre prochain client est déjà ici." list>
+        Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.
     </x-page-intro>
+
+    @guest
+        <x-signup-cta class="mt-8" />
+    @endguest
 
     @if ($forMe)
         <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm text-ink-soft">
@@ -20,7 +17,6 @@
     @php($total = $this->missions->total())
     <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
         <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
-            <span class="size-1.5 rounded-full bg-secondary-400" aria-hidden="true"></span>
             <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}</span>
             <span wire:loading>Recherche…</span>
         </span>
@@ -77,8 +73,8 @@
 
     <div wire:loading.class="opacity-60" class="mt-6 transition-opacity">
         @if ($this->missions->isEmpty())
-            <x-empty-state title="Aucune mission pour ce filtre.">
-                Élargissez à tous les pays, ou publiez la vôtre : les devs arrivent vite.
+            <x-empty-state title="Aucune mission ne correspond… pour l'instant.">
+                Élargissez à tous les pays ou à toutes les compétences.
                 <div class="mt-6 flex flex-wrap justify-center gap-3">
                     <x-button variant="secondary" wire:click="resetFilters">Voir toutes les missions</x-button>
                 </div>

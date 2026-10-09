@@ -6,7 +6,7 @@ use App\Models\User;
 test('la page d\'inscription s\'affiche en français', function () {
     $this->get('/register')
         ->assertOk()
-        ->assertSee('Rejoindre DevMarché')
+        ->assertSee('Votre profil en ligne en 2 minutes.')
         ->assertSee('Afrique francophone');
 });
 
@@ -20,10 +20,10 @@ test('un visiteur peut créer un compte avec son profil', function () {
         'password_confirmation' => 'motdepasse-solide',
     ]);
 
-    $response->assertRedirect('/');
     $this->assertAuthenticated();
 
     $user = User::with('profile')->sole();
+    $response->assertRedirect(route('devs.show', $user))->assertSessionHas('welcome', true);
     expect($user->email)->toBe('khady@exemple.sn')
         ->and($user->reputation)->toBe(0)
         ->and($user->is_admin)->toBeFalse()

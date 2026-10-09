@@ -15,6 +15,7 @@
         .match ($variant) {
             'primary' => 'btn-primary',
             'accent' => 'btn-accent',
+            'cta' => 'btn-cta',
             'secondary' => 'border border-line bg-bg-alt text-ink shadow-soft hover:bg-surface',
             'danger' => 'border border-secondary-500 bg-secondary-50 text-secondary-800 hover:bg-secondary-100 dark:border-secondary-700 dark:bg-secondary-950 dark:text-secondary-300',
             default => 'text-primary-600 hover:text-primary-700 hover:underline underline-offset-4 dark:text-primary-300',

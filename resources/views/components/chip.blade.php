@@ -1,8 +1,9 @@
-@props(['tone' => 'info', 'dot' => false])
+@props(['tone' => 'info'])
 
-{{-- Puce douce. Tons (08-design.md, « Correspondances d'usage ») :
-     info (Ouverte, Disponible) · warm (En cours, Nouveau) · done (Terminée : aplat avec coche)
-     · muted (Annulée, En poste) · neutral (compétences). L'ambre n'est jamais du texte : warm = texte secondary-800. --}}
+{{-- Étiquette texte seul (règle du représentant : aucun point ni signe devant un texte),
+     coins de 6 px, fond doux et texte foncé. Tons (08-design.md) :
+     info (Ouverte, Disponible) · warm (En cours, Nouveau) · done (Terminée, Retenue : coche ✓)
+     · muted (Annulée, En poste) · neutral (compétences). L'ambre n'est jamais du texte. --}}
 @php
     $classes = match ($tone) {
         'warm' => 'bg-secondary-100 text-secondary-800 dark:bg-secondary-950 dark:text-secondary-300',
@@ -13,11 +14,9 @@
     };
 @endphp
 
-<span {{ $attributes->merge(['class' => "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium $classes"]) }}>
+<span {{ $attributes->merge(['class' => "inline-flex items-center gap-1 rounded-[6px] px-2.5 py-1 text-sm font-medium $classes"]) }}>
     @if ($tone === 'done')
         <x-icon name="check" class="size-3.5" />
-    @elseif ($dot)
-        <span class="size-1.5 rounded-full bg-current" aria-hidden="true"></span>
     @endif
     {{ $slot }}
 </span>

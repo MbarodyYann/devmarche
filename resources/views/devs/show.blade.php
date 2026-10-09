@@ -1,6 +1,22 @@
 <x-layouts.app :title="$dev->name">
     @php($profile = $dev->profile)
 
+    @php($isOwner = auth()->id() === $dev->id)
+
+    {{-- Encart d'action pour le propriétaire : bienvenue après l'inscription, ou profil sans compétences --}}
+    @if ($isOwner && (session('welcome') || $dev->skills->isEmpty()))
+        <div class="mb-6 flex flex-col gap-4 rounded-2xl border border-secondary-400 bg-secondary-50 p-5 sm:flex-row sm:items-center sm:justify-between dark:bg-secondary-950" role="status">
+            <p class="text-ink">
+                @if (session('welcome'))
+                    <strong class="font-semibold">Bienvenue !</strong> Ajoutez vos compétences pour recevoir les missions qui vous correspondent.
+                @else
+                    Les clients filtrent d'abord par compétence. Ajoutez les vôtres pour apparaître dans leurs recherches.
+                @endif
+            </p>
+            <x-button :href="route('profile.edit', $dev)" class="shrink-0">Compléter mon profil</x-button>
+        </div>
+    @endif
+
     {{-- En-tête : identité à gauche, compteur de cauris dans le cadre repères à droite --}}
     <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
         <x-card class="flex flex-col gap-6 sm:flex-row sm:items-start">
@@ -24,7 +40,7 @@
                 @endif
                 <div class="mt-5 flex flex-wrap items-center gap-2">
                     @if ($profile)
-                        <x-chip :tone="$profile->availability->tone()" dot>{{ $profile->availability->label() }}</x-chip>
+                        <x-chip :tone="$profile->availability->tone()">{{ $profile->availability->label() }}</x-chip>
                         <x-chip tone="neutral"><x-icon name="map-pin" class="size-3.5" /> {{ $profile->city }}, {{ $profile->countryName() }} <span aria-hidden="true">{{ $profile->flag() }}</span></x-chip>
                     @endif
                     @if ($dev->isNewMember())
@@ -72,7 +88,12 @@
                 <h2 class="mb-4 text-[28px] sm:text-[32px]">Missions réalisées</h2>
                 @if ($completedMissions->isEmpty())
                     <x-card padding="p-6">
-                        <p class="text-ink-muted">Aucune mission terminée pour l'instant.</p>
+                        @if ($isOwner)
+                            <p class="text-ink-soft">Votre première mission terminée apparaîtra ici, avec +20 cauris.</p>
+                            <x-button :href="route('missions.index', ['pour_moi' => 1])" variant="secondary" class="mt-4">{{ App\Support\Copy::MEMBER_CTA }}</x-button>
+                        @else
+                            <p class="text-ink-muted">Aucune mission terminée pour l'instant.</p>
+                        @endif
                     </x-card>
                 @else
                     <ul class="grid gap-4 sm:grid-cols-2">

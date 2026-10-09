@@ -1,13 +1,16 @@
 <div>
-    <x-page-intro eyebrow="La communauté" title="Les devs d'Afrique francophone" list>
-        Trouvez le bon profil près de chez vous, par pays, ville ou compétence.
+    <x-page-intro eyebrow="Les devs" title="Le bon dev est peut-être dans votre ville." list>
+        Filtrez par compétence, pays et disponibilité : les cauris montrent qui a déjà livré des missions et aidé la communauté.
     </x-page-intro>
+
+    @guest
+        <x-signup-cta class="mt-8" />
+    @endguest
 
     {{-- Barre d'outils : compteur à gauche, disponibilité en contrôle segmenté à droite --}}
     @php($total = $this->devs->total())
     <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
         <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
-            <span class="size-1.5 rounded-full bg-secondary-400" aria-hidden="true"></span>
             <span wire:loading.remove>
                 {{ $total }} {{ $total > 1 ? 'devs' : 'dev' }} {{ $this->hasFilters ? ($total > 1 ? 'trouvés' : 'trouvé') : ($total > 1 ? 'inscrits' : 'inscrit') }}
             </span>
@@ -69,8 +72,8 @@
 
     <div wire:loading.class="opacity-60" class="mt-6 transition-opacity">
         @if ($this->devs->isEmpty())
-            <x-empty-state title="Aucun dev ne correspond à ces filtres.">
-                Essayez une autre ville, ou élargissez à tous les pays.
+            <x-empty-state title="Aucun dev ne correspond… pour l'instant.">
+                Élargissez à tous les pays, à toutes les villes ou à toutes les compétences.
                 <div class="mt-6">
                     <x-button variant="secondary" wire:click="resetFilters">Voir tous les devs</x-button>
                 </div>
@@ -113,7 +116,7 @@
                                 <td class="px-4 py-4"><x-skills :skills="$dev->skills" :limit="3" :link="false" /></td>
                                 <td class="px-4 py-4">
                                     @if ($dev->profile)
-                                        <x-chip :tone="$dev->profile->availability->tone()" dot>{{ $dev->profile->availability->label() }}</x-chip>
+                                        <x-chip :tone="$dev->profile->availability->tone()">{{ $dev->profile->availability->label() }}</x-chip>
                                     @endif
                                 </td>
                                 <td class="px-5 py-4 text-right"><x-reputation :points="$dev->reputation" /></td>

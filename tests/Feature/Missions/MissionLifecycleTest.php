@@ -30,7 +30,7 @@ test('le cycle complet : postuler, retenir, terminer, et +20 cauris', function (
 
     // Le client voit les candidatures et retient Moussa.
     $this->actingAs($this->client)->get(route('missions.show', $this->mission))
-        ->assertSee('Candidatures')->assertSee('Moussa Ndiaye')->assertSee('Retenir');
+        ->assertSee('Choisissez votre dev')->assertSee('Moussa Ndiaye')->assertSee('Retenir ce dev');
 
     $this->actingAs($this->client)->post(route('missions.accept', [$this->mission, $mine]))
         ->assertRedirect(route('missions.show', $this->mission));
@@ -154,12 +154,12 @@ test('le candidat voit sa candidature et les autres ne voient pas les candidatur
 
     $this->actingAs($this->dev)->get(route('missions.show', $this->mission))
         ->assertSee('Votre candidature')
-        ->assertSee('Vous avez postulé le')
-        ->assertDontSee('Retenir');
+        ->assertSee('Candidature envoyée le')
+        ->assertDontSee('Retenir ce dev');
 
     $this->actingAs($this->other)->get(route('missions.show', $this->mission))
         ->assertDontSee('Bonjour, j&#039;ai déjà intégré Wave', false)
-        ->assertSee('Postuler');
+        ->assertSee('Postuler à cette mission');
 });
 
 test('les candidatures sont limitées à 30 par heure', function () {

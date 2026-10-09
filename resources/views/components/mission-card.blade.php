@@ -4,7 +4,7 @@
      budget en gros chiffre, client et nombre de candidatures. --}}
 <x-card :href="route('missions.show', $mission)" padding="p-5 sm:p-6" {{ $attributes->merge(['class' => 'flex h-full min-w-0 flex-col gap-4']) }}>
     <div class="flex flex-wrap items-center justify-between gap-2">
-        <x-chip :tone="$mission->status->tone()" :dot="$mission->status->tone() !== 'done'">{{ $mission->status->label() }}</x-chip>
+        <x-chip :tone="$mission->status->tone()">{{ $mission->status->label() }}</x-chip>
         <span class="text-sm text-ink-muted">{{ $mission->created_at->translatedFormat('j M Y') }}</span>
     </div>
 

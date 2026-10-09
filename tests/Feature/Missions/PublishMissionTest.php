@@ -32,7 +32,7 @@ test('un membre publie une mission et arrive sur sa fiche', function () {
 
     $mission = Mission::with('skills')->sole();
     $response->assertRedirect(route('missions.show', $mission))
-        ->assertSessionHas('status', 'Mission publiée. Les devs arrivent !');
+        ->assertSessionHas('status', 'Mission publiée. Les devs arrivent : vous verrez leurs candidatures ici.');
 
     expect($mission->client_id)->toBe($client->id)
         ->and($mission->budget_fcfa)->toBe(150000)

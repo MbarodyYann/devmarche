@@ -10,7 +10,7 @@
             <span class="font-serif text-[56px] font-medium leading-none tracking-tight text-ink">{{ $formatted }}</span>
         </span>
         <span class="mt-2 text-sm font-medium text-ink-muted">
-            {{ $points === 0 ? 'Pas encore de cauris : chaque réponse utile compte.' : 'cauris de réputation' }}
+            {{ $points === 0 ? 'Pas encore de cauris : chaque mission terminée et chaque réponse utile en rapportent.' : 'cauris de réputation' }}
         </span>
     </div>
 @else

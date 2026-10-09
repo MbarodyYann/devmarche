@@ -19,7 +19,7 @@ class MissionApplicationController extends Controller
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Candidature envoyée. Bonne chance !');
+            ->with('status', 'Candidature envoyée. Le client choisira parmi les candidats ; vous verrez le statut ici.');
     }
 
     public function accept(Mission $mission, Application $application, MissionService $missions): RedirectResponse
@@ -30,6 +30,6 @@ class MissionApplicationController extends Controller
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Candidat retenu. La mission est en cours.');
+            ->with('status', 'Dev retenu, la mission est en cours. Confirmez-en la fin une fois le travail livré.');
     }
 }

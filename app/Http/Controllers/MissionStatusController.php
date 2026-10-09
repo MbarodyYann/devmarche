@@ -17,7 +17,7 @@ class MissionStatusController extends Controller
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Mission terminée. +20 cauris pour le freelance, bravo à tous les deux !');
+            ->with('status', 'Mission terminée. '.$mission->freelancer()->value('name').' reçoit +20 cauris de réputation.');
     }
 
     public function cancel(Mission $mission, MissionService $missions): RedirectResponse
@@ -28,6 +28,6 @@ class MissionStatusController extends Controller
 
         return redirect()
             ->route('missions.show', $mission)
-            ->with('status', 'Mission annulée.');
+            ->with('status', 'Mission annulée. Les candidatures en attente sont closes.');
     }
 }
