@@ -1,14 +1,15 @@
-@props(['tone' => 'secondary', 'dot' => false])
+@props(['tone' => 'info', 'dot' => false])
 
-{{-- Puce douce. Tons : secondary (Ouverte, Disponible), primary (En cours, Nouveau),
-     done (Terminée : plein avec coche), muted (Annulée, En poste), neutral (compétences). --}}
+{{-- Puce douce. Tons (08-design.md, « Correspondances d'usage ») :
+     info (Ouverte, Disponible) · warm (En cours, Nouveau) · done (Terminée : aplat avec coche)
+     · muted (Annulée, En poste) · neutral (compétences). L'ambre n'est jamais du texte : warm = texte secondary-800. --}}
 @php
     $classes = match ($tone) {
-        'primary' => 'bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300',
-        'done' => 'bg-secondary-700 text-white dark:bg-secondary-400 dark:text-night',
+        'warm' => 'bg-secondary-100 text-secondary-800 dark:bg-secondary-950 dark:text-secondary-300',
+        'done' => 'bg-primary-600 text-white dark:bg-secondary-400 dark:text-primary-950',
         'muted' => 'bg-bg-alt text-ink-muted ring-1 ring-line',
         'neutral' => 'bg-bg-alt text-ink-soft ring-1 ring-line',
-        default => 'bg-secondary-50 text-secondary-700 dark:bg-secondary-950 dark:text-secondary-300',
+        default => 'bg-primary-50 text-primary-700 dark:bg-primary-900 dark:text-primary-200',
     };
 @endphp
 

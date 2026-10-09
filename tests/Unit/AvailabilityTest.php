@@ -10,8 +10,8 @@ test('les disponibilités ont des valeurs ASCII et des libellés en français', 
     ]);
 });
 
-test('chaque disponibilité a un ton de puce issu des deux couleurs', function () {
-    expect(Availability::Available->tone())->toBe('secondary')
-        ->and(Availability::Busy->tone())->toBe('primary')
+test('chaque disponibilité a un ton de puce issu des deux couleurs de la marque', function () {
+    expect(Availability::Available->tone())->toBe('info')
+        ->and(Availability::Busy->tone())->toBe('warm')
         ->and(Availability::Employed->tone())->toBe('muted');
 });

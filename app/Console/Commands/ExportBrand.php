@@ -23,9 +23,9 @@ class ExportBrand extends Command
 
         $files = [
             'images/logo-mark.svg' => $this->svg(Brand::MARK_VIEWBOX, $this->mark()),
-            'images/logo-mark-mono.svg' => $this->svg(Brand::MARK_VIEWBOX, $this->mono(), 'color:'.Brand::SECONDARY_700),
+            'images/logo-mark-mono.svg' => $this->svg(Brand::MARK_VIEWBOX, $this->mono(), 'color:'.Brand::PRIMARY_600),
             'images/logo.svg' => $this->logo(Brand::INK),
-            'images/logo-dark.svg' => $this->logo(Brand::INK_DARK, '#0F1126'),
+            'images/logo-dark.svg' => $this->logo(Brand::INK_DARK, '#0B1022'),
             'favicon.svg' => $this->svg(Brand::FAVICON_VIEWBOX, $this->mark(small: true)),
             'images/app-icon.svg' => $this->appIcon(),
             'images/og-default.svg' => $this->openGraph(),
@@ -51,25 +51,25 @@ class ExportBrand extends Command
     /** Symbole en couleurs. $gap : couleur de la marge autour du cauri (celle du fond). */
     private function mark(bool $small = false, string $gap = '#FFFFFF'): string
     {
-        $p = Brand::PRIMARY_500;
-        $s = Brand::SECONDARY_700;
+        $amber = Brand::SECONDARY_400;
+        $cobalt = Brand::PRIMARY_600;
 
-        $out = '<path fill="'.$p.'" d="'.Brand::WINDOW.'"/>'
-            .'<path fill="'.$s.'" d="'.Brand::WINDOW_BODY.'"/>';
+        $out = '<path fill="'.$amber.'" d="'.Brand::WINDOW.'"/>'
+            .'<path fill="'.$cobalt.'" d="'.Brand::WINDOW_BODY.'"/>';
 
         if (! $small) {
             $out .= '<g fill="#fff"><circle cx="24.4" cy="26.2" r="2.1"/><circle cx="31.1" cy="26.2" r="2.1"/><circle cx="37.7" cy="26.2" r="2.1"/></g>';
         }
 
         $out .= '<g fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">'
-            .'<path stroke="#fff" d="'.Brand::CHEVRONS.'"/><path stroke="'.$p.'" d="'.Brand::SLASH.'"/></g>';
+            .'<path stroke="#fff" d="'.Brand::CHEVRONS.'"/><path stroke="'.$amber.'" d="'.Brand::SLASH.'"/></g>';
 
         if (! $small) {
             $out .= '<g transform="'.Brand::CAURI_TRANSFORM.'">'
                 .'<path fill="'.$gap.'" stroke="'.$gap.'" stroke-width="1.4" d="'.Brand::CAURI_OUTER.'"/>'
-                .'<path fill="'.$p.'" d="'.Brand::CAURI_OUTER.'"/>'
+                .'<path fill="'.$amber.'" d="'.Brand::CAURI_OUTER.'"/>'
                 .'<path fill="#fff" d="'.Brand::CAURI_SHELL.'"/>'
-                .'<path fill="'.$p.'" d="'.Brand::CAURI_APERTURE.'"/></g>';
+                .'<path fill="'.$amber.'" d="'.Brand::CAURI_APERTURE.'"/></g>';
         }
 
         return $out;
@@ -97,7 +97,7 @@ class ExportBrand extends Command
         return $this->svg('0 0 '.round(88 + $ww * $scale).' 78',
             '<svg x="0" y="0" width="78" height="78" viewBox="'.Brand::MARK_VIEWBOX.'">'.$this->mark(gap: $gap).'</svg>'
             .'<svg x="88" y="19" width="'.round($ww * $scale, 1).'" height="40" viewBox="'.Brand::WORDMARK_VIEWBOX.'">'
-            .'<path fill="'.$ink.'" d="'.Brand::WORDMARK_BODY.'"/><path fill="'.Brand::PRIMARY_500.'" d="'.Brand::WORDMARK_ACCENT.'"/></svg>');
+            .'<path fill="'.$ink.'" d="'.Brand::WORDMARK_BODY.'"/><path fill="'.Brand::SECONDARY_400.'" d="'.Brand::WORDMARK_ACCENT.'"/></svg>');
     }
 
     /** Icône d'application : symbole complet sur fond blanc, marge de 12 %. */
@@ -120,13 +120,13 @@ class ExportBrand extends Command
         $taglineX = round((1200 - $meta['width']) / 2 - $meta['x1'], 1);
 
         return $this->svg('0 0 1200 630',
-            '<defs><pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#171426" fill-opacity=".07"/></pattern>'
+            '<defs><pattern id="p" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="'.Brand::INK.'" fill-opacity=".07"/></pattern>'
             .'</defs>'
-            .'<rect width="1200" height="630" fill="#FAF8F5"/><rect width="1200" height="630" fill="url(#p)"/>'
-            .'<rect y="618" width="600" height="12" fill="'.Brand::PRIMARY_500.'"/><rect x="600" y="618" width="600" height="12" fill="'.Brand::SECONDARY_700.'"/>'
-            .'<svg x="'.$x.'" y="170" width="190" height="190" viewBox="'.Brand::MARK_VIEWBOX.'">'.$this->mark(gap: '#FAF8F5').'</svg>'
+            .'<rect width="1200" height="630" fill="'.Brand::BG_ALT.'"/><rect width="1200" height="630" fill="url(#p)"/>'
+            .'<rect y="618" width="600" height="12" fill="'.Brand::SECONDARY_400.'"/><rect x="600" y="618" width="600" height="12" fill="'.Brand::PRIMARY_600.'"/>'
+            .'<svg x="'.$x.'" y="170" width="190" height="190" viewBox="'.Brand::MARK_VIEWBOX.'">'.$this->mark(gap: Brand::BG_ALT).'</svg>'
             .'<svg x="'.($x + 226).'" y="210" width="'.$wordWidth.'" height="110" viewBox="'.Brand::WORDMARK_VIEWBOX.'">'
-            .'<path fill="'.Brand::INK.'" d="'.Brand::WORDMARK_BODY.'"/><path fill="'.Brand::PRIMARY_500.'" d="'.Brand::WORDMARK_ACCENT.'"/></svg>'
-            .'<path transform="translate('.$taglineX.' 450)" fill="'.Brand::SECONDARY_700.'" d="'.$tagline.'"/>');
+            .'<path fill="'.Brand::INK.'" d="'.Brand::WORDMARK_BODY.'"/><path fill="'.Brand::SECONDARY_400.'" d="'.Brand::WORDMARK_ACCENT.'"/></svg>'
+            .'<path transform="translate('.$taglineX.' 450)" fill="'.Brand::PRIMARY_600.'" d="'.$tagline.'"/>');
     }
 }

@@ -33,7 +33,7 @@
 
         <x-slot:footer>
             Déjà inscrit ?
-            <a href="{{ route('login') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-400">Se connecter</a>
+            <a href="{{ route('login') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Se connecter</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

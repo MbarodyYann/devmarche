@@ -23,8 +23,8 @@ enum Availability: string
     public function tone(): string
     {
         return match ($this) {
-            self::Available => 'secondary',
-            self::Busy => 'primary',
+            self::Available => 'info',
+            self::Busy => 'warm',
             self::Employed => 'muted',
         };
     }

@@ -1,12 +1,12 @@
 @props(['points' => 0, 'size' => 'sm'])
 
-{{-- Réputation en cauris : icône latérite suivie du chiffre (grand compteur Newsreader sur le profil). --}}
+{{-- Réputation en cauris : icône ambre suivie du chiffre (grand compteur Newsreader sur le profil). --}}
 @php($formatted = number_format($points, 0, ',', "\u{202F}"))
 
 @if ($size === 'lg')
     <div {{ $attributes->merge(['class' => 'flex flex-col']) }} title="Réputation : {{ $formatted }} cauris">
         <span class="flex items-center gap-3">
-            <x-cauri class="size-10 text-primary-500 dark:text-primary-400" />
+            <x-cauri class="size-10 text-secondary-400" />
             <span class="font-serif text-[56px] font-medium leading-none tracking-tight text-ink">{{ $formatted }}</span>
         </span>
         <span class="mt-2 text-sm font-medium text-ink-muted">

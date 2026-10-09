@@ -91,7 +91,7 @@
                         @if ($profile->github_url)
                             <li>
                                 <a href="{{ $profile->github_url }}" rel="nofollow ugc noopener" target="_blank"
-                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-400">
+                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-300">
                                     <x-icon name="github" class="size-5" /> GitHub <x-icon name="arrow-right" class="ml-auto size-4 text-ink-muted" />
                                 </a>
                             </li>
@@ -99,7 +99,7 @@
                         @if ($profile->portfolio_url)
                             <li>
                                 <a href="{{ $profile->portfolio_url }}" rel="nofollow ugc noopener" target="_blank"
-                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-400">
+                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-300">
                                     <x-icon name="link" class="size-5" /> Portfolio <x-icon name="arrow-right" class="ml-auto size-4 text-ink-muted" />
                                 </a>
                             </li>

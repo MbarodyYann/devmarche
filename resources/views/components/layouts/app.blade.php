@@ -20,7 +20,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ? $title.' · ' : '' }}DevMarché</title>
     <meta name="description" content="La plateforme d'échange par et pour les développeurs d'Afrique francophone.">
-    <meta name="theme-color" content="#2F3A8F">
+    <meta name="theme-color" content="#314A82">
 
     {{-- Icônes (générées par php artisan brand:export puis scripts/brand-png.sh) --}}
     <link rel="icon" href="/favicon.ico" sizes="32x32">
@@ -81,7 +81,7 @@
                        ])>
                         {{ $item['label'] }}
                         @if ($active)
-                            <span class="mx-auto mt-0.5 block h-0.5 w-4 rounded-full bg-primary-500" aria-hidden="true"></span>
+                            <span class="mx-auto mt-0.5 block h-0.5 w-5 rounded-full bg-secondary-400" aria-hidden="true"></span>
                         @endif
                     </a>
                 @endforeach
@@ -94,7 +94,7 @@
                         <div class="relative">
                             <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
                             <input id="recherche-globale" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher un dev…"
-                                   class="h-10 w-52 rounded-btn border border-line bg-surface pl-9 pr-3 text-sm text-ink placeholder:text-ink-muted focus:border-secondary-500 focus:outline-none focus:ring-3 focus:ring-secondary-200 dark:focus:ring-secondary-800">
+                                   class="h-10 w-52 rounded-btn border border-line bg-surface pl-9 pr-3 text-sm text-ink placeholder:text-ink-muted focus:border-primary-500 focus:outline-none focus:ring-3 focus:ring-primary-200 dark:focus:ring-primary-800">
                         </div>
                     </form>
                 @endif
@@ -134,12 +134,12 @@
 
                 @if ($publishUrl)
                     <div class="hidden md:block">
-                        <x-button :href="$publishUrl" size="sm">Publier une mission</x-button>
+                        <x-button :href="$publishUrl" variant="accent" size="sm">Publier une mission</x-button>
                     </div>
                 @else
                     @guest
                         <div class="hidden md:block">
-                            <x-button :href="route('register')" size="sm">Créer un compte</x-button>
+                            <x-button :href="route('register')" variant="accent" size="sm">Créer un compte</x-button>
                         </div>
                     @endguest
                 @endif
@@ -150,7 +150,7 @@
     <main id="contenu" class="mx-auto max-w-page px-4 pb-16 pt-10 sm:px-6 sm:pt-16">
         @if (session('status'))
             <div role="status" class="mb-8 flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 font-medium text-ink shadow-card">
-                <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary-700 text-white dark:bg-secondary-400 dark:text-night">
+                <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white dark:bg-secondary-400 dark:text-primary-950">
                     <x-icon name="check" class="size-4" />
                 </span>
                 {{ session('status') }}
@@ -166,7 +166,7 @@
             <div class="defile flex w-max gap-12 whitespace-nowrap font-serif text-5xl font-medium tracking-tight text-ink/10 sm:text-7xl dark:text-ink/15">
                 @foreach (range(1, 2) as $copy)
                     <span>Du travail, de l'aide, des pairs.</span>
-                    <span class="italic text-primary-500/40 dark:text-primary-400/40">Par et pour les devs d'Afrique.</span>
+                    <span class="italic text-primary-600/25 dark:text-secondary-300/30">Par et pour les devs d'Afrique.</span>
                 @endforeach
             </div>
         </div>
@@ -198,7 +198,7 @@
                     <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
                        @class([
                            'flex h-14 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-medium transition',
-                           'bg-surface text-primary-600 shadow-soft dark:text-primary-400' => $active,
+                           'bg-surface text-primary-600 shadow-soft ring-1 ring-secondary-400 dark:text-secondary-400' => $active,
                            'text-ink-muted' => ! $active,
                        ])>
                         <x-icon :name="$item['icon']" class="size-5" />
@@ -210,7 +210,7 @@
                 <a href="{{ $meUrl }}" @if ($meActive) aria-current="page" @endif
                    @class([
                        'flex h-14 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-medium transition',
-                       'bg-surface text-primary-600 shadow-soft dark:text-primary-400' => $meActive,
+                       'bg-surface text-primary-600 shadow-soft ring-1 ring-secondary-400 dark:text-secondary-400' => $meActive,
                        'text-ink-muted' => ! $meActive,
                    ])>
                     <x-icon name="user" class="size-5" />
@@ -220,7 +220,7 @@
         </ul>
 
         @if ($publishUrl)
-            <a href="{{ $publishUrl }}" class="btn-primary absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
+            <a href="{{ $publishUrl }}" class="btn-accent absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
                 <x-icon name="plus" class="size-6" />
             </a>
         @endif

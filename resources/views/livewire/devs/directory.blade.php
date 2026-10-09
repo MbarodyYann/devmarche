@@ -7,7 +7,7 @@
     @php($total = $this->devs->total())
     <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
         <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
-            <span class="size-1.5 rounded-full bg-primary-500" aria-hidden="true"></span>
+            <span class="size-1.5 rounded-full bg-secondary-400" aria-hidden="true"></span>
             <span wire:loading.remove>
                 {{ $total }} {{ $total > 1 ? 'devs' : 'dev' }} {{ $this->hasFilters ? ($total > 1 ? 'trouvés' : 'trouvé') : ($total > 1 ? 'inscrits' : 'inscrit') }}
             </span>
@@ -35,7 +35,7 @@
                         class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field border border-line bg-bg-alt px-3 text-sm font-semibold text-ink shadow-soft sm:hidden">
                     <x-icon name="filter" class="size-4" /> Filtres
                     @if ($activeFilters)
-                        <span class="inline-flex size-5 items-center justify-center rounded-full bg-secondary-700 text-xs text-white dark:bg-secondary-400 dark:text-night">{{ $activeFilters }}</span>
+                        <span class="inline-flex size-5 items-center justify-center rounded-full bg-primary-600 text-xs text-white dark:bg-secondary-400 dark:text-primary-950">{{ $activeFilters }}</span>
                     @endif
                 </button>
             </div>
@@ -95,10 +95,10 @@
                                     <a href="{{ route('devs.show', $dev) }}" class="flex items-center gap-3 after:absolute after:inset-0">
                                         <x-avatar :user="$dev" size="sm" />
                                         <span class="min-w-0">
-                                            <span class="flex items-center gap-2 font-semibold text-ink group-hover:text-primary-600 dark:group-hover:text-primary-400">
+                                            <span class="flex items-center gap-2 font-semibold text-ink group-hover:text-primary-600 dark:group-hover:text-primary-300">
                                                 {{ $dev->name }}
                                                 @if ($dev->isNewMember())
-                                                    <x-chip tone="primary" class="px-2! py-0.5! text-xs!">Nouveau</x-chip>
+                                                    <x-chip tone="warm" class="px-2! py-0.5! text-xs!">Nouveau</x-chip>
                                                 @endif
                                             </span>
                                             @if ($dev->profile?->headline)

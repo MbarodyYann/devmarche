@@ -25,20 +25,20 @@
             <path d="{{ Brand::CAURI_APERTURE }}"/>
         </g>
     @else
-        <path class="fill-primary-500" d="{{ Brand::WINDOW }}"/>
-        <path class="fill-secondary-700" d="{{ Brand::WINDOW_BODY }}"/>
+        <path class="fill-secondary-400" d="{{ Brand::WINDOW }}"/>
+        <path class="fill-primary-600" d="{{ Brand::WINDOW_BODY }}"/>
         @unless ($small)
             <g class="fill-white"><circle cx="24.4" cy="26.2" r="2.1"/><circle cx="31.1" cy="26.2" r="2.1"/><circle cx="37.7" cy="26.2" r="2.1"/></g>
         @endunless
         <path class="stroke-white" d="{{ Brand::CHEVRONS }}" fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-        <path class="stroke-primary-500" d="{{ Brand::SLASH }}" fill="none" stroke-width="3.4" stroke-linecap="round"/>
+        <path class="stroke-secondary-400" d="{{ Brand::SLASH }}" fill="none" stroke-width="3.4" stroke-linecap="round"/>
         @unless ($small)
             <g transform="{{ Brand::CAURI_TRANSFORM }}">
                 {{-- marge de la couleur du fond, pour détacher le cauri de la fenêtre --}}
                 <path class="fill-bg stroke-bg" d="{{ Brand::CAURI_OUTER }}" stroke-width="1.4"/>
-                <path class="fill-primary-500" d="{{ Brand::CAURI_OUTER }}"/>
+                <path class="fill-secondary-400" d="{{ Brand::CAURI_OUTER }}"/>
                 <path class="fill-white" d="{{ Brand::CAURI_SHELL }}"/>
-                <path class="fill-primary-500" d="{{ Brand::CAURI_APERTURE }}"/>
+                <path class="fill-secondary-400" d="{{ Brand::CAURI_APERTURE }}"/>
             </g>
         @endunless
     @endif

@@ -82,41 +82,41 @@
     --color-current: currentColor;
     --color-white: #ffffff;
 
-    /* Primary — Latérite */
-    --color-primary-50: #fdf4ef;
-    --color-primary-100: #fae5da;
-    --color-primary-200: #f4c9b3;
-    --color-primary-300: #eca584;
-    --color-primary-400: #e07b54;
-    --color-primary-500: #c4532b;
-    --color-primary-600: #a84322;
-    --color-primary-700: #8a361d;
-    --color-primary-800: #6e2d1b;
-    --color-primary-900: #5a2719;
-    --color-primary-950: #31120b;
+    /* Primary — Indigo cobalt (base 600) */
+    --color-primary-50: #f3f4f8;
+    --color-primary-100: #e2e6ee;
+    --color-primary-200: #c5ccdc;
+    --color-primary-300: #a2aec7;
+    --color-primary-400: #7b8baf;
+    --color-primary-500: #546997;
+    --color-primary-600: #314a82;
+    --color-primary-700: #283c6b;
+    --color-primary-800: #1f2f55;
+    --color-primary-900: #16213e;
+    --color-primary-950: #0c1328;
 
-    /* Secondary — Indigo */
-    --color-secondary-50: #f1f3fb;
-    --color-secondary-100: #e1e5f6;
-    --color-secondary-200: #c7ceee;
-    --color-secondary-300: #a2ade2;
-    --color-secondary-400: #7684d2;
-    --color-secondary-500: #5260c2;
-    --color-secondary-600: #3d4aae;
-    --color-secondary-700: #2f3a8f;
-    --color-secondary-800: #2a3275;
-    --color-secondary-900: #262c5e;
-    --color-secondary-950: #161a38;
+    /* Secondary — Ambre (base 400). Jamais en texte sur fond clair : en aplat, ou secondary-700 pour du texte. */
+    --color-secondary-50: #fffaf1;
+    --color-secondary-100: #fef4df;
+    --color-secondary-200: #fde9be;
+    --color-secondary-300: #fcdc97;
+    --color-secondary-400: #f9b218;
+    --color-secondary-500: #da9a14;
+    --color-secondary-600: #ba8311;
+    --color-secondary-700: #9b6b0d;
+    --color-secondary-800: #7c5309;
+    --color-secondary-900: #5c3c06;
+    --color-secondary-950: #3d2402;
 
     /* Neutres (redéfinis en sombre plus bas) */
     --color-bg: #ffffff;
-    --color-bg-alt: #faf8f5;
+    --color-bg-alt: #f7f8fb;
     --color-surface: #ffffff;
-    --color-line: rgb(23 20 38 / 0.07);
-    --color-ink: #171426;
-    --color-ink-soft: #45424f;
-    --color-ink-muted: #6e6a7a; /* un cran plus foncé que 08 (#7A7686) pour tenir le contraste AA sur bg-alt */
-    --color-night: #0f1126;
+    --color-line: rgb(20 26 46 / 0.08);
+    --color-ink: #141a2e;
+    --color-ink-soft: #3f4659;
+    --color-ink-muted: #5f6679;
+    --color-night: #0b1022;
 
     --font-sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
     --font-serif: 'Newsreader', ui-serif, Georgia, serif;
@@ -136,13 +136,13 @@
 
 @layer base {
     .dark {
-        --color-bg: #0f1126;
-        --color-bg-alt: #14172f;
-        --color-surface: #1a1d38;
+        --color-bg: #0b1022;
+        --color-bg-alt: #10172e;
+        --color-surface: #141c38;
         --color-line: rgb(255 255 255 / 0.08);
-        --color-ink: #f4f1ec;
-        --color-ink-soft: #c9c6d3;
-        --color-ink-muted: #9693a8;
+        --color-ink: #f3f4f8;
+        --color-ink-soft: #c5ccdc;
+        --color-ink-muted: #97a1b8;
         --shadow-card: 0 2px 18px rgb(0 0 0 / 0.25);
         --shadow-card-hover: 0 8px 30px rgb(0 0 0 / 0.35);
         --shadow-soft: 0 2px 8px rgb(0 0 0 / 0.2);
@@ -173,7 +173,7 @@
     }
 
     :focus-visible {
-        outline: 2px solid var(--color-secondary-500);
+        outline: 2px solid var(--color-primary-500);
         outline-offset: 2px;
     }
 
@@ -199,25 +199,25 @@
     font-weight: 500;
     font-size: 1rem;
     letter-spacing: 0;
-    color: var(--color-primary-600);
+    color: var(--color-primary-500);
 
     &:where(.dark, .dark *) {
-        color: var(--color-primary-400);
+        color: var(--color-secondary-300);
     }
 }
 
-/* Bouton principal en aplat indigo, anneau et ombre portée (aucun dégradé ni reflet). */
+/* Bouton principal : aplat indigo cobalt (clair), aplat ambre (sombre). Aucun dégradé. */
 @utility btn-primary {
     color: var(--color-white);
-    background-color: var(--color-secondary-800);
-    border: 1px solid var(--color-secondary-900);
+    background-color: var(--color-primary-600);
+    border: 1px solid var(--color-primary-700);
     box-shadow:
-        0 0 0 3px rgb(22 26 56 / 0.18),
-        0 6px 16px rgb(22 26 56 / 0.22);
+        0 0 0 3px rgb(49 74 130 / 0.16),
+        0 6px 16px rgb(20 26 46 / 0.18);
     transition: background-color 150ms, transform 150ms;
 
     &:hover {
-        background-color: var(--color-secondary-900);
+        background-color: var(--color-primary-700);
     }
 
     &:active {
@@ -225,12 +225,35 @@
     }
 
     &:where(.dark, .dark *) {
-        background-color: var(--color-secondary-500);
-        border-color: var(--color-secondary-400);
+        color: var(--color-primary-950);
+        background-color: var(--color-secondary-400);
+        border-color: var(--color-secondary-500);
+        box-shadow:
+            0 0 0 3px rgb(249 178 24 / 0.18),
+            0 6px 16px rgb(0 0 0 / 0.35);
 
         &:hover {
-            background-color: var(--color-secondary-600);
+            background-color: var(--color-secondary-300);
         }
+    }
+}
+
+/* Bouton d'accent (une fois par écran, « Publier une mission ») : aplat ambre, texte primary-900. */
+@utility btn-accent {
+    color: var(--color-primary-900);
+    background-color: var(--color-secondary-400);
+    border: 1px solid var(--color-secondary-500);
+    box-shadow:
+        0 0 0 3px rgb(249 178 24 / 0.2),
+        0 6px 16px rgb(20 26 46 / 0.16);
+    transition: background-color 150ms, transform 150ms;
+
+    &:hover {
+        background-color: var(--color-secondary-300);
+    }
+
+    &:active {
+        transform: translateY(1px);
     }
 }
 

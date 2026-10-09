@@ -11,13 +11,15 @@ namespace App\Support;
 class Brand
 {
     /** Couleurs de la charte utilisées dans les fichiers statiques. */
-    public const PRIMARY_500 = '#C4532B';
+    public const PRIMARY_600 = '#314A82'; // Indigo cobalt
 
-    public const SECONDARY_700 = '#2F3A8F';
+    public const SECONDARY_400 = '#F9B218'; // Ambre
 
-    public const INK = '#171426';
+    public const INK = '#141A2E';
 
-    public const INK_DARK = '#F4F1EC';
+    public const INK_DARK = '#F3F4F8';
+
+    public const BG_ALT = '#F7F8FB';
 
     /** Cauri, dans une boîte de 24 × 24, ouverture verticale. */
     public const CAURI_OUTER = 'M12 .6C17.6.6 20.6 5.6 20.6 12c0 6.8-3.6 11.4-8.6 11.4S3.4 18.8 3.4 12C3.4 5.6 6.4.6 12 .6Z';

@@ -13,7 +13,7 @@
         <p id="{{ $name }}-hint" class="text-sm text-ink-muted">{{ $hint }}</p>
     @endif
     @error($name)
-        <p id="{{ $name }}-error" class="flex items-start gap-1.5 text-sm font-medium text-primary-700 dark:text-primary-300">
+        <p id="{{ $name }}-error" class="flex items-start gap-1.5 text-sm font-medium text-secondary-800 dark:text-secondary-300">
             <x-icon name="alert" class="mt-0.5 size-4 shrink-0" /> {{ $message }}
         </p>
     @enderror
