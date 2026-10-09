@@ -10,7 +10,7 @@
 
     <div class="min-w-0">
         <h3 class="text-[22px] leading-snug">{{ $mission->title }}</h3>
-        <p class="mt-2 line-clamp-2 text-ink-soft">{{ Str::limit(trim(strip_tags($mission->description_html ?? $mission->description)), 220) }}</p>
+        <p class="mt-2 line-clamp-2 text-ink-soft">{{ App\Support\Text::excerpt($mission->description_html ?? $mission->description, 220) }}</p>
     </div>
 
     <p class="flex items-center gap-1.5 text-sm text-ink-muted">

@@ -22,7 +22,7 @@
                             <p class="mt-3 font-semibold text-ink">
                                 @switch($item['type'])
                                     @case('answer')
-                                        Réponse de {{ $content->user->name }}
+                                        Réponse {{ App\Support\French::de($content->user->name) }}
                                         @break
                                     @case('mission')
                                         {{ $content->title }}<span class="font-normal text-ink-muted">, par {{ $content->client->name }}</span>
@@ -31,7 +31,7 @@
                                         {{ $content->title }}<span class="font-normal text-ink-muted">, par {{ $content->user->name }}</span>
                                 @endswitch
                             </p>
-                            <p class="mt-1 line-clamp-3 text-sm text-ink-soft">{{ Str::limit(Str::squish(strip_tags($content->{$item['type'] === 'mission' ? 'description' : 'body'})), 280) }}</p>
+                            <p class="mt-1 line-clamp-3 text-sm text-ink-soft">{{ App\Support\Text::excerpt($content->{$item['type'] === 'mission' ? 'description' : 'body'}, 280) }}</p>
 
                             <ul class="mt-3 flex flex-wrap gap-2 text-sm">
                                 @foreach ($item['reports']->countBy(fn ($r) => $r->reason->label()) as $reason => $count)

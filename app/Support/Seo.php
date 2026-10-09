@@ -2,21 +2,15 @@
 
 namespace App\Support;
 
-use Illuminate\Support\Str;
-
 class Seo
 {
     public const DEFAULT_DESCRIPTION = 'La plateforme d\'échange par et pour les développeurs d\'Afrique francophone : missions payées en FCFA, questions-réponses et annuaire de devs.';
 
-    /** Extrait d'au plus $length caractères, sans balises ni retours à la ligne, coupé proprement. */
+    /** Meta description : extrait nettoyé (HTML et Markdown retirés), 160 caractères au plus. */
     public static function excerpt(?string $text, int $length = 160): string
     {
-        $plain = Str::squish(strip_tags((string) $text));
+        $excerpt = Text::excerpt($text, $length);
 
-        if ($plain === '') {
-            return self::DEFAULT_DESCRIPTION;
-        }
-
-        return mb_strlen($plain) <= $length ? $plain : rtrim(mb_substr($plain, 0, $length - 1)).'…';
+        return $excerpt === '' ? self::DEFAULT_DESCRIPTION : $excerpt;
     }
 }

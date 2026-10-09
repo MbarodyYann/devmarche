@@ -51,7 +51,7 @@ test('le code de confirmation simulé s\'affiche, avec le numéro masqué', func
     expect($code)->toMatch('/^\d{4}$/');
 
     $this->actingAs($this->client)->get(route('payments.confirm', [$this->mission, $this->application]))->assertOk()
-        ->assertSee('SMS simulé de Orange Money au 77 ••• •• 67')
+        ->assertSee("SMS simulé d'Orange Money au 77 ••• •• 67")
         ->assertSee($code)
         ->assertDontSee('77 123 45 67');
 });

@@ -12,7 +12,7 @@
     </div>
 
     <h3 class="text-[22px] leading-snug">{{ $question->title }}</h3>
-    <p class="line-clamp-2 text-ink-soft">{{ Str::limit(trim(strip_tags($question->body_html)), 220) }}</p>
+    <p class="line-clamp-2 text-ink-soft">{{ App\Support\Text::excerpt($question->body_html, 220) }}</p>
 
     <div class="mt-auto flex flex-wrap items-center justify-between gap-3 pt-1">
         <x-skills :skills="$question->skills" :limit="4" :link="false" />

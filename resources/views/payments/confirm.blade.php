@@ -11,7 +11,7 @@
 
         {{-- Le « SMS » est simulé : le code est affiché ici, rien n'est envoyé. --}}
         <div class="mt-6 rounded-2xl border border-line bg-bg-alt p-4" data-simulated-sms>
-            <p class="text-sm text-ink-muted">SMS simulé de {{ $providerLabel }} au {{ $maskedPhone }}</p>
+            <p class="text-sm text-ink-muted">SMS simulé {{ App\Support\French::de($providerLabel) }} au {{ $maskedPhone }}</p>
             <p class="mt-1 text-ink">Votre code de confirmation DevMarché est <strong class="font-serif text-2xl font-medium tracking-[.2em]">{{ $pending['code'] }}</strong></p>
         </div>
 

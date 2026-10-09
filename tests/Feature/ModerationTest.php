@@ -109,3 +109,26 @@ test('connexion démo du modérateur : il arrive sur la file de modération', fu
     $this->get('/login')->assertSee('Entrer comme modérateur');
     $this->post('/demo/moderation')->assertRedirect(route('moderation.index'));
 });
+
+test('élision dans la file : « Réponse d\'Edem », « Réponse de Moussa »', function () {
+    $edem = User::factory()->withProfile()->create(['name' => 'Edem Afenyo']);
+    $moussa = User::factory()->withProfile()->create(['name' => 'Moussa Ndiaye']);
+    foreach ([$edem, $moussa] as $author) {
+        $answer = app(AnswerService::class)->answer($author, $this->question, 'Une réponse à vérifier.');
+        reportContent($this, $this->member, 'answer', $answer->id);
+    }
+
+    $this->actingAs($this->admin)->get(route('moderation.index'))
+        ->assertSee("Réponse d'Edem Afenyo")
+        ->assertSee('Réponse de Moussa Ndiaye');
+});
+
+test('les extraits de la file ne montrent pas la syntaxe Markdown', function () {
+    $question = app(AnswerService::class)->ask($this->author, 'Images en 404 après déploiement', 'Le dossier `public` renvoie une **404** sur le serveur.', ['Laravel']);
+    reportContent($this, $this->member, 'question', $question->id);
+
+    $this->actingAs($this->admin)->get(route('moderation.index'))
+        ->assertSee('Le dossier public renvoie une 404 sur le serveur.')
+        ->assertDontSee('`public`', false)
+        ->assertDontSee('**404**', false);
+});
