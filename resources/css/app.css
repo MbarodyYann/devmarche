@@ -10,25 +10,58 @@
 
 /* -------------------------------------------------------------------------
  | Polices auto-hébergées (SIL OFL 1.1) — voir public/fonts/
- | Danfo (Afrotype, Lagos) : variable, axe ELSH. Logo, H1/H2, gros chiffres (> 22 px).
- | JetBrains Mono : étiquettes en MAJUSCULES et code, chargée partout.
+ | Newsreader : titres, surtitres, gros chiffres, logo (variable, graisse).
+ | Schibsted Grotesk : texte et interface (variable, graisse).
  * ---------------------------------------------------------------------- */
 @font-face {
-    font-family: 'Danfo';
+    font-family: 'Newsreader';
     font-style: normal;
-    font-weight: 400;
+    font-weight: 200 800;
     font-display: swap;
-    src: url('/fonts/danfo-latin-elsh.woff2') format('woff2-variations');
+    src: url('/fonts/newsreader-latin-wght-normal.woff2') format('woff2-variations');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-    font-family: 'Danfo';
+    font-family: 'Newsreader';
     font-style: normal;
-    font-weight: 400;
+    font-weight: 200 800;
     font-display: swap;
-    src: url('/fonts/danfo-latin-ext-elsh.woff2') format('woff2-variations');
+    src: url('/fonts/newsreader-latin-ext-wght-normal.woff2') format('woff2-variations');
     unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+@font-face {
+    font-family: 'Newsreader';
+    font-style: italic;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url('/fonts/newsreader-latin-wght-italic.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Newsreader';
+    font-style: italic;
+    font-weight: 200 800;
+    font-display: swap;
+    src: url('/fonts/newsreader-latin-ext-wght-italic.woff2') format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Schibsted Grotesk';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('/fonts/schibsted-grotesk-latin-wght-normal.woff2') format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Schibsted Grotesk';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('/fonts/schibsted-grotesk-latin-ext-wght-normal.woff2') format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* JetBrains Mono : uniquement dans les blocs de code (téléchargée seulement si utilisée). */
 @font-face {
     font-family: 'JetBrains Mono';
     font-style: normal;
@@ -37,35 +70,11 @@
     src: url('/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face {
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url('/fonts/jetbrains-mono-latin-ext-400-normal.woff2') format('woff2');
-    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url('/fonts/jetbrains-mono-latin-700-normal.woff2') format('woff2');
-    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-    font-family: 'JetBrains Mono';
-    font-style: normal;
-    font-weight: 700;
-    font-display: swap;
-    src: url('/fonts/jetbrains-mono-latin-ext-700-normal.woff2') format('woff2');
-    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
 
 /* -------------------------------------------------------------------------
- | Jetons de design (08-design.md) — thème clair par défaut.
- | La palette Tailwind par défaut est désactivée : seules les classes
- | sémantiques existent (bg-surface, text-ink, bg-primary…).
+ | Jetons (08-design.md v3) : DEUX couleurs, primary (Latérite) et
+ | secondary (Indigo), avec leurs gammes, plus des neutres.
+ | La palette Tailwind par défaut est désactivée.
  * ---------------------------------------------------------------------- */
 @theme {
     --color-*: initial;
@@ -73,83 +82,70 @@
     --color-current: currentColor;
     --color-white: #ffffff;
 
-    --color-primary: #c4532b; /* Latérite */
-    --color-primary-strong: #9e3f1e; /* Latérite foncée */
-    --color-primary-soft: #f6dfd3; /* Latérite pâle */
-    --color-secondary: #2f3a8f; /* Indigo */
-    --color-secondary-soft: #e1e4f5; /* Indigo pâle */
-    --color-accent: #e3a92b; /* Or de mil — réservé à la réputation */
-    --color-bg: #faf6ef; /* Sable */
-    --color-surface: #fffdf9; /* Blanc cassé */
-    --color-border: #e8dfd1; /* Argile */
-    --color-ink: #1e1b2e; /* Encre */
-    --color-ink-muted: #5e5a6e; /* Encre douce */
-    --color-success: #2e7d4f; /* Feuille */
-    --color-danger: #b42318; /* Piment */
-    --color-shadow: #1e1b2e; /* Ombre dure décalée */
-    /* Texte posé sur un fond primary / secondary / success (blanc en clair). */
-    --color-on-primary: #ffffff;
+    /* Primary — Latérite */
+    --color-primary-50: #fdf4ef;
+    --color-primary-100: #fae5da;
+    --color-primary-200: #f4c9b3;
+    --color-primary-300: #eca584;
+    --color-primary-400: #e07b54;
+    --color-primary-500: #c4532b;
+    --color-primary-600: #a84322;
+    --color-primary-700: #8a361d;
+    --color-primary-800: #6e2d1b;
+    --color-primary-900: #5a2719;
+    --color-primary-950: #31120b;
 
-    --font-sans: ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
-    --font-display: 'Danfo', ui-serif, Georgia, serif;
+    /* Secondary — Indigo */
+    --color-secondary-50: #f1f3fb;
+    --color-secondary-100: #e1e5f6;
+    --color-secondary-200: #c7ceee;
+    --color-secondary-300: #a2ade2;
+    --color-secondary-400: #7684d2;
+    --color-secondary-500: #5260c2;
+    --color-secondary-600: #3d4aae;
+    --color-secondary-700: #2f3a8f;
+    --color-secondary-800: #2a3275;
+    --color-secondary-900: #262c5e;
+    --color-secondary-950: #161a38;
+
+    /* Neutres (redéfinis en sombre plus bas) */
+    --color-bg: #ffffff;
+    --color-bg-alt: #faf8f5;
+    --color-surface: #ffffff;
+    --color-line: rgb(23 20 38 / 0.07);
+    --color-ink: #171426;
+    --color-ink-soft: #45424f;
+    --color-ink-muted: #6e6a7a; /* un cran plus foncé que 08 (#7A7686) pour tenir le contraste AA sur bg-alt */
+    --color-night: #0f1126;
+
+    --font-sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, 'Segoe UI', Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji';
+    --font-serif: 'Newsreader', ui-serif, Georgia, serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-    /* Échelle typographique : 14 / 16 / 18 / 22 / 28 / 36 px */
-    --text-*: initial;
-    --text-xs: 0.75rem; /* 12 px : étiquettes mono */
-    --text-xs--line-height: 1.4;
-    --text-label: 0.8125rem; /* 13 px : étiquettes mono */
-    --text-label--line-height: 1.4;
-    --text-sm: 0.875rem;
-    --text-sm--line-height: 1.5;
-    --text-base: 1rem;
-    --text-base--line-height: 1.6;
-    --text-lg: 1.125rem;
-    --text-lg--line-height: 1.55;
-    --text-xl: 1.375rem;
-    --text-xl--line-height: 1.35;
-    --text-2xl: 1.75rem;
-    --text-2xl--line-height: 1.25;
-    --text-3xl: 2.25rem;
-    --text-3xl--line-height: 1.1;
-    --text-4xl: 3.5rem; /* 56 px : titres de page sur ordinateur */
-    --text-4xl--line-height: 1;
+    --radius-btn: 8px;
+    --radius-field: 10px;
+    --radius-nav: 12px;
+    --radius-card: 24px;
 
-    /* Coins francs : rien au-dessus de 4 px. */
-    --radius-*: initial;
-    --radius-stamp: 2px;
-    --radius-field: 3px;
-    --radius-btn: 4px;
-    --radius-block: 4px;
-    --radius-full: 9999px;
+    --shadow-soft: 0 2px 8px rgb(0 0 0 / 0.05);
+    --shadow-card: 0 2px 18px rgb(17 17 17 / 0.05);
+    --shadow-card-hover: 0 8px 30px rgb(17 17 17 / 0.08);
 
-    /* Seules les ombres dures, décalées et sans flou, sont autorisées. */
-    --shadow-*: initial;
-    --shadow-hard: 3px 3px 0 var(--color-shadow);
-    --shadow-hard-sm: 2px 2px 0 var(--color-shadow);
-    --shadow-hard-primary: 3px 3px 0 var(--color-primary);
-
-    --container-page: 70rem; /* 1 120 px */
+    --container-page: 75rem; /* 1 200 px */
 }
 
-/* Thème sombre : la « nuit indigo » (jamais de noir pur). */
 @layer base {
     .dark {
-        --color-bg: #13152b;
-        --color-surface: #1c1f3d;
-        --color-border: #2e3260;
-        --color-ink: #efe9de;
-        --color-ink-muted: #a9a6bf;
-        --color-primary: #e8794f;
-        --color-primary-strong: #f29a76;
-        --color-primary-soft: #3a2433;
-        --color-secondary: #9aa6f2;
-        --color-secondary-soft: #272c55;
-        --color-accent: #f2c35b;
-        --color-success: #5bbe86;
-        --color-danger: #f07a6e;
-        --color-on-primary: #13152b;
-        --color-shadow: #0a0b18;
+        --color-bg: #0f1126;
+        --color-bg-alt: #14172f;
+        --color-surface: #1a1d38;
+        --color-line: rgb(255 255 255 / 0.08);
+        --color-ink: #f4f1ec;
+        --color-ink-soft: #c9c6d3;
+        --color-ink-muted: #9693a8;
+        --shadow-card: 0 2px 18px rgb(0 0 0 / 0.25);
+        --shadow-card-hover: 0 8px 30px rgb(0 0 0 / 0.35);
+        --shadow-soft: 0 2px 8px rgb(0 0 0 / 0.2);
         color-scheme: dark;
     }
 
@@ -158,121 +154,134 @@
     }
 
     body {
-        @apply bg-bg text-ink font-sans text-base antialiased;
+        @apply bg-bg font-sans text-base text-ink-soft antialiased;
     }
 
     h1,
-    h2 {
-        @apply font-display text-ink;
-        font-weight: 400;
-        font-variation-settings: 'ELSH' 0;
-        letter-spacing: 0.01em;
-    }
-
+    h2,
     h3 {
-        @apply font-sans font-bold text-ink;
+        @apply font-serif text-ink;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1.08;
     }
 
     :focus-visible {
-        outline: 2px solid var(--color-secondary);
+        outline: 2px solid var(--color-secondary-500);
         outline-offset: 2px;
     }
 
     [x-cloak] {
         display: none !important;
     }
-}
 
-/* -------------------------------------------------------------------------
- | Frise bogolan : motif SVG utilisé comme masque, coloré par le thème.
- | À utiliser avec parcimonie (accueil, pied de page, en-tête de profil,
- | états vides). Opacité 8 à 12 %.
- * ---------------------------------------------------------------------- */
-@utility frise {
-    background-color: var(--color-secondary);
-    -webkit-mask-image: url('/images/bogolan.svg');
-    mask-image: url('/images/bogolan.svg');
-    -webkit-mask-size: 48px 48px;
-    mask-size: 48px 48px;
-    -webkit-mask-repeat: repeat;
-    mask-repeat: repeat;
-    opacity: 0.1;
-    pointer-events: none;
-}
-
-/* Étiquette « ticket / registre » : mono, MAJUSCULES, espacée. */
-@utility etiquette {
-    font-family: var(--font-mono);
-    font-size: var(--text-label);
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-}
-
-/* Tampon encreur : remplace toutes les pastilles. Couleur via text-*. */
-@utility tampon {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    font-weight: 700;
-    line-height: 1;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-    padding: 0.3rem 0.45rem 0.25rem;
-    border: 2px solid currentColor;
-    border-radius: var(--radius-stamp);
-    outline: 1px solid currentColor;
-    outline-offset: -5px;
-    opacity: 0.85;
-    transform: rotate(-3deg);
-}
-
-/* Filets d'encre du registre. */
-@utility filet {
-    border-top: 3px solid var(--color-ink);
-}
-
-@utility filet-bas {
-    border-bottom: 3px solid var(--color-ink);
-}
-
-/* Bande peinte de la carrosserie : latérite, or, indigo (aplats, 6 px). */
-@utility bande-peinte {
-    height: 6px;
-    background: linear-gradient(
-        to bottom,
-        var(--color-primary) 0 2px,
-        var(--color-accent) 2px 4px,
-        var(--color-secondary) 4px 6px
-    );
-}
-
-/* Surlignage marqueur, au plus une fois par page. */
-@utility surligne {
-    background: linear-gradient(transparent 60%, var(--color-accent) 60%);
-    padding-inline: 0.1em;
-}
-
-/* Bouton qui « s'enfonce » au clic. */
-@utility enfoncable {
-    box-shadow: var(--shadow-hard);
-    transition: transform 80ms ease-out, box-shadow 80ms ease-out;
-
-    &:active:not(:disabled) {
-        transform: translate(3px, 3px);
-        box-shadow: none;
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
     }
 }
 
-/* Motifs « pagne » des avatars (masques SVG, colorés par le thème). */
-@utility pagne {
-    -webkit-mask-repeat: repeat;
-    mask-repeat: repeat;
-    -webkit-mask-size: 12px 12px;
-    mask-size: 12px 12px;
+/* Surtitre serif italique en dégradé primary → secondary. */
+@utility eyebrow {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1rem;
+    letter-spacing: 0;
+    background-image: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    &:where(.dark, .dark *) {
+        background-image: linear-gradient(90deg, var(--color-primary-400), var(--color-secondary-400));
+    }
+}
+
+/* Bouton principal « brillant » (recette worksbuddy, en indigo profond). */
+@utility btn-gloss {
+    color: var(--color-white);
+    border: 1px solid var(--color-secondary-700);
+    background:
+        radial-gradient(64% 50% at 50% 100%, rgb(255 255 255 / 0.15), transparent),
+        linear-gradient(var(--color-secondary-800), var(--color-secondary-950));
+    box-shadow:
+        0 0 0 3px rgb(22 26 56 / 0.35),
+        0 8px 24px rgb(22 26 56 / 0.35),
+        inset 0 1px 4px 2px rgb(255 255 255 / 0.08);
+    transition: filter 150ms, transform 150ms;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    &:active {
+        transform: translateY(1px);
+    }
+
+    &:where(.dark, .dark *) {
+        border-color: var(--color-secondary-400);
+        background:
+            radial-gradient(64% 50% at 50% 100%, rgb(255 255 255 / 0.18), transparent),
+            linear-gradient(var(--color-secondary-500), var(--color-secondary-700));
+        box-shadow:
+            0 0 0 3px rgb(118 132 210 / 0.25),
+            0 8px 24px rgb(0 0 0 / 0.4),
+            inset 0 1px 4px 2px rgb(255 255 255 / 0.1);
+    }
+}
+
+/* Trame de points discrète. */
+@utility dots {
+    background-image: radial-gradient(color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px);
+    background-size: 18px 18px;
+}
+
+/* Halo coloré flou (2 par page maximum). */
+@utility halo {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.3;
+
+    &:where(.dark, .dark *) {
+        opacity: 0.4;
+    }
+}
+
+/* Navigation flottante : opaque sur mobile, translucide et floutée sur ordinateur. */
+@utility nav-glass {
+    background-color: color-mix(in srgb, var(--color-bg-alt) 97%, transparent);
+    border: 1px solid rgb(255 255 255 / 0.6);
+
+    &:where(.dark, .dark *) {
+        border-color: var(--color-line);
+    }
+
+    @media (min-width: 768px) {
+        background-color: color-mix(in srgb, var(--color-bg-alt) 60%, transparent);
+        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(12px);
+    }
+}
+
+/* Texte défilant du pied de page. */
+@keyframes defile {
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+@utility defile {
+    animation: defile 40s linear infinite;
 }
 
 @utility pb-safe {
-    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom));
 }
