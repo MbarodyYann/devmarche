@@ -66,11 +66,11 @@
     {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
     <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6"
          @isset($hero)
-             x-data="{ onHero: true }"
-             x-init="const hero = document.getElementById('hero'); const update = () => onHero = hero && window.scrollY < hero.offsetHeight - 80; update(); window.addEventListener('scroll', update, { passive: true })"
+             x-data="{ onHero: true, scrolled: false }"
+             x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
          @endisset>
         <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! isset($hero), 'nav-on-hero' => isset($hero)])
-                @isset($hero) x-bind:class="{ 'is-scrolled': ! onHero }" @endisset>
+                @isset($hero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endisset>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
                 <x-logo />
             </a>

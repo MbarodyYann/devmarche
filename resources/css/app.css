@@ -326,6 +326,33 @@
     background-color: rgb(255 255 255 / 0.08);
     border: 1px solid rgb(255 255 255 / 0.12);
     box-shadow: none;
+    transition:
+        background-color 200ms,
+        backdrop-filter 200ms,
+        -webkit-backdrop-filter 200ms,
+        border-color 200ms;
+
+    /* Dès le premier défilement, sur le bandeau : verre indigo, pour que rien ne se lise à travers.
+       Mobile : fond entièrement opaque (pas de backdrop-filter, pour la performance ; à 96 %, le titre
+       transparaissait encore). */
+    &.is-glass {
+        background-color: var(--color-primary-800);
+        border-color: rgb(255 255 255 / 0.1);
+
+        @media (min-width: 768px) {
+            background-color: color-mix(in srgb, var(--color-primary-800) 72%, transparent);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            backdrop-filter: blur(16px) saturate(140%);
+        }
+    }
+
+    &.is-glass:where(.dark, .dark *) {
+        background-color: var(--color-primary-950);
+
+        @media (min-width: 768px) {
+            background-color: color-mix(in srgb, var(--color-primary-950) 72%, transparent);
+        }
+    }
 
     /* Sur l'indigo, le CTA principal de la navigation passe en ambre (comme celui du hero). */
     & .btn-primary {
