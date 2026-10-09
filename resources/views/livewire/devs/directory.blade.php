@@ -79,6 +79,7 @@
             </x-empty-state>
         @else
             {{-- Des cartes sur tous les écrans : 1 colonne, 2 à partir de sm, 3 à partir de lg ; même hauteur par rangée. --}}
+            <h2 class="sr-only">Devs</h2>
             <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($this->devs as $dev)
                     <li wire:key="dev-{{ $dev->id }}" class="min-w-0"><x-dev-card :dev="$dev" /></li>

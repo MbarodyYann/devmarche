@@ -1,5 +1,8 @@
 <x-layouts.app description="Des missions payées en FCFA et en Mobile Money, des questions-réponses en français et l'annuaire des devs d'Afrique francophone. Créez votre profil gratuit en 2 minutes.">
     <x-slot:head>
+        <link rel="preload" as="image" type="image/webp" media="(max-width: 767px)" fetchpriority="high"
+              imagesrcset="/images/hero/paysage-640.webp 640w, /images/hero/paysage-720.webp 720w, /images/hero/paysage-960.webp 960w"
+              imagesizes="calc(100vw - 32px)">
         <link rel="preload" as="image" type="image/webp" media="(min-width: 768px)" fetchpriority="high"
               imagesrcset="/images/hero/portrait-480.webp 480w, /images/hero/portrait-800.webp 800w"
               imagesizes="(min-width: 1280px) 520px, (min-width: 1024px) 40vw, 448px">
@@ -9,7 +12,7 @@
 
     <x-slot:hero>
         {{-- Bloc 1 : bandeau hero, aplat primary-800, glissé sous la navigation flottante --}}
-        <section id="hero" class="relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950">
+        <section id="hero" aria-labelledby="hero-titre" class="relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950">
             {{-- Décor : 3 arcs concentriques, trait de 1 px blanc à 6 %, coin inférieur gauche --}}
             <svg data-decor class="pointer-events-none absolute bottom-0 left-0 h-[560px] w-[560px] sm:h-[760px] sm:w-[760px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
                 @foreach ([340, 500, 660] as $radius)
@@ -21,7 +24,7 @@
                 {{-- Colonne texte --}}
                 <div>
 
-                    <h1 class="text-balance text-[38px] leading-[1.1] text-white sm:text-[48px]">
+                    <h1 id="hero-titre" class="text-balance text-[38px] leading-[1.1] text-white sm:text-[48px]">
                         Quittez les groupes WhatsApp,
                         <em class="block font-serif italic text-secondary-400">les missions viennent à vous.</em>
                     </h1>
@@ -52,7 +55,7 @@
                             srcset="/images/hero/portrait-480.webp 480w, /images/hero/portrait-800.webp 800w"
                             sizes="(min-width: 1280px) 520px, (min-width: 1024px) 40vw, 448px">
                     <img src="/images/hero/paysage-960.webp"
-                         srcset="/images/hero/paysage-640.webp 640w, /images/hero/paysage-960.webp 960w"
+                         srcset="/images/hero/paysage-640.webp 640w, /images/hero/paysage-720.webp 720w, /images/hero/paysage-960.webp 960w"
                          sizes="calc(100vw - 32px)"
                          width="960" height="540"
                          alt="Deux développeurs travaillent ensemble devant un ordinateur"

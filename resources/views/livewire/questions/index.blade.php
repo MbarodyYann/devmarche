@@ -60,6 +60,7 @@
                 </div>
             </x-empty-state>
         @else
+            <h2 class="sr-only">Questions</h2>
             <ul class="grid gap-4">
                 @foreach ($this->questions as $question)
                     <li wire:key="question-{{ $question->id }}" class="min-w-0"><x-question-card :question="$question" /></li>

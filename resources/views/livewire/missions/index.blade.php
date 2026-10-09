@@ -71,6 +71,7 @@
                 </div>
             </x-empty-state>
         @else
+            <h2 class="sr-only">Missions</h2>
             <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($this->missions as $mission)
                     <li wire:key="mission-{{ $mission->id }}" class="min-w-0"><x-mission-card :mission="$mission" /></li>

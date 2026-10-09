@@ -42,7 +42,8 @@ class HighlightedCodeRenderer implements NodeRendererInterface
             .'<div class="code-toolbar">'.$label
             .'<button type="button" class="code-copy" x-on:click="navigator.clipboard.writeText($refs.code.innerText); copied = true; setTimeout(() => copied = false, 1500)"'
             .' x-text="copied ? \'Copié\' : \'Copier\'">Copier</button></div>'
-            .'<pre><code x-ref="code" class="hljs'.($language ? ' language-'.e($language) : '').'">'.$html.'</code></pre></div>'."\n";
+            // tabindex : un bloc qui défile horizontalement doit être atteignable au clavier.
+            .'<pre tabindex="0" aria-label="'.e('Code'.($language ? ' '.$language : '')).'"><code x-ref="code" class="hljs'.($language ? ' language-'.e($language) : '').'">'.$html.'</code></pre></div>'."\n";
     }
 
     /**

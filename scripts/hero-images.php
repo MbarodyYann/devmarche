@@ -14,6 +14,8 @@ $variants = [
     ['hero-portrait-source.png', 'portrait-480.webp', 480, 600, 40_000],
     ['hero-portrait-source.png', 'portrait-800.webp', 800, 1000, 80_000],
     ['hero-paysage-source.png', 'paysage-640.webp', 640, 360, 40_000],
+    // Téléphones à densité ×1,5 à ×2 (le plus courant) : l'image LCP sur mobile, à garder légère en 3G.
+    ['hero-paysage-source.png', 'paysage-720.webp', 720, 405, 40_000],
     ['hero-paysage-source.png', 'paysage-960.webp', 960, 540, 70_000],
 ];
 
