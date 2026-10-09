@@ -255,6 +255,18 @@
     &:active {
         transform: translateY(1px);
     }
+
+    /* En sombre, le bouton principal est déjà en aplat ambre : l'accent passe en contour. */
+    &:where(.dark, .dark *) {
+        color: var(--color-secondary-300);
+        background-color: transparent;
+        border: 1.5px solid var(--color-secondary-400);
+        box-shadow: none;
+
+        &:hover {
+            background-color: var(--color-secondary-950);
+        }
+    }
 }
 
 /* Trame de points discrète : petit SVG en fond, teinte de l'encre (claire ou sombre). */
