@@ -1,5 +1,5 @@
 <x-layouts.app title="Mot de passe oublié">
-    <x-auth-card title="Mot de passe oublié" subtitle="Indiquez votre adresse e-mail : nous vous envoyons un lien pour en choisir un nouveau.">
+    <x-auth-card eyebrow="Pas de panique" title="Mot de passe oublié" subtitle="Indiquez votre adresse e-mail : nous vous envoyons un lien pour en choisir un nouveau.">
         <form method="post" action="{{ route('password.email') }}" class="space-y-5" novalidate>
             @csrf
 
@@ -11,7 +11,7 @@
         </form>
 
         <x-slot:footer>
-            <a href="{{ route('login') }}" class="font-bold text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary">Retour à la connexion</a>
+            <a href="{{ route('login') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-400">Retour à la connexion</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

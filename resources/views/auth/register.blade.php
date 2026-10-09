@@ -1,5 +1,5 @@
 <x-layouts.app title="Créer un compte">
-    <x-auth-card title="Rejoindre DevMarché" subtitle="Un seul compte pour publier des missions, postuler et échanger avec les devs.">
+    <x-auth-card eyebrow="Rejoindre la communauté" title="Rejoindre DevMarché" subtitle="Un seul compte pour publier des missions, postuler et échanger avec les devs.">
         <form method="post" action="{{ route('register') }}" class="space-y-5" novalidate>
             @csrf
 
@@ -33,7 +33,7 @@
 
         <x-slot:footer>
             Déjà inscrit ?
-            <a href="{{ route('login') }}" class="font-bold text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary">Se connecter</a>
+            <a href="{{ route('login') }}" class="font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-400">Se connecter</a>
         </x-slot:footer>
     </x-auth-card>
 </x-layouts.app>

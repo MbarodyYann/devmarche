@@ -1,26 +1,22 @@
 @props(['points' => 0, 'size' => 'sm'])
 
-{{-- Réputation en cauris. Grand format : compteur en Danfo et étiquette CAURIS. --}}
+{{-- Réputation en cauris : icône latérite suivie du chiffre (grand compteur Newsreader sur le profil). --}}
 @php($formatted = number_format($points, 0, ',', "\u{202F}"))
 
-@if ($size === 'lg' && $points === 0)
-    {{-- Le « 0 » de Danfo, seul, se lit comme un pavé : on écrit la phrase à la place. --}}
-    <div {{ $attributes->merge(['class' => 'inline-flex items-center gap-2']) }}>
-        <x-cauri class="size-9 text-accent" />
-        <span class="etiquette text-ink-muted">Pas encore de cauris</span>
-    </div>
-@elseif ($size === 'lg')
-    <div {{ $attributes->merge(['class' => 'inline-flex flex-col items-start']) }} title="Réputation : {{ $formatted }} cauris">
-        <span class="flex items-center gap-2">
-            <x-cauri class="size-9 text-accent sm:size-11" />
-            <span class="font-display text-4xl leading-none text-ink sm:text-[4rem]">{{ $formatted }}</span>
+@if ($size === 'lg')
+    <div {{ $attributes->merge(['class' => 'flex flex-col']) }} title="Réputation : {{ $formatted }} cauris">
+        <span class="flex items-center gap-3">
+            <x-cauri class="size-10 text-primary-500 dark:text-primary-400" />
+            <span class="font-serif text-[56px] font-medium leading-none tracking-tight text-ink">{{ $formatted }}</span>
         </span>
-        <span class="etiquette mt-1 text-ink-muted">Cauris</span>
+        <span class="mt-2 text-sm font-medium text-ink-muted">
+            {{ $points === 0 ? 'Pas encore de cauris : chaque réponse utile compte.' : 'cauris de réputation' }}
+        </span>
     </div>
 @else
-    <span {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 font-mono text-sm font-bold tabular-nums text-ink']) }}
+    <span {{ $attributes->merge(['class' => 'inline-flex items-center gap-1 text-sm font-semibold tabular-nums text-ink']) }}
           title="Réputation : {{ $formatted }} cauris">
-        <x-cauri class="size-4 text-accent" />
+        <x-cauri />
         {{ $formatted }}
         <span class="sr-only">cauris de réputation</span>
     </span>

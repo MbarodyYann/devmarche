@@ -1,5 +1,5 @@
 <x-layouts.app title="Nouveau mot de passe">
-    <x-auth-card title="Choisir un nouveau mot de passe">
+    <x-auth-card eyebrow="Presque fini" title="Choisir un nouveau mot de passe">
         <form method="post" action="{{ route('password.update') }}" class="space-y-5" novalidate>
             @csrf
             <input type="hidden" name="token" value="{{ $request->route('token') }}">

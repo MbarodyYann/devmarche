@@ -1,16 +1,15 @@
 @props(['title', 'action' => null, 'actionLabel' => null])
 
-{{-- État vide : les yeux du car rapide, une phrase humaine, une action. Jamais une page blanche. --}}
-<div {{ $attributes->merge(['class' => 'relative overflow-hidden border-y-[3px] border-ink px-4 py-12 text-center']) }}>
-    <div class="frise absolute inset-x-0 top-0 h-14" aria-hidden="true"></div>
-    <div class="relative flex flex-col items-center pt-6">
-        <x-eyes />
-        <p class="mt-6 font-display text-2xl text-ink sm:text-3xl">{{ $title }}</p>
-        @if (trim($slot))
-            <div class="mx-auto mt-3 max-w-md text-ink-muted">{{ $slot }}</div>
-        @endif
-        @if ($action)
-            <x-button :href="$action" variant="secondary" class="mt-6">{{ $actionLabel }}</x-button>
-        @endif
-    </div>
+{{-- État vide : carte sur trame de points, pastille cauri, phrase humaine, action. --}}
+<div {{ $attributes->merge(['class' => 'dots relative overflow-hidden rounded-2xl border border-dashed border-line px-6 py-14 text-center sm:rounded-card']) }}>
+    <span class="mx-auto mb-5 inline-flex size-12 items-center justify-center rounded-xl bg-linear-to-br from-secondary-700 to-primary-500 shadow-soft" aria-hidden="true">
+        <x-cauri class="size-6 text-white" />
+    </span>
+    <p class="font-serif text-2xl font-medium tracking-tight text-ink sm:text-[28px]">{{ $title }}</p>
+    @if (trim($slot))
+        <div class="mx-auto mt-3 max-w-md text-ink-soft">{{ $slot }}</div>
+    @endif
+    @if ($action)
+        <x-button :href="$action" variant="secondary" class="mt-6">{{ $actionLabel }}</x-button>
+    @endif
 </div>

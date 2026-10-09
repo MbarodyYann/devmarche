@@ -54,6 +54,12 @@
         @case('arrow-left')
             <path d="M19 12H5"/><path d="m12 19-7-7 7-7"/>
             @break
+        @case('alert')
+            <circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>
+            @break
+        @case('chevron-down')
+            <path d="m6 9 6 6 6-6"/>
+            @break
         @case('check')
             <path d="M20 6 9 17l-5-5"/>
             @break

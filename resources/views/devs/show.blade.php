@@ -1,111 +1,107 @@
 <x-layouts.app :title="$dev->name">
     @php($profile = $dev->profile)
 
-    {{-- En-tête : bannière frise, avatar carré, nom en Danfo, compteur de cauris --}}
-    <section class="rounded-block border-2 border-ink bg-surface shadow-hard">
-        <div class="relative h-24 overflow-hidden border-b-2 border-ink bg-bg sm:h-28">
-            <div class="frise absolute inset-0 opacity-[0.12]" aria-hidden="true"></div>
-        </div>
+    <div class="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[480px] overflow-hidden" aria-hidden="true">
+        <div class="halo -left-24 top-16 size-72 bg-primary-200 dark:bg-primary-900"></div>
+        <div class="halo -right-24 top-8 size-72 bg-secondary-200 dark:bg-secondary-800"></div>
+    </div>
 
-        <div class="grid gap-6 px-5 pb-6 sm:px-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-            <div>
-                <div class="relative -mt-14 flex items-end justify-between gap-4 sm:-mt-16">
-                    <x-avatar :user="$dev" size="lg" class="shadow-hard" />
+    {{-- En-tête : identité à gauche, compteur de cauris dans le cadre repères à droite --}}
+    <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-stretch">
+        <x-card class="flex flex-col gap-6 sm:flex-row sm:items-start">
+            <x-avatar :user="$dev" size="lg" class="shadow-card" />
+            <div class="min-w-0 flex-1">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                        <p class="eyebrow mb-2">Profil de dev</p>
+                        <h1 class="text-[40px] sm:text-5xl">{{ $dev->name }}</h1>
+                    </div>
                     @can('update', $profile)
                         <x-button :href="route('profile.edit', $dev)" variant="secondary" size="sm">
-                            <x-icon name="pencil" class="size-4" /> Modifier<span class="hidden sm:inline">&nbsp;mon profil</span>
+                            <x-icon name="pencil" class="size-4" /> Modifier mon profil
                         </x-button>
                     @endcan
                 </div>
-
-                <h1 class="mt-5 text-3xl sm:text-4xl">{{ $dev->name }}</h1>
                 @if ($profile?->headline)
-                    <p class="mt-2 text-lg text-ink-muted">{{ $profile->headline }}</p>
+                    <p class="mt-3 text-lg text-ink-soft">{{ $profile->headline }}</p>
                 @endif
-
-                <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3">
+                <div class="mt-5 flex flex-wrap items-center gap-2">
                     @if ($profile)
-                        <x-stamp :tone="$profile->availability->tone()">{{ $profile->availability->stamp() }}</x-stamp>
+                        <x-chip :tone="$profile->availability->tone()" dot>{{ $profile->availability->label() }}</x-chip>
+                        <x-chip tone="neutral"><x-icon name="map-pin" class="size-3.5" /> {{ $profile->city }}, {{ $profile->countryName() }} <span aria-hidden="true">{{ $profile->flag() }}</span></x-chip>
                     @endif
                     @if ($dev->isNewMember())
                         <x-new-badge />
                     @endif
-                    @if ($profile)
-                        <span class="etiquette inline-flex items-center gap-1.5 text-ink-muted">
-                            <span aria-hidden="true">{{ $profile->flag() }}</span>
-                            {{ $profile->city }} · {{ $profile->countryName() }}
-                        </span>
-                    @endif
                 </div>
             </div>
+        </x-card>
 
-            <x-reputation :points="$dev->reputation" size="lg" class="lg:pb-1" />
-        </div>
+        <x-frame class="flex flex-col justify-between gap-6 bg-surface p-6 sm:p-8">
+            <x-reputation :points="$dev->reputation" size="lg" />
+            <dl class="grid grid-cols-2 divide-x divide-line border-t border-line pt-4 text-sm">
+                <div class="pr-4">
+                    <dt class="text-ink-muted">Missions réalisées</dt>
+                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">0</dd>
+                </div>
+                <div class="pl-4">
+                    <dt class="text-ink-muted">Membre depuis</dt>
+                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">{{ $dev->created_at->translatedFormat('M Y') }}</dd>
+                </div>
+            </dl>
+        </x-frame>
     </section>
 
-    {{-- Grille asymétrique : 8 colonnes de contenu, 4 de colonne latérale --}}
-    <div class="mt-10 grid gap-10 lg:grid-cols-12">
-        <div class="space-y-10 lg:col-span-8">
-            <section class="filet pt-4">
-                <h2 class="text-2xl">À propos</h2>
+    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <div class="space-y-6">
+            <x-card>
+                <h2 class="text-[28px] sm:text-[32px]">À propos</h2>
                 @if ($profile?->bio)
-                    <p class="mt-3 max-w-prose whitespace-pre-line leading-relaxed">{{ $profile->bio }}</p>
+                    <p class="mt-4 max-w-prose whitespace-pre-line leading-relaxed">{{ $profile->bio }}</p>
                 @else
-                    <p class="mt-3 text-ink-muted">{{ $dev->name }} n'a pas encore écrit de présentation.</p>
+                    <p class="mt-4 text-ink-muted">{{ $dev->name }} n'a pas encore écrit de présentation.</p>
                 @endif
-            </section>
+            </x-card>
 
-            <section class="filet pt-4">
-                <h2 class="text-2xl">Missions réalisées</h2>
-                <p class="mt-3 text-ink-muted">Aucune mission terminée pour l'instant.</p>
-            </section>
+            <x-card>
+                <h2 class="text-[28px] sm:text-[32px]">Missions réalisées</h2>
+                <p class="mt-4 text-ink-muted">Aucune mission terminée pour l'instant.</p>
+            </x-card>
         </div>
 
-        <aside class="space-y-10 lg:col-span-4">
-            <section class="filet pt-4">
+        <aside class="space-y-6">
+            <x-card padding="p-6">
                 <h2 class="text-2xl">Compétences</h2>
                 @if ($dev->skills->isNotEmpty())
-                    <ul class="mt-3 divide-y divide-border border-b border-border">
-                        @foreach ($dev->skills as $skill)
-                            <li>
-                                <a href="{{ route('devs.index', ['competence' => $skill->slug]) }}"
-                                   class="etiquette flex min-h-11 items-center justify-between gap-3 text-ink decoration-primary decoration-2 underline-offset-3 hover:underline">
-                                    {{ $skill->name }}
-                                    <span aria-hidden="true" class="text-ink-muted">→</span>
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                    <x-skills :skills="$dev->skills" class="mt-4" />
                 @else
-                    <p class="mt-3 text-ink-muted">Aucune compétence renseignée.</p>
+                    <p class="mt-4 text-ink-muted">Aucune compétence renseignée.</p>
                 @endif
-            </section>
+            </x-card>
 
             @if ($profile?->github_url || $profile?->portfolio_url)
-                <section class="filet pt-4">
+                <x-card padding="p-6">
                     <h2 class="text-2xl">Liens</h2>
-                    <ul class="mt-3 space-y-1">
+                    <ul class="mt-3 divide-y divide-line">
                         @if ($profile->github_url)
                             <li>
                                 <a href="{{ $profile->github_url }}" rel="nofollow ugc noopener" target="_blank"
-                                   class="inline-flex min-h-11 items-center gap-2 font-bold text-primary-strong underline decoration-2 underline-offset-4">
-                                    <x-icon name="github" class="size-5" /> GitHub
+                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-400">
+                                    <x-icon name="github" class="size-5" /> GitHub <x-icon name="arrow-right" class="ml-auto size-4 text-ink-muted" />
                                 </a>
                             </li>
                         @endif
                         @if ($profile->portfolio_url)
                             <li>
                                 <a href="{{ $profile->portfolio_url }}" rel="nofollow ugc noopener" target="_blank"
-                                   class="inline-flex min-h-11 items-center gap-2 font-bold text-primary-strong underline decoration-2 underline-offset-4">
-                                    <x-icon name="link" class="size-5" /> Portfolio
+                                   class="flex min-h-11 items-center gap-2 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-400">
+                                    <x-icon name="link" class="size-5" /> Portfolio <x-icon name="arrow-right" class="ml-auto size-4 text-ink-muted" />
                                 </a>
                             </li>
                         @endif
                     </ul>
-                </section>
+                </x-card>
             @endif
-
-            <p class="etiquette text-ink-muted">Membre depuis {{ Str::upper($dev->created_at->translatedFormat('M Y')) }}</p>
         </aside>
     </div>
 </x-layouts.app>

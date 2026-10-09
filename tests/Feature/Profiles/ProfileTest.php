@@ -29,7 +29,7 @@ test('le profil public est visible par tous', function () {
         ->assertOk()
         ->assertSee('Moussa Ndiaye')
         ->assertSee('Dev Laravel')
-        ->assertSee('Thiès · Sénégal')
+        ->assertSee('Thiès, Sénégal')
         ->assertSee('Wave API')
         ->assertDontSee('Modifier mon profil');
 });

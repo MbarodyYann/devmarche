@@ -3,8 +3,8 @@
 <textarea name="{{ $name }}" id="{{ $attributes->get('id', $name) }}" rows="{{ $rows }}"
           @error($name) aria-invalid="true" aria-describedby="{{ $name }}-error" @enderror
           {{ $attributes->except('id')->class([
-              'block w-full rounded-field border-2 bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-ink-muted/70',
-              'focus:shadow-hard-primary focus:outline-none',
-              'border-danger' => $errors->has($name),
-              'border-ink' => ! $errors->has($name),
+              'block w-full rounded-field border bg-surface px-3.5 py-2.5 text-base text-ink placeholder:text-ink-muted/70',
+              'transition focus:border-secondary-500 focus:outline-none focus:ring-3 focus:ring-secondary-200 dark:focus:ring-secondary-800',
+              'border-primary-500' => $errors->has($name),
+              'border-line' => ! $errors->has($name),
           ]) }}>{{ old($name, $value) }}</textarea>

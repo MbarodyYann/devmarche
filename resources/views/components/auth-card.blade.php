@@ -1,16 +1,17 @@
-@props(['title', 'subtitle' => null])
+@props(['title', 'subtitle' => null, 'eyebrow' => 'Bienvenue'])
 
 <div class="mx-auto w-full max-w-md">
-    <div class="mb-6">
-        <h1 class="text-3xl sm:text-4xl">{{ $title }}</h1>
+    <div class="mb-8 text-center">
+        <p class="eyebrow mb-3">{{ $eyebrow }}</p>
+        <h1 class="text-[40px] sm:text-5xl">{{ $title }}</h1>
         @if ($subtitle)
-            <p class="mt-3 text-ink-muted">{{ $subtitle }}</p>
+            <p class="mt-4 text-ink-soft">{{ $subtitle }}</p>
         @endif
     </div>
-    <x-block padding="p-5 sm:p-7" main>
+    <x-card padding="p-6 sm:p-8">
         {{ $slot }}
-    </x-block>
+    </x-card>
     @isset($footer)
-        <p class="mt-6 text-ink-muted">{{ $footer }}</p>
+        <p class="mt-6 text-center text-ink-soft">{{ $footer }}</p>
     @endisset
 </div>

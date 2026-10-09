@@ -1,16 +1,16 @@
 @props(['variant' => 'primary', 'href' => null, 'type' => 'button', 'size' => 'md'])
 
-{{-- Bouton peint : bordure d'encre, ombre dure, s'enfonce au clic. Le discret est un lien souligné. --}}
+{{-- primary : bouton brillant indigo ; secondary : clair à bordure fine ; ghost : lien. --}}
 @php
-    $base = 'inline-flex items-center justify-center gap-2 font-bold disabled:cursor-not-allowed disabled:opacity-60 '
-        .($size === 'sm' ? 'min-h-9 px-3 text-sm ' : 'min-h-11 px-5 text-base ');
-    $classes = $base.match ($variant) {
-        'primary' => 'rounded-btn border-2 border-ink enfoncable '
-            .($size === 'sm' ? 'bg-primary-strong text-on-primary hover:bg-primary' : 'bg-primary text-on-primary hover:bg-primary-strong'),
-        'secondary' => 'rounded-btn border-2 border-ink bg-surface text-ink enfoncable hover:bg-accent/25',
-        'danger' => 'rounded-btn border-2 border-danger bg-surface text-danger enfoncable hover:bg-danger hover:text-on-primary',
-        default => 'px-1! text-primary-strong underline decoration-2 underline-offset-4 hover:decoration-primary',
-    };
+    $classes = 'inline-flex items-center justify-center gap-2 rounded-btn font-semibold whitespace-nowrap transition '
+        .'disabled:cursor-not-allowed disabled:opacity-60 '
+        .($size === 'sm' ? 'min-h-10 px-3.5 text-sm ' : 'min-h-11 px-4 text-[15px] ')
+        .match ($variant) {
+            'primary' => 'btn-gloss',
+            'secondary' => 'border border-line bg-bg-alt text-ink shadow-soft hover:bg-surface',
+            'danger' => 'border border-primary-200 bg-primary-50 text-primary-700 hover:bg-primary-100 dark:border-primary-800 dark:bg-primary-950 dark:text-primary-300',
+            default => 'text-primary-600 hover:text-primary-700 hover:underline underline-offset-4 dark:text-primary-400',
+        };
 @endphp
 
 @if ($href)

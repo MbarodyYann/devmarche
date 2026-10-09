@@ -18,26 +18,14 @@ enum Availability: string
     }
 
     /**
-     * Libellé court du tampon (voir le composant x-stamp).
-     */
-    public function stamp(): string
-    {
-        return match ($this) {
-            self::Available => 'Dispo',
-            self::Busy => 'Occupé',
-            self::Employed => 'En poste',
-        };
-    }
-
-    /**
-     * Couleur d'encre du tampon (voir 08-design.md).
+     * Ton de la puce (voir le composant x-chip et 08-design.md).
      */
     public function tone(): string
     {
         return match ($this) {
-            self::Available => 'success',
-            self::Busy => 'muted',
-            self::Employed => 'secondary',
+            self::Available => 'secondary',
+            self::Busy => 'primary',
+            self::Employed => 'muted',
         };
     }
 
