@@ -284,16 +284,17 @@
 
 /* Navigation flottante : opaque sur mobile, translucide et floutée sur ordinateur. */
 @utility nav-glass {
-    background-color: color-mix(in srgb, var(--color-bg-alt) 97%, transparent);
+    /* Sous 1 024 px : opaque, aucun texte de la page ne doit se lire au travers. */
+    background-color: var(--color-bg-alt);
     border: 1px solid rgb(255 255 255 / 0.6);
 
     &:where(.dark, .dark *) {
-        background-color: color-mix(in srgb, var(--color-primary-950) 97%, transparent);
+        background-color: var(--color-primary-950);
         border-color: var(--color-line);
     }
 
     /* Verre à 90 % : les liens restent lisibles par-dessus n'importe quelle section (claire ou sombre). */
-    @media (min-width: 768px) {
+    @media (min-width: 1024px) {
         background-color: color-mix(in srgb, var(--color-bg-alt) 90%, transparent);
         -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
@@ -316,11 +317,15 @@
     background-color: rgb(255 255 255 / 0.08);
     border: 1px solid rgb(255 255 255 / 0.12);
     box-shadow: none;
-    transition:
-        background-color 200ms,
-        backdrop-filter 200ms,
-        -webkit-backdrop-filter 200ms,
-        border-color 200ms;
+
+    /* Fondu seulement sur ordinateur : sous 1 024 px, le fond devient opaque tout de suite. */
+    @media (min-width: 1024px) {
+        transition:
+            background-color 200ms,
+            backdrop-filter 200ms,
+            -webkit-backdrop-filter 200ms,
+            border-color 200ms;
+    }
 
     /* Dès le premier défilement, sur le bandeau : verre indigo, pour que rien ne se lise à travers.
        Mobile : fond entièrement opaque (pas de backdrop-filter, pour la performance ; à 96 %, le titre
@@ -329,7 +334,7 @@
         background-color: var(--color-primary-800);
         border-color: rgb(255 255 255 / 0.1);
 
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             background-color: color-mix(in srgb, var(--color-primary-800) 72%, transparent);
             -webkit-backdrop-filter: blur(16px) saturate(140%);
             backdrop-filter: blur(16px) saturate(140%);
@@ -339,7 +344,7 @@
     &.is-glass:where(.dark, .dark *) {
         background-color: var(--color-primary-950);
 
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             background-color: color-mix(in srgb, var(--color-primary-950) 72%, transparent);
         }
     }
@@ -352,10 +357,10 @@
         --color-line: rgb(20 26 46 / 0.08);
         --color-surface: #ffffff;
         --color-bg-alt: #f7f8fb;
-        background-color: color-mix(in srgb, var(--color-bg-alt) 97%, transparent);
+        background-color: var(--color-bg-alt);
         border-color: rgb(255 255 255 / 0.6);
 
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             background-color: color-mix(in srgb, var(--color-bg-alt) 90%, transparent);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
@@ -369,10 +374,10 @@
         --color-line: rgb(255 255 255 / 0.08);
         --color-surface: #141c38;
         --color-bg-alt: #10172e;
-        background-color: color-mix(in srgb, var(--color-primary-950) 97%, transparent);
+        background-color: var(--color-primary-950);
         border-color: var(--color-line);
 
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             background-color: color-mix(in srgb, var(--color-primary-950) 90%, transparent);
         }
     }

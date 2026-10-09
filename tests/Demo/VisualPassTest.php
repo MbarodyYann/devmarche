@@ -104,3 +104,19 @@ test('V8 : outils de développement repliés, tableau complet', function () {
 test('V9 : en sombre, le bandeau des listes se détache du fond (primary-900)', function () {
     $this->get('/missions')->assertSee('dark:bg-primary-900', false);
 });
+
+test('W1 : sous 1 024 px, l\'en-tête est opaque et sans fondu', function () {
+    $css = file_get_contents(resource_path('css/app.css'));
+    $nav = substr($css, strpos($css, '@utility nav-glass'), strpos($css, '@utility nav-menu') - strpos($css, '@utility nav-glass'));
+
+    expect($nav)->not->toContain('97%')
+        ->not->toContain('min-width: 768px')
+        ->toContain('min-width: 1024px')
+        ->and($this->get('/missions/1')->getContent())->toContain('lg:transition-colors')->not->toContain('px-2 transition-colors');
+});
+
+test('W2 : le titre d\'À propos fait 34 px sur mobile, aligné à gauche', function () {
+    $html = $this->get('/a-propos')->getContent();
+
+    expect($html)->toContain('md:text-center')->toContain('text-[34px] sm:text-[64px]');
+});

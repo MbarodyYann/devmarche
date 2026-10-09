@@ -99,7 +99,7 @@
              x-data="{ onHero: true, scrolled: false }"
              x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
          @endif>
-        <header @class(['mx-auto flex h-14 max-w-page items-center gap-2 rounded-nav px-2 transition-colors sm:h-16 sm:px-4 lg:gap-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
+        <header @class(['mx-auto flex h-14 max-w-page items-center gap-2 rounded-nav px-2 sm:h-16 lg:transition-colors sm:px-4 lg:gap-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
                 @if ($hasHero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endif>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
                 <x-logo :compact="auth()->guest()" />

@@ -1,6 +1,6 @@
 <x-layouts.app title="À propos" description="DevMarché, par l'équipe Baobab Stack (Sénégal) : le projet, l'équipe, la stack, les licences et l'usage de l'intelligence artificielle.">
     {{-- Page « À propos ». Données : config/credits.php et les fichiers de verrouillage. --}}
-    <x-page-intro eyebrow="À propos" title="Les devs d'Afrique francophone méritaient leur propre place de marché.">
+    <x-page-intro eyebrow="À propos" :compact="true" title="Les devs d'Afrique francophone méritaient leur propre place de marché.">
         Missions payées en FCFA, questions-réponses en français et annuaire de devs : une seule plateforme, pensée pour la 3G et le Mobile Money.
     </x-page-intro>
 
