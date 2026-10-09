@@ -10,6 +10,13 @@
         @endauth
     </x-page-intro>
 
+    @if ($forMe)
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm text-ink-soft">
+            <x-chip tone="info">Selon vos compétences</x-chip>
+            <button type="button" wire:click="$set('forMe', false)" class="font-medium text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Voir toutes les missions</button>
+        </div>
+    @endif
+
     @php($total = $this->missions->total())
     <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
         <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">

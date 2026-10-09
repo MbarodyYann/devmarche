@@ -141,7 +141,7 @@
                         <p class="mt-3 text-ink-soft">Connectez-vous pour postuler en deux minutes.</p>
                         <div class="mt-5 flex flex-col gap-3">
                             <x-button :href="route('login')">Se connecter pour postuler</x-button>
-                            <x-button :href="route('register')" variant="secondary">Créer un compte</x-button>
+                            <x-button :href="route('register')" variant="secondary">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                         </div>
                     @else
                         <h2 class="text-2xl">Postuler</h2>

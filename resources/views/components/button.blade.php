@@ -7,7 +7,11 @@
     $display = preg_match('/(^|\s)hidden(\s|$)/', (string) $attributes->get('class')) ? '' : 'inline-flex ';
     $classes = $display.'items-center justify-center gap-2 rounded-btn font-semibold whitespace-nowrap transition '
         .'disabled:cursor-not-allowed disabled:opacity-60 '
-        .($size === 'sm' ? 'min-h-10 px-3.5 text-sm ' : 'min-h-11 px-4 text-[15px] ')
+        .match ($size) {
+            'sm' => 'min-h-10 px-3.5 text-sm ',
+            'lg' => 'min-h-12 px-6 text-base ',
+            default => 'min-h-11 px-4 text-[15px] ',
+        }
         .match ($variant) {
             'primary' => 'btn-primary',
             'accent' => 'btn-accent',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MissionApplicationController;
 use App\Http\Controllers\MissionController;
 use App\Http\Controllers\MissionStatusController;
@@ -8,8 +9,7 @@ use App\Livewire\Devs\Directory;
 use App\Livewire\Missions\Index as MissionIndex;
 use Illuminate\Support\Facades\Route;
 
-// L'accueil (hero) arrive au point 13 du lot 2 : en attendant, on ouvre sur les missions.
-Route::redirect('/', '/missions')->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 // Missions
 Route::get('/missions', MissionIndex::class)->name('missions.index');

@@ -40,6 +40,10 @@ class Index extends Component
     #[Url(as: 'budget_max', except: '')]
     public string $budgetMax = '';
 
+    /** Missions correspondant aux compétences du membre connecté. */
+    #[Url(as: 'pour_moi', except: false)]
+    public bool $forMe = false;
+
     #[Url(as: 'statut', except: 'open')]
     public string $status = 'open';
 
@@ -53,14 +57,14 @@ class Index extends Component
 
     public function resetFilters(): void
     {
-        $this->reset('skill', 'country', 'budgetMin', 'budgetMax', 'status', 'sort');
+        $this->reset('skill', 'country', 'budgetMin', 'budgetMax', 'status', 'sort', 'forMe');
         $this->resetPage();
     }
 
     #[Computed]
     public function hasFilters(): bool
     {
-        return collect([$this->skill, $this->country, $this->budgetMin, $this->budgetMax])->filter()->isNotEmpty()
+        return collect([$this->skill, $this->country, $this->budgetMin, $this->budgetMax, $this->forMe])->filter()->isNotEmpty()
             || $this->status !== 'open';
     }
 
@@ -90,10 +94,12 @@ class Index extends Component
         $status = MissionStatus::tryFrom($this->status);
         $min = $this->amount($this->budgetMin);
         $max = $this->amount($this->budgetMax);
+        $mySkillIds = $this->forMe && auth()->check() ? auth()->user()->skills()->pluck('skills.id')->all() : null;
 
         return Mission::query()
             ->when($status, fn (Builder $q, MissionStatus $status) => $q->where('status', $status))
             ->when($this->skill !== '', fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->where('slug', $this->skill)))
+            ->when($mySkillIds !== null, fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->whereKey($mySkillIds)))
             ->when($this->country === self::REMOTE, fn (Builder $q) => $q->whereNull('country'))
             ->when($this->country !== '' && $this->country !== self::REMOTE, fn (Builder $q) => $q->where('country', $this->country))
             ->when($min, fn (Builder $q, int $min) => $q->where('budget_fcfa', '>=', $min))

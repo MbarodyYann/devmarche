@@ -10,7 +10,7 @@ test('un membre peut se connecter avec ses identifiants', function () {
     $user = User::factory()->withProfile()->create();
 
     $this->post('/login', ['email' => $user->email, 'password' => 'password'])
-        ->assertRedirect('/missions');
+        ->assertRedirect('/');
 
     $this->assertAuthenticatedAs($user);
 });

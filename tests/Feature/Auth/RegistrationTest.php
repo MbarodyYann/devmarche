@@ -20,7 +20,7 @@ test('un visiteur peut créer un compte avec son profil', function () {
         'password_confirmation' => 'motdepasse-solide',
     ]);
 
-    $response->assertRedirect('/missions');
+    $response->assertRedirect('/');
     $this->assertAuthenticated();
 
     $user = User::with('profile')->sole();

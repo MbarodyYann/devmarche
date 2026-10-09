@@ -4,6 +4,7 @@ use App\Enums\MissionStatus;
 use App\Livewire\Missions\Index;
 use App\Models\Mission;
 use App\Models\Skill;
+use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {
@@ -27,10 +28,6 @@ test('la liste affiche les missions ouvertes par défaut, les plus récentes en 
         ->assertOk()
         ->assertSeeInOrder(['Site de restaurant', 'Appli de tontine', 'Intégration Wave à Dakar'])
         ->assertDontSee('Mission déjà terminée');
-});
-
-test('l\'accueil redirige vers les missions', function () {
-    $this->get('/')->assertRedirect('/missions');
 });
 
 test('filtre par compétence', function () {
@@ -89,4 +86,16 @@ test('la fiche d\'une mission est publique', function () {
         ->assertSee('Se connecter pour postuler');
 
     $this->get('/missions/abc')->assertNotFound();
+});
+
+test('« pour moi » ne montre que les missions qui correspondent aux compétences du membre', function () {
+    $dev = User::factory()->withProfile()->create();
+    $dev->skills()->attach(Skill::where('slug', 'flutter')->sole());
+
+    $this->actingAs($dev);
+
+    Livewire::test(Index::class)->set('forMe', true)
+        ->assertSee('Appli de tontine')
+        ->assertDontSee('Intégration Wave à Dakar')
+        ->assertSee('Selon vos compétences');
 });

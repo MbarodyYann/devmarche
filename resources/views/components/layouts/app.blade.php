@@ -132,17 +132,18 @@
                     </div>
                 @endauth
 
-                @if ($publishUrl)
+                {{-- Visiteur : le CTA principal de la page d'accueil, mot pour mot. Membre : l'accent « Publier ». --}}
+                @guest
                     <div class="hidden md:block">
-                        <x-button :href="$publishUrl" variant="accent" size="sm">Publier une mission</x-button>
+                        <x-button :href="route('register')" size="sm">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                     </div>
                 @else
-                    @guest
+                    @if ($publishUrl)
                         <div class="hidden md:block">
-                            <x-button :href="route('register')" variant="accent" size="sm">Créer un compte</x-button>
+                            <x-button :href="$publishUrl" variant="accent" size="sm">Publier une mission</x-button>
                         </div>
-                    @endguest
-                @endif
+                    @endif
+                @endguest
             </div>
         </header>
     </div>
@@ -219,7 +220,7 @@
             </li>
         </ul>
 
-        @if ($publishUrl)
+        @if ($publishUrl && $me)
             <a href="{{ $publishUrl }}" class="btn-accent absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
                 <x-icon name="plus" class="size-6" />
             </a>
