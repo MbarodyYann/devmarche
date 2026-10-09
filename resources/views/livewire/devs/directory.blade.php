@@ -79,57 +79,10 @@
                 </div>
             </x-empty-state>
         @else
-            {{-- Ordinateur : tableau façon « Every feature, ticked » --}}
-            <div class="hidden rounded-card border border-dashed border-line p-2 lg:block">
-                <table class="w-full overflow-hidden rounded-[18px] bg-surface text-left shadow-card">
-                    <thead>
-                        <tr class="border-b border-line text-sm text-ink-muted">
-                            <th scope="col" class="px-5 py-3 font-medium">Dev</th>
-                            <th scope="col" class="px-4 py-3 font-medium">Lieu</th>
-                            <th scope="col" class="px-4 py-3 font-medium">Compétences</th>
-                            <th scope="col" class="px-4 py-3 font-medium">Disponibilité</th>
-                            <th scope="col" class="px-5 py-3 text-right font-medium">Cauris</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-line">
-                        @foreach ($this->devs as $dev)
-                            <tr wire:key="dev-{{ $dev->id }}" class="group relative transition hover:bg-bg-alt">
-                                <td class="px-5 py-4">
-                                    <a href="{{ route('devs.show', $dev) }}" class="flex items-center gap-3 after:absolute after:inset-0">
-                                        <x-avatar :user="$dev" size="sm" />
-                                        <span class="min-w-0">
-                                            <span class="flex items-center gap-2 font-semibold text-ink group-hover:text-primary-600 dark:group-hover:text-primary-300">
-                                                {{ $dev->name }}
-                                                @if ($dev->isNewMember())
-                                                    <x-chip tone="warm" class="px-2! py-0.5! text-xs!">Nouveau</x-chip>
-                                                @endif
-                                            </span>
-                                            @if ($dev->profile?->headline)
-                                                <span class="block max-w-64 truncate text-sm text-ink-muted">{{ $dev->profile->headline }}</span>
-                                            @endif
-                                        </span>
-                                    </a>
-                                </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-sm text-ink-soft">
-                                    {{ $dev->profile?->flag() }} {{ $dev->profile?->city }}
-                                </td>
-                                <td class="px-4 py-4"><x-skills :skills="$dev->skills" :limit="3" :link="false" /></td>
-                                <td class="px-4 py-4">
-                                    @if ($dev->profile)
-                                        <x-chip :tone="$dev->profile->availability->tone()">{{ $dev->profile->availability->label() }}</x-chip>
-                                    @endif
-                                </td>
-                                <td class="px-5 py-4 text-right"><x-reputation :points="$dev->reputation" /></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            {{-- Mobile et tablette : cartes --}}
-            <ul class="grid gap-4 sm:grid-cols-2 lg:hidden">
+            {{-- Des cartes sur tous les écrans : 1 colonne, 2 à partir de sm, 3 à partir de lg ; même hauteur par rangée. --}}
+            <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($this->devs as $dev)
-                    <li wire:key="dev-card-{{ $dev->id }}" class="min-w-0"><x-dev-card :dev="$dev" /></li>
+                    <li wire:key="dev-{{ $dev->id }}" class="min-w-0"><x-dev-card :dev="$dev" /></li>
                 @endforeach
             </ul>
 

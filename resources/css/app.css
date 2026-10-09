@@ -436,6 +436,10 @@
 
 @utility defile {
     animation: defile 40s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
 }
 
 @utility pb-safe {

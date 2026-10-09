@@ -11,7 +11,7 @@
         {{-- Bloc 1 : bandeau hero, aplat primary-800, glissé sous la navigation flottante --}}
         <section id="hero" class="relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950">
             {{-- Décor : 3 arcs concentriques, trait de 1 px blanc à 6 %, coin inférieur gauche --}}
-            <svg class="pointer-events-none absolute bottom-0 left-0 h-[560px] w-[560px] sm:h-[760px] sm:w-[760px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
+            <svg data-decor class="pointer-events-none absolute bottom-0 left-0 h-[560px] w-[560px] sm:h-[760px] sm:w-[760px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
                 @foreach ([340, 500, 660] as $radius)
                     <circle cx="0" cy="760" r="{{ $radius }}" stroke="white" stroke-opacity=".06" stroke-width="1" />
                 @endforeach
@@ -143,7 +143,7 @@
     {{-- CTA final : même aplat que le hero, même bouton ambre --}}
     @guest
         <section class="relative mt-20 overflow-hidden rounded-2xl bg-primary-800 px-6 py-14 text-center text-white sm:mt-28 sm:rounded-card sm:py-20 dark:bg-primary-950">
-            <svg class="pointer-events-none absolute bottom-0 left-0 h-[420px] w-[420px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
+            <svg data-decor class="pointer-events-none absolute bottom-0 left-0 h-[420px] w-[420px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
                 @foreach ([340, 500, 660] as $radius)
                     <circle cx="0" cy="760" r="{{ $radius }}" stroke="white" stroke-opacity=".06" stroke-width="1" />
                 @endforeach

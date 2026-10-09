@@ -3,6 +3,7 @@
  | À coller dans la console d'une page de http://cadev.test (connecté si besoin).
  | `overflow-x: clip` sur html et body masque les débordements : on mesure donc la position
  | réelle de chaque élément (getBoundingClientRect().right) et non le scrollWidth.
+ | Les décors marqués data-decor (arcs SVG), découpés par un conteneur en overflow-hidden, sont ignorés.
  */
 (async () => {
     const pages = ['/', '/missions', '/missions/1', '/missions/publier', '/devs', '/devs/2', '/questions', '/register', '/login', '/page-inexistante'];
@@ -17,7 +18,7 @@
         const doc = frame.contentDocument;
         const width = doc.documentElement.clientWidth;
         const overflowing = [...doc.querySelectorAll('main *, header *, footer *')]
-            .filter((el) => el.getClientRects().length && getComputedStyle(el).position !== 'fixed' && !el.closest('.defile'))
+            .filter((el) => el.getClientRects().length && getComputedStyle(el).position !== 'fixed' && !el.closest('.defile, [data-decor]'))
             .filter((el) => el.getBoundingClientRect().right > width + 0.5)
             .map((el) => `${el.tagName.toLowerCase()}.${String(el.className.baseVal ?? el.className).slice(0, 40)} → ${Math.round(el.getBoundingClientRect().right)}px`);
 

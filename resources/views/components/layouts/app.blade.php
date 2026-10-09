@@ -173,11 +173,14 @@
 
     {{-- Pied de page : grand texte qui défile, puis les liens --}}
     <footer class="overflow-hidden border-t border-line bg-bg-alt">
-        <div class="py-10 sm:py-14" aria-hidden="true">
-            <div class="defile flex w-max gap-12 whitespace-nowrap font-serif text-5xl font-medium tracking-tight text-ink/10 sm:text-7xl dark:text-ink/15">
+        {{-- Texte défilant : couleurs pleines (contraste ≥ 4,5:1). Si l'utilisateur préfère réduire les
+             animations, il est arrêté et affiché en entier (une seule copie, retour à la ligne). --}}
+        <div class="py-10 sm:py-14">
+            <p class="sr-only">Du travail, de l'aide, des pairs. Par et pour les devs d'Afrique.</p>
+            <div class="defile flex w-max gap-12 whitespace-nowrap font-serif text-5xl font-medium tracking-tight text-ink sm:text-7xl motion-reduce:mx-auto motion-reduce:w-auto motion-reduce:max-w-page motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-x-4 motion-reduce:gap-y-1 motion-reduce:px-4 motion-reduce:whitespace-normal motion-reduce:text-center" aria-hidden="true">
                 @foreach (range(1, 2) as $copy)
-                    <span>Du travail, de l'aide, des pairs.</span>
-                    <span class="italic text-primary-600/25 dark:text-secondary-300/30">Par et pour les devs d'Afrique.</span>
+                    <span @class(['motion-reduce:hidden' => $copy === 2])>Du travail, de l'aide, des pairs.</span>
+                    <span @class(['italic text-primary-600 dark:text-secondary-400', 'motion-reduce:hidden' => $copy === 2])>Par et pour les devs d'Afrique.</span>
                 @endforeach
             </div>
         </div>

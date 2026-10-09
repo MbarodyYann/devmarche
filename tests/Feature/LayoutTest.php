@@ -59,3 +59,21 @@ test('un bouton masqué sur mobile ne reçoit pas inline-flex par défaut', func
     // « sm:hidden » n'est pas un « hidden » : le bouton reste en inline-flex sur mobile.
     expect(Blade::render('<x-button class="sm:hidden">Ok</x-button>'))->toContain('class="inline-flex');
 });
+
+test('l\'annuaire affiche des cartes, plus de tableau', function () {
+    User::factory()->withProfile()->count(3)->create();
+
+    $this->get('/devs')
+        ->assertOk()
+        ->assertDontSee('<table', false)
+        ->assertSee('grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3', false);
+});
+
+test('le texte défilant du pied de page est en couleurs pleines et lisible par les lecteurs d\'écran', function () {
+    $html = $this->get('/devs')->getContent();
+    $footer = substr($html, strpos($html, '<footer'));
+
+    expect($footer)->toContain('<p class="sr-only">Du travail, de l\'aide, des pairs. Par et pour les devs d\'Afrique.</p>')
+        ->toContain('italic text-primary-600 dark:text-secondary-400')
+        ->not->toMatch('/text-(ink|primary-\d+|secondary-\d+)\/\d+/');
+});
