@@ -5,7 +5,13 @@
 <ul {{ $attributes->class('space-y-3') }}>
     @foreach ($rows as $row)
         <li class="grid grid-cols-[minmax(0,9rem)_minmax(0,1fr)_auto] items-center gap-3 text-sm sm:grid-cols-[minmax(0,12rem)_minmax(0,1fr)_auto]">
-            <span class="truncate text-ink">{{ $row[$label] }}</span>
+            {{-- Drapeau éventuel devant le libellé, séparé par gap-2 (même espacement partout). --}}
+            <span class="flex min-w-0 items-center gap-2 text-ink">
+                @isset($row['flag'])
+                    <span class="shrink-0" aria-hidden="true">{{ $row['flag'] }}</span>
+                @endisset
+                <span class="truncate">{{ $row[$label] }}</span>
+            </span>
             <span class="h-3 overflow-hidden rounded-full bg-bg-alt ring-1 ring-line" aria-hidden="true">
                 <span class="block h-full rounded-full bg-secondary-400" style="width: {{ max(2, round($row[$value] / $max * 100)) }}%"></span>
             </span>

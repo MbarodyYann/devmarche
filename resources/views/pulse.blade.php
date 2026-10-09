@@ -55,7 +55,7 @@
         <x-card class="lg:col-span-2">
             <h2 class="text-[26px] sm:text-[30px]">Les devs, pays par pays</h2>
             <p class="mt-1 text-sm text-ink-muted">Profils inscrits sur DevMarché.</p>
-            <x-bar-list class="mt-5" :rows="collect($pulse['devsByCountry'])->map(fn ($row) => $row + ['label' => $row['flag'].' '.$row['name']])->all()" label="label" value="count" data-pulse-list="countries" />
+            <x-bar-list class="mt-5" :rows="$pulse['devsByCountry']" label="name" value="count" data-pulse-list="countries" />
         </x-card>
     </div>
 </x-layouts.app>

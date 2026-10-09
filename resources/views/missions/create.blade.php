@@ -19,6 +19,21 @@
                     <x-textarea name="description" rows="7" maxlength="5000" required />
                 </x-field>
 
+                <div class="space-y-3">
+                    <x-field label="Pays" name="country">
+                        <x-select name="country" :options="$countries" :value="$defaultCountry" placeholder="Choisir un pays" x-bind:disabled="remote"
+                                  x-on:change="Livewire.dispatch('mission-country-changed', { country: $event.target.value })" />
+                    </x-field>
+                    <label class="inline-flex min-h-11 items-center gap-2 text-ink">
+                        <input type="checkbox" name="remote" value="1" x-model="remote" @checked(old('remote')) class="size-5 rounded border-line accent-primary-600"
+                               x-on:change="Livewire.dispatch('mission-country-changed', { country: remote ? null : $root.querySelector('[name=country]').value })">
+                        Télétravail (n'importe quel pays)
+                    </label>
+                </div>
+
+                {{-- Compétences et estimation du budget (Livewire) : le pays lui est transmis à chaque changement. --}}
+                <livewire:missions.budget-estimator skills="{{ old('skills', '') }}" :country="old('remote') ? null : old('country', $defaultCountry)" :suggested-skills="$suggestedSkills->all()" />
+
                 <div class="grid gap-6 sm:grid-cols-2">
                     <x-field label="Budget (FCFA)" name="budget_fcfa" hint="Montant total en FCFA. Ex. 150 000">
                         <x-input name="budget_fcfa" inputmode="numeric" placeholder="150000" required />
@@ -27,25 +42,6 @@
                         <x-input name="deadline" type="date" :min="now()->addDay()->toDateString()" />
                     </x-field>
                 </div>
-
-                <div class="space-y-3">
-                    <x-field label="Pays" name="country">
-                        <x-select name="country" :options="$countries" :value="$defaultCountry" placeholder="Choisir un pays" x-bind:disabled="remote" />
-                    </x-field>
-                    <label class="inline-flex min-h-11 items-center gap-2 text-ink">
-                        <input type="checkbox" name="remote" value="1" x-model="remote" @checked(old('remote')) class="size-5 rounded border-line accent-primary-600">
-                        Télétravail (n'importe quel pays)
-                    </label>
-                </div>
-
-                <x-field label="Compétences recherchées" name="skills" hint="Séparées par des virgules, 8 maximum. Ex. Laravel, Wave API" optional>
-                    <x-input name="skills" list="competences" autocomplete="off" />
-                    <datalist id="competences">
-                        @foreach ($suggestedSkills as $suggestedSkill)
-                            <option value="{{ $suggestedSkill }}"></option>
-                        @endforeach
-                    </datalist>
-                </x-field>
 
                 <div class="flex flex-col items-center gap-3 border-t border-line pt-6 sm:items-end">
                     <x-button type="submit" size="lg" class="w-full sm:w-auto">Publier ma mission</x-button>
