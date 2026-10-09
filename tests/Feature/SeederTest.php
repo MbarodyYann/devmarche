@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\MissionStatus;
+use App\Models\Mission;
 use App\Models\Profile;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
@@ -28,4 +30,17 @@ test('les seeders peuvent être relancés sans doublon', function () {
     $this->seed(DatabaseSeeder::class);
 
     expect(User::count())->toBe($count);
+});
+
+test('les seeders créent environ 25 missions dans tous les statuts, et la mission Wave d\'Aïssatou est ouverte', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    expect(Mission::count())->toBeGreaterThanOrEqual(25)
+        ->and(Mission::distinct()->pluck('status')->map->value->sort()->values()->all())
+        ->toBe(['assigned', 'cancelled', 'completed', 'open']);
+
+    $wave = Mission::where('title', 'like', '%API de paiement Wave%')->with('client')->sole();
+    expect($wave->status)->toBe(MissionStatus::Open)
+        ->and($wave->client->email)->toBe(DevSeeder::DEMO_STARTUP_EMAIL)
+        ->and(User::where('email', DevSeeder::DEMO_DEV_EMAIL)->value('reputation'))->toBeGreaterThan(0);
 });

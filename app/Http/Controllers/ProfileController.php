@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Availability;
+use App\Enums\MissionStatus;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Skill;
 use App\Models\User;
@@ -20,7 +21,17 @@ class ProfileController extends Controller
     {
         $user->load(['profile', 'skills']);
 
-        return view('devs.show', ['dev' => $user]);
+        $completed = $user->assignedMissions()
+            ->where('status', MissionStatus::Completed)
+            ->with(['client.profile', 'skills'])
+            ->withCount('applications')
+            ->latest('completed_at');
+
+        return view('devs.show', [
+            'dev' => $user,
+            'completedCount' => (clone $completed)->count(),
+            'completedMissions' => $completed->limit(6)->get(),
+        ]);
     }
 
     public function edit(User $user): View

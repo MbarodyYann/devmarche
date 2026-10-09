@@ -47,7 +47,7 @@
             <dl class="grid grid-cols-2 divide-x divide-line border-t border-line pt-4 text-sm">
                 <div class="pr-4">
                     <dt class="text-ink-muted">Missions réalisées</dt>
-                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">0</dd>
+                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">{{ $completedCount }}</dd>
                 </div>
                 <div class="pl-4">
                     <dt class="text-ink-muted">Membre depuis</dt>
@@ -68,10 +68,20 @@
                 @endif
             </x-card>
 
-            <x-card>
-                <h2 class="text-[28px] sm:text-[32px]">Missions réalisées</h2>
-                <p class="mt-4 text-ink-muted">Aucune mission terminée pour l'instant.</p>
-            </x-card>
+            <section>
+                <h2 class="mb-4 text-[28px] sm:text-[32px]">Missions réalisées</h2>
+                @if ($completedMissions->isEmpty())
+                    <x-card padding="p-6">
+                        <p class="text-ink-muted">Aucune mission terminée pour l'instant.</p>
+                    </x-card>
+                @else
+                    <ul class="grid gap-4 sm:grid-cols-2">
+                        @foreach ($completedMissions as $mission)
+                            <li class="min-w-0"><x-mission-card :mission="$mission" /></li>
+                        @endforeach
+                    </ul>
+                @endif
+            </section>
         </div>
 
         <aside class="space-y-6">

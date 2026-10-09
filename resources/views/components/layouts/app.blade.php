@@ -1,4 +1,4 @@
-@props(['title' => null, 'search' => true])
+@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null])
 
 @php
     $navigation = [

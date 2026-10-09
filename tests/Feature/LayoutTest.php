@@ -2,6 +2,7 @@
 
 use App\Enums\Availability;
 use App\Models\User;
+use Illuminate\Support\Facades\Blade;
 
 test('la page 404 est en français', function () {
     $this->get('/cette-page-n-existe-pas')
@@ -48,4 +49,13 @@ test('l\'avatar par défaut est rond avec les initiales', function () {
     $dev = User::factory()->withProfile()->create(['name' => 'Moussa Ndiaye']);
 
     $this->get(route('devs.show', $dev))->assertSee('>MN</span>', false);
+});
+
+test('un bouton masqué sur mobile ne reçoit pas inline-flex par défaut', function () {
+    $html = Blade::render('<x-button class="hidden sm:inline-flex" href="/x">Publier</x-button>');
+
+    expect($html)->toContain('class="items-center')->toContain('hidden sm:inline-flex');
+
+    // « sm:hidden » n'est pas un « hidden » : le bouton reste en inline-flex sur mobile.
+    expect(Blade::render('<x-button class="sm:hidden">Ok</x-button>'))->toContain('class="inline-flex');
 });

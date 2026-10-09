@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -62,6 +63,42 @@ class User extends Authenticatable
     public function skills(): BelongsToMany
     {
         return $this->belongsToMany(Skill::class)->orderBy('name');
+    }
+
+    /**
+     * Missions publiées (en tant que client).
+     *
+     * @return HasMany<Mission, $this>
+     */
+    public function missions(): HasMany
+    {
+        return $this->hasMany(Mission::class, 'client_id');
+    }
+
+    /**
+     * Missions confiées à ce dev (en tant que freelance).
+     *
+     * @return HasMany<Mission, $this>
+     */
+    public function assignedMissions(): HasMany
+    {
+        return $this->hasMany(Mission::class, 'freelancer_id');
+    }
+
+    /**
+     * @return HasMany<Application, $this>
+     */
+    public function applications(): HasMany
+    {
+        return $this->hasMany(Application::class);
+    }
+
+    /**
+     * @return HasMany<ReputationEvent, $this>
+     */
+    public function reputationEvents(): HasMany
+    {
+        return $this->hasMany(ReputationEvent::class);
     }
 
     public function isNewMember(): bool

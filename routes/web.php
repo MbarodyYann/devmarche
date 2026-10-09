@@ -1,12 +1,33 @@
 <?php
 
+use App\Http\Controllers\MissionApplicationController;
+use App\Http\Controllers\MissionController;
+use App\Http\Controllers\MissionStatusController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Devs\Directory;
+use App\Livewire\Missions\Index as MissionIndex;
 use Illuminate\Support\Facades\Route;
 
-// L'accueil arrive au lot 4 : en attendant, on ouvre sur l'annuaire.
-Route::redirect('/', '/devs')->name('home');
+// L'accueil (hero) arrive au point 13 du lot 2 : en attendant, on ouvre sur les missions.
+Route::redirect('/', '/missions')->name('home');
 
+// Missions
+Route::get('/missions', MissionIndex::class)->name('missions.index');
+Route::get('/missions/{mission}', [MissionController::class, 'show'])->name('missions.show');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/missions/publier', [MissionController::class, 'create'])->name('missions.create');
+    Route::post('/missions', [MissionController::class, 'store'])->middleware('throttle:missions')->name('missions.store');
+    Route::post('/missions/{mission}/candidatures', [MissionApplicationController::class, 'store'])
+        ->middleware('throttle:applications')
+        ->name('missions.apply');
+    Route::post('/missions/{mission}/candidatures/{application}/retenir', [MissionApplicationController::class, 'accept'])
+        ->name('missions.accept');
+    Route::post('/missions/{mission}/terminer', [MissionStatusController::class, 'complete'])->name('missions.complete');
+    Route::post('/missions/{mission}/annuler', [MissionStatusController::class, 'cancel'])->name('missions.cancel');
+});
+
+// Devs
 Route::get('/devs', Directory::class)->name('devs.index');
 Route::get('/devs/{user}', [ProfileController::class, 'show'])->name('devs.show');
 
@@ -17,12 +38,7 @@ Route::middleware('auth')->group(function () {
         ->name('profile.update');
 });
 
-// Rubriques des lots 2 et 3 (missions, questions-réponses).
-Route::view('/missions', 'coming-soon', [
-    'title' => 'Missions',
-    'message' => 'Les missions arrivent bientôt.',
-])->name('missions.index');
-
+// Rubrique du lot 3 (questions-réponses).
 Route::view('/questions', 'coming-soon', [
     'title' => 'Questions-réponses',
     'message' => 'Les questions-réponses arrivent bientôt.',

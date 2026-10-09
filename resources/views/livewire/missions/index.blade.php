@@ -1,0 +1,91 @@
+<div>
+    <x-page-intro eyebrow="Du travail entre devs" title="Les missions" list>
+        Des missions payées en FCFA, publiées par des startups et des devs de la communauté.
+        @auth
+            <x-slot:actions>
+                <x-button :href="route('missions.create')" variant="accent" class="hidden sm:inline-flex">
+                    <x-icon name="plus" class="size-4" /> Publier une mission
+                </x-button>
+            </x-slot:actions>
+        @endauth
+    </x-page-intro>
+
+    @php($total = $this->missions->total())
+    <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
+        <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
+            <span class="size-1.5 rounded-full bg-secondary-400" aria-hidden="true"></span>
+            <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}</span>
+            <span wire:loading>Recherche…</span>
+        </span>
+        <x-segmented label="Statut" model="status" :options="$statuses" />
+    </div>
+
+    {{-- Filtres : sur mobile, seule la ligne compétence + bouton « Filtres » est visible. --}}
+    @php($activeFilters = collect([$country, $budgetMin, $budgetMax])->filter()->count() + ($sort !== 'recentes' ? 1 : 0))
+    <x-card padding="p-3 sm:p-5" class="mt-4"
+            x-data="{ open: false, desktop: window.matchMedia('(min-width: 640px)').matches }"
+            x-init="window.matchMedia('(min-width: 640px)').addEventListener('change', e => desktop = e.matches)">
+        <form wire:submit.prevent role="search" aria-label="Filtrer les missions" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
+            <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
+                <div class="min-w-0 flex-1">
+                    <label for="filtre-competence" class="mb-1.5 block text-sm font-medium text-ink max-sm:sr-only">Compétence</label>
+                    <x-select name="competence" id="filtre-competence" wire:model.live="skill"
+                              :options="$this->skillOptions->pluck('name', 'slug')->all()" placeholder="Toutes les compétences" />
+                </div>
+                <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()" aria-controls="filtres-avances"
+                        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field border border-line bg-bg-alt px-3 text-sm font-semibold text-ink shadow-soft sm:hidden">
+                    <x-icon name="filter" class="size-4" /> Filtres
+                    @if ($activeFilters)
+                        <span class="inline-flex size-5 items-center justify-center rounded-full bg-primary-600 text-xs text-white dark:bg-secondary-400 dark:text-primary-950">{{ $activeFilters }}</span>
+                    @endif
+                </button>
+            </div>
+            <div id="filtres-avances" class="contents" x-show="open || desktop" x-cloak>
+                <div>
+                    <label for="filtre-pays" class="mb-1.5 block text-sm font-medium text-ink">Lieu</label>
+                    <x-select name="pays" id="filtre-pays" wire:model.live="country" :options="$this->countryOptions" placeholder="Partout" />
+                </div>
+                <fieldset>
+                    <legend class="mb-1.5 block text-sm font-medium text-ink">Budget (FCFA)</legend>
+                    <div class="flex items-center gap-2">
+                        <label for="filtre-budget-min" class="sr-only">Budget minimum</label>
+                        <x-input name="budget_min" id="filtre-budget-min" inputmode="numeric" wire:model.live.debounce.500ms="budgetMin" placeholder="Min." />
+                        <span class="text-ink-muted" aria-hidden="true">–</span>
+                        <label for="filtre-budget-max" class="sr-only">Budget maximum</label>
+                        <x-input name="budget_max" id="filtre-budget-max" inputmode="numeric" wire:model.live.debounce.500ms="budgetMax" placeholder="Max." />
+                    </div>
+                </fieldset>
+                <div>
+                    <label for="filtre-tri" class="mb-1.5 block text-sm font-medium text-ink">Trier par</label>
+                    <x-select name="tri" id="filtre-tri" wire:model.live="sort" :options="['recentes' => 'Plus récentes', 'budget' => 'Budget le plus élevé']" />
+                </div>
+            </div>
+        </form>
+        @if ($this->hasFilters)
+            <div class="mt-3 flex justify-end">
+                <x-button variant="ghost" size="sm" wire:click="resetFilters">Effacer les filtres</x-button>
+            </div>
+        @endif
+    </x-card>
+
+    <div wire:loading.class="opacity-60" class="mt-6 transition-opacity">
+        @if ($this->missions->isEmpty())
+            <x-empty-state title="Aucune mission pour ce filtre.">
+                Élargissez à tous les pays, ou publiez la vôtre : les devs arrivent vite.
+                <div class="mt-6 flex flex-wrap justify-center gap-3">
+                    <x-button variant="secondary" wire:click="resetFilters">Voir toutes les missions</x-button>
+                </div>
+            </x-empty-state>
+        @else
+            <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($this->missions as $mission)
+                    <li wire:key="mission-{{ $mission->id }}" class="min-w-0"><x-mission-card :mission="$mission" /></li>
+                @endforeach
+            </ul>
+
+            <div class="mt-8">
+                {{ $this->missions->links() }}
+            </div>
+        @endif
+    </div>
+</div>
