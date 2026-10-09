@@ -128,10 +128,17 @@ test('en-tête compact des listes : ni CTA, ni lien recruteur, ni réassurance (
     expect($hero)->not->toContain(Copy::SIGNUP_CTA)
         ->not->toContain(Copy::RECRUIT_LINK)
         ->not->toContain(Copy::REASSURANCE_RISK)
-        ->and(substr_count($html, Copy::SIGNUP_CTA))->toBe(1);
+        ->and(substr_count($html, Copy::SIGNUP_CTA))->toBe(2); // navigation : ordinateur et mobile
 })->with(['/missions', '/questions', '/devs']);
 
-test('en-tête compact : le membre garde l\'action de la page', function () {
-    $this->actingAs($this->moussa)->get('/missions')->assertSee('Publier une mission');
-    $this->actingAs($this->moussa)->get('/questions')->assertSee('Poser ma question');
+test('en-tête compact : le membre garde l\'action de la page, sauf si la navigation la propose déjà', function () {
+    $hero = function (string $url) {
+        $html = $this->actingAs($this->moussa)->get($url)->getContent();
+
+        return substr($html, strpos($html, 'id="hero"'), strpos($html, '<main') - strpos($html, 'id="hero"'));
+    };
+
+    // « Publier une mission » est déjà dans la navigation : pas de doublon dans l'en-tête de /missions.
+    expect($hero('/missions'))->not->toContain('Publier une mission')->not->toContain('data-cta="principal"')
+        ->and($hero('/questions'))->toContain('Poser ma question');
 });

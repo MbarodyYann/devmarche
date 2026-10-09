@@ -77,6 +77,12 @@
             </div>
         </section>
 
+        {{-- Marques de tiers citées sur le site (« Pensé pour ») --}}
+        <section id="marques" aria-labelledby="marques-titre" class="scroll-mt-28">
+            <h2 id="marques-titre" class="text-[28px] sm:text-[36px]">Marques citées</h2>
+            <p class="mt-4 text-lg text-ink-soft" data-trademarks>Wave, Orange Money et MTN MoMo sont des marques de leurs propriétaires respectifs. DevMarché n'est affilié à aucune de ces sociétés ; le paiement est simulé dans cette version.</p>
+        </section>
+
         {{-- Déclaration d'usage de l'IA (article 6) --}}
         <section id="ia" aria-labelledby="ia-titre" class="scroll-mt-28">
             <h2 id="ia-titre" class="text-[28px] sm:text-[36px]">Usage de l'intelligence artificielle</h2>

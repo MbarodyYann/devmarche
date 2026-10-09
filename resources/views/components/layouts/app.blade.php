@@ -12,6 +12,12 @@
     $publishUrl = Route::has('missions.create') ? route('missions.create') : null;
     // Bandeau indigo sous la navigation : hero de l'accueil (slot) ou en-tête compact d'une page de liste.
     $hasHero = isset($hero) || $pageHero;
+    // Une action de l'en-tête compact déjà proposée par la navigation n'y est pas répétée
+    // (« Publier une mission » pour un membre) ; « Poser ma question » reste.
+    $heroAction = $pageHero['action'] ?? null;
+    if ($heroAction && $me && $heroAction['route'] === 'missions.create') {
+        $heroAction = null;
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -74,7 +80,7 @@
     @livewireStyles
     {{ $head ?? '' }}
 </head>
-<body class="min-h-dvh pb-safe md:pb-0">
+<body class="min-h-dvh pb-safe lg:pb-0">
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-btn focus:bg-surface focus:px-4 focus:py-2 focus:shadow-card">
         Aller au contenu
     </a>
@@ -95,10 +101,10 @@
         <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
                 @if ($hasHero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endif>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
-                <x-logo />
+                <x-logo :compact="auth()->guest()" />
             </a>
 
-            <nav class="mx-auto hidden items-center gap-1 md:flex" aria-label="Navigation principale">
+            <nav class="mx-auto hidden items-center gap-1 lg:flex" aria-label="Navigation principale">
                 @foreach ($navigation as $item)
                     @php($active = request()->routeIs($item['active']))
                     <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
@@ -115,7 +121,7 @@
                 @endforeach
             </nav>
 
-            <div class="ml-auto flex items-center gap-2 md:ml-0">
+            <div class="ml-auto flex items-center gap-2 lg:ml-0">
                 @if ($search)
                     <form action="{{ route('devs.index') }}" method="get" role="search" class="hidden xl:block">
                         <label for="recherche-globale" class="sr-only">Rechercher un dev</label>
@@ -130,7 +136,7 @@
                 <x-theme-toggle />
 
                 @auth
-                    <div class="relative hidden md:block" x-data="{ open: false }" x-on:keydown.escape="open = false" x-on:click.outside="open = false">
+                    <div class="relative hidden lg:block" x-data="{ open: false }" x-on:keydown.escape="open = false" x-on:click.outside="open = false">
                         <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()"
                                 class="flex items-center gap-2 rounded-btn py-1 pl-1 pr-2.5 transition hover:bg-surface">
                             <x-avatar :user="$me" size="xs" />
@@ -155,7 +161,7 @@
                         </div>
                     </div>
                 @else
-                    <div class="hidden md:block">
+                    <div class="hidden lg:block">
                         <x-button :href="route('login')" variant="secondary" size="sm">Connexion</x-button>
                     </div>
                 @endauth
@@ -163,12 +169,16 @@
                 {{-- Visiteur : le CTA principal, mot pour mot, visible en permanence sur toutes les pages
                      (il coexiste avec celui du hero de l'accueil). Membre : l'accent « Publier ». --}}
                 @guest
-                    <div class="hidden md:block" data-nav-cta>
+                    <div class="hidden lg:block" data-nav-cta>
                         <x-button :href="route('register')" size="sm">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                    </div>
+                    {{-- Sous 1 024 px (barre du bas affichée) : petit bouton ambre (36 px). « Connexion » reste dans l'onglet « Moi » de la barre du bas. --}}
+                    <div class="lg:hidden" data-nav-cta-mobile>
+                        <x-button :href="route('register')" variant="cta" size="xs">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                     </div>
                 @else
                     @if ($publishUrl)
-                        <div class="hidden md:block">
+                        <div class="hidden lg:block">
                             <x-button :href="$publishUrl" variant="accent" size="sm">Publier une mission</x-button>
                         </div>
                     @endif
@@ -181,7 +191,7 @@
     @isset($hero)
         {{ $hero }}
     @elseif ($pageHero)
-        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" />
+        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$heroAction" />
     @endisset
 
     <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! $hasHero, 'pt-0' => $hasHero])>
@@ -231,7 +241,7 @@
     </footer>
 
     {{-- Barre du bas (mobile) : flottante, même matière que la navigation --}}
-    <nav class="fixed inset-x-3 bottom-3 z-40 md:hidden" aria-label="Navigation principale" style="margin-bottom: env(safe-area-inset-bottom)">
+    <nav class="fixed inset-x-3 bottom-3 z-40 lg:hidden" aria-label="Navigation principale" style="margin-bottom: env(safe-area-inset-bottom)">
         <ul class="nav-glass grid grid-cols-4 rounded-2xl p-1.5 shadow-card-hover">
             @foreach ($navigation as $item)
                 @php($active = request()->routeIs($item['active']))

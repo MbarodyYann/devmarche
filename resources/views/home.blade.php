@@ -78,21 +78,42 @@
             </dl>
         </section>
 
-        {{-- Bloc 3 : bande de preuve sociale, chiffres réels de la base (cache de 10 min).
-             Étiquettes et chiffres seuls, en Newsreader : ni icône, ni avatar, ni drapeau. --}}
+        {{-- Bloc 3 : bande de preuve sociale, chiffres réels mis en cache 10 min --}}
         <section aria-label="DevMarché en chiffres" class="border-b border-line bg-bg-alt">
-            <dl class="mx-auto grid max-w-page grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 text-center sm:px-6 lg:grid-cols-4">
-                @foreach ([
-                    ['Devs inscrits', App\Support\Money::fcfa($stats['devs']), 'devs'],
-                    ['Pays', $stats['countries'], 'countries'],
-                    ['Missions publiées', App\Support\Money::fcfa($stats['missions']), 'missions'],
-                    ['Pensé pour', 'Wave · Orange Money · MTN MoMo', null],
-                ] as [$label, $value, $key])
-                    <div @class(['flex flex-col items-center', 'col-span-2 lg:col-span-1' => $key === null])>
-                        <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">{{ $label }}</dt>
-                        <dd class="mt-2 font-serif text-xl font-medium text-ink" @if ($key) data-stat="{{ $key }}"@endif>{{ $value }}</dd>
-                    </div>
-                @endforeach
+            <dl class="mx-auto grid max-w-page grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 text-center sm:px-6 lg:grid-cols-5">
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Devs inscrits</dt>
+                    <dd class="mt-2 flex items-center gap-2">
+                        <span class="flex -space-x-2" aria-hidden="true">
+                            @foreach ($avatars as $avatar)
+                                <x-avatar :user="$avatar" size="xs" />
+                            @endforeach
+                        </span>
+                        <span class="font-serif text-xl font-medium text-ink" data-stat="devs">{{ $stats['devs'] }}</span>
+                    </dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pays</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink">
+                        <span data-stat="countries">{{ $stats['countries'] }}</span>
+                        <span class="ml-1 font-sans text-base tracking-wider" aria-hidden="true">{{ implode('', $stats['flags']) }}</span>
+                    </dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Missions publiées</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink" data-stat="missions">{{ App\Support\Money::fcfa($stats['missions']) }}</dd>
+                </div>
+                <div class="flex flex-col items-center">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Cauris gagnés</dt>
+                    <dd class="mt-2 flex items-center gap-1.5 font-serif text-xl font-medium text-ink">
+                        <x-cauri class="size-5 text-secondary-400" />
+                        <span data-stat="cauris">{{ App\Support\Money::fcfa($stats['cauris']) }}</span>
+                    </dd>
+                </div>
+                <div class="col-span-2 flex flex-col items-center lg:col-span-1">
+                    <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pensé pour</dt>
+                    <dd class="mt-2 font-serif text-xl font-medium text-ink">Wave · Orange Money · MTN MoMo</dd>
+                </div>
             </dl>
         </section>
     </x-slot:hero>
@@ -179,7 +200,8 @@
                     </li>
                 @endforeach
             </ol>
-            <div class="mt-12">
+            {{-- Sur ordinateur, le bouton s'aligne sur le bord droit de la 3e colonne. --}}
+            <div class="mt-12 md:flex md:justify-end">
                 @auth
                     <x-button :href="route('missions.index', ['pour_moi' => 1])" variant="cta" size="lg" class="w-full sm:w-auto">{{ App\Support\Copy::MEMBER_CTA }}</x-button>
                 @else

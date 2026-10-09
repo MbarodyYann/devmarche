@@ -57,3 +57,7 @@ test('aucune licence interdite (GPL, AGPL, LGPL) sans alternative permissive', f
             ->and($row['version'])->not->toBe('—', "{$row['name']} introuvable dans les fichiers de verrouillage");
     }
 });
+
+test('mention légale des marques citées (aucune affiliation, paiement simulé)', function () {
+    $this->get('/a-propos')->assertSee('Wave, Orange Money et MTN MoMo sont des marques de leurs propriétaires respectifs. DevMarché n\'est affilié à aucune de ces sociétés ; le paiement est simulé dans cette version.');
+});
