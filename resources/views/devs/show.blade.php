@@ -84,6 +84,44 @@
                 @endif
             </x-card>
 
+            <x-card>
+                <h2 class="text-[28px] sm:text-[32px]">Réponses <span class="text-ink-muted">({{ $answersCount }})</span></h2>
+                @if ($answers->isEmpty())
+                    <p class="mt-4 text-ink-muted">
+                        {{ $isOwner ? 'Vos réponses aux questions de la communauté apparaîtront ici. Chaque vote positif rapporte +10 cauris.' : 'Aucune réponse pour l\'instant.' }}
+                    </p>
+                @else
+                    <ul class="mt-4 divide-y divide-line">
+                        @foreach ($answers as $answer)
+                            <li class="flex items-start gap-3 py-3">
+                                <span class="w-10 shrink-0 rounded-[6px] bg-bg-alt py-1 text-center text-sm font-semibold tabular-nums text-ink ring-1 ring-line">{{ $answer->score }}</span>
+                                <a href="{{ route('questions.show', $answer->question).'#reponse-'.$answer->id }}" class="min-w-0 flex-1 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-300">{{ $answer->question->title }}</a>
+                                @if ($answer->question->accepted_answer_id === $answer->id)
+                                    <x-chip tone="done" class="shrink-0">Acceptée</x-chip>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </x-card>
+
+            @if ($questions->isNotEmpty())
+                <x-card>
+                    <h2 class="text-[28px] sm:text-[32px]">Questions</h2>
+                    <ul class="mt-4 divide-y divide-line">
+                        @foreach ($questions as $question)
+                            <li class="flex items-start gap-3 py-3">
+                                <a href="{{ route('questions.show', $question) }}" class="min-w-0 flex-1 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-300">{{ $question->title }}</a>
+                                <span class="shrink-0 text-sm text-ink-muted">{{ $question->answers_count }} {{ $question->answers_count > 1 ? 'réponses' : 'réponse' }}</span>
+                                @if ($question->accepted_answer_id)
+                                    <x-chip tone="done" class="shrink-0">Résolue</x-chip>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                </x-card>
+            @endif
+
             <section>
                 <h2 class="mb-4 text-[28px] sm:text-[32px]">Missions réalisées</h2>
                 @if ($completedMissions->isEmpty())

@@ -31,6 +31,15 @@ class ProfileController extends Controller
             'dev' => $user,
             'completedCount' => (clone $completed)->count(),
             'completedMissions' => $completed->limit(6)->get(),
+            // Ses meilleures réponses d'abord (acceptées, puis par score).
+            'answers' => $user->answers()
+                ->with('question:id,title,accepted_answer_id')
+                ->orderByDesc('score')
+                ->latest()
+                ->limit(5)
+                ->get(),
+            'answersCount' => $user->answers()->count(),
+            'questions' => $user->questions()->latest()->limit(5)->get(['id', 'title', 'score', 'answers_count', 'accepted_answer_id', 'created_at']),
         ]);
     }
 

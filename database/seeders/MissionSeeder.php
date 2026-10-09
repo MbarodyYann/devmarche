@@ -6,15 +6,14 @@ use App\Models\Application;
 use App\Models\Mission;
 use App\Models\User;
 use App\Services\MissionService;
-use App\Services\ReputationService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
  * 25 missions crédibles, dans tous les statuts, avec leurs candidatures.
- * Les missions terminées créditent les freelances via ReputationService (événements mission_completed),
- * puis un historique de démonstration donne des cauris variés (0 pour les nouveaux, ~1 500 pour les meilleurs).
+ * Les missions terminées créditent les freelances via ReputationService (événements mission_completed).
+ * Le reste de la réputation vient des questions-réponses (QuestionSeeder).
  *
  * Pour le scénario de démo, la mission Wave d'Aïssatou reste OUVERTE.
  */
@@ -22,7 +21,6 @@ class MissionSeeder extends Seeder
 {
     public function __construct(
         private readonly MissionService $missions,
-        private readonly ReputationService $reputation,
     ) {}
 
     public function run(): void
@@ -65,11 +63,6 @@ class MissionSeeder extends Seeder
                     'cancelled' => $this->missions->cancel($mission),
                     default => null,
                 };
-            }
-
-            // Historique de démonstration (Q&R et missions antérieures au lancement) : des cauris variés et crédibles.
-            foreach ($this->history() as $name => $points) {
-                $this->reputation->award($user($name), $points, 'seed_history');
             }
         });
     }
@@ -279,27 +272,6 @@ class MissionSeeder extends Seeder
                 'description' => "Écrire les tests widget et d'intégration des parcours critiques (inscription, paiement) et les brancher dans notre intégration continue.",
                 'applicants' => ['Fatou Sow'],
             ],
-        ];
-    }
-
-    /**
-     * Cauris de démonstration accumulés avant le lancement (remplacés au lot 3 par de vraies réponses votées).
-     *
-     * @return array<string, int>
-     */
-    private function history(): array
-    {
-        return [
-            'Jean-Marc N\'Guessan' => 1480, 'Kouadio Yao' => 1210, 'Cheikh Fall' => 960, 'Fatoumata Camara' => 870,
-            'Kossi Mensah' => 760, 'Paul Fotso' => 690, 'Arnaud Mbarga' => 620, 'Rodrigue Hounsou' => 540,
-            'Christelle Ngo Biyong' => 480, 'Samuel Nkwenti' => 430, 'Fiacre Agossou' => 410, 'Mathieu Ahouansou' => 380,
-            'Ibrahima Diop' => 350, 'Akossiwa Agbeko' => 320, 'Abdoul Kaboré' => 290, 'Bakary Coulibaly' => 260,
-            'Kadiatou Keïta' => 240, 'Boukary Ouédraogo' => 220, 'Yawo Amegbor' => 200, 'Fatou Sow' => 190,
-            'Awa Seck' => 170, 'Mamadou Bah' => 150, 'Moussa Ndiaye' => 120, 'Edem Afenyo' => 110,
-            'Aya Koné' => 95, 'Salimata Sawadogo' => 90, 'Serge Kouassi' => 80, 'Grâce Adjovi' => 70,
-            'Aïssatou Diallo' => 60, 'Ousmane Sarr' => 45, 'Seydou Touré' => 40, 'Alpha Barry' => 25,
-            'Mariam Traoré' => 15, 'Elom Kpodar' => 10,
-            // Nouveaux membres : 0 (Mariama Ba, Brenda Tchoupo, Nadège Dossou, Rasmata Compaoré, Oumou Dembélé, Hawa Soumah).
         ];
     }
 }

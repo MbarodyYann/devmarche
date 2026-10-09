@@ -20,11 +20,8 @@
             <div class="relative mx-auto grid max-w-page items-center gap-10 px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-16 lg:grid-cols-[55fr_45fr] lg:gap-12">
                 {{-- Colonne texte --}}
                 <div>
-                    <p class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[.18em] text-secondary-400">
-                        Par et pour les devs d'Afrique francophone
-                    </p>
 
-                    <h1 class="mt-6 text-balance text-[38px] leading-[1.1] text-white sm:text-[48px]">
+                    <h1 class="text-balance text-[38px] leading-[1.1] text-white sm:text-[48px]">
                         Quittez les groupes WhatsApp,
                         <em class="block font-serif italic text-secondary-400">les missions viennent à vous.</em>
                     </h1>

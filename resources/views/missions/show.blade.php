@@ -24,7 +24,8 @@
                     <span class="text-sm text-ink-muted">Publiée le {{ $mission->created_at->translatedFormat('j F Y') }}</span>
                 </div>
                 <h1 class="mt-4 break-words text-[30px] sm:text-[44px]">{{ $mission->title }}</h1>
-                <div class="mt-5 max-w-prose leading-relaxed text-ink-soft">{!! nl2br(e($mission->description)) !!}</div>
+                {{-- HTML produit par MarkdownRenderer (HTML brut échappé, liens dangereux neutralisés). --}}
+                <div class="prose-dm mt-5">{!! $mission->description_html !!}</div>
                 @if ($mission->skills->isNotEmpty())
                     <div class="mt-6 border-t border-line pt-5">
                         <h2 class="mb-3 font-sans text-sm font-semibold tracking-normal text-ink">Compétences recherchées</h2>

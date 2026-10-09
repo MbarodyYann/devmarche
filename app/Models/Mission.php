@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\MissionStatus;
+use App\Models\Concerns\RendersMarkdown;
 use App\Support\Countries;
 use Database\Factories\MissionFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Mission extends Model
 {
     /** @use HasFactory<MissionFactory> */
-    use HasFactory;
+    use HasFactory, RendersMarkdown;
 
     /** Budget minimal accepté, en FCFA. */
     public const MIN_BUDGET = 5000;
@@ -50,6 +51,14 @@ class Mission extends Model
             'assigned_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function markdownFields(): array
+    {
+        return ['description' => 'description_html'];
     }
 
     /**

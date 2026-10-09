@@ -23,8 +23,6 @@ function heroHtml(string $html): string
 test('le hero nomme la douleur puis vend la transformation, et explique le mécanisme', function () {
     $this->get('/')
         ->assertOk()
-        ->assertSee('Par et pour les devs d\'Afrique francophone', false)
-        ->assertDontSee('— Par et pour')
         ->assertSee('Quittez les groupes WhatsApp,')
         ->assertSee('<em class="block font-serif italic text-secondary-400">les missions viennent à vous.</em>', false)
         ->assertSee('vous postulez en 2 minutes, et vous êtes payé en Mobile Money.');
@@ -124,4 +122,11 @@ test('la section des dernières missions reprend les textes de 11', function () 
         ->assertSee('Des clients cherchent un dev en ce moment.')
         ->assertSee('Chaque mission affiche son budget en FCFA : postulez avec votre prix, le client choisit sur votre profil.')
         ->assertSee('Voir toutes les missions →');
+});
+
+test('le hero s\'ouvre directement sur le titre, sans surtitre', function () {
+    $hero = heroHtml($this->get('/')->getContent());
+
+    expect($hero)->not->toContain('Par et pour les devs')
+        ->and(strpos($hero, '<h1'))->toBeLessThan(strpos($hero, 'Quittez'));
 });

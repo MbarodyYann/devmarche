@@ -57,6 +57,9 @@
         @case('alert')
             <circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>
             @break
+        @case('chevron-up')
+            <path d="m18 15-6-6-6 6"/>
+            @break
         @case('chevron-down')
             <path d="m6 9 6 6 6-6"/>
             @break
