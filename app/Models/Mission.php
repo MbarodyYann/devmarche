@@ -63,6 +63,16 @@ class Mission extends Model
     }
 
     /**
+     * Paiement Mobile Money simulé (séquestre).
+     *
+     * @return HasOne<Payment, $this>
+     */
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    /**
      * Avis du client sur le freelance (une fois la mission terminée).
      *
      * @return HasOne<Review, $this>

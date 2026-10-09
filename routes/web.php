@@ -8,6 +8,7 @@ use App\Http\Controllers\MissionController;
 use App\Http\Controllers\MissionReviewController;
 use App\Http\Controllers\MissionStatusController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SitemapController;
@@ -42,8 +43,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/missions/{mission}/candidatures', [MissionApplicationController::class, 'store'])
         ->middleware('throttle:applications')
         ->name('missions.apply');
-    Route::post('/missions/{mission}/candidatures/{application}/retenir', [MissionApplicationController::class, 'accept'])
-        ->name('missions.accept');
+    // Retenir un dev = sécuriser les fonds (paiement Mobile Money simulé), en deux étapes.
+    Route::get('/missions/{mission}/candidatures/{application}/paiement', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('/missions/{mission}/candidatures/{application}/paiement', [PaymentController::class, 'store'])->middleware('throttle:20,1')->name('payments.store');
+    Route::get('/missions/{mission}/candidatures/{application}/paiement/confirmation', [PaymentController::class, 'confirm'])->name('payments.confirm');
+    Route::post('/missions/{mission}/candidatures/{application}/paiement/confirmation', [PaymentController::class, 'verify'])->middleware('throttle:20,1')->name('payments.verify');
     Route::post('/missions/{mission}/terminer', [MissionStatusController::class, 'complete'])->name('missions.complete');
     Route::post('/missions/{mission}/annuler', [MissionStatusController::class, 'cancel'])->name('missions.cancel');
     Route::post('/missions/{mission}/avis', [MissionReviewController::class, 'store'])->middleware('throttle:20,1')->name('missions.review');

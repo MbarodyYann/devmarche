@@ -33,8 +33,7 @@ test('le cycle complet : postuler, retenir, terminer, et +20 cauris', function (
     $this->actingAs($this->client)->get(route('missions.show', $this->mission))
         ->assertSee('Choisissez votre dev')->assertSee('Moussa Ndiaye')->assertSee('Retenir ce dev');
 
-    $this->actingAs($this->client)->post(route('missions.accept', [$this->mission, $mine]))
-        ->assertRedirect(route('missions.show', $this->mission));
+    retain($this, $this->client, $this->mission, $mine)->assertRedirect(route('missions.show', $this->mission));
 
     $this->mission->refresh();
     expect($this->mission->status)->toBe(MissionStatus::Assigned)
@@ -91,8 +90,9 @@ test('seul le client peut retenir un candidat', function () {
     apply($this->dev, $this->mission);
     $application = Application::sole();
 
-    $this->actingAs($this->other)->post(route('missions.accept', [$this->mission, $application]))->assertForbidden();
-    $this->actingAs($this->dev)->post(route('missions.accept', [$this->mission, $application]))->assertForbidden();
+    $this->actingAs($this->other)->post(route('payments.store', [$this->mission, $application]), securePayload())->assertForbidden();
+    $this->actingAs($this->dev)->post(route('payments.store', [$this->mission, $application]), securePayload())->assertForbidden();
+    $this->actingAs($this->dev)->get(route('payments.create', [$this->mission, $application]))->assertForbidden();
 
     expect($this->mission->fresh()->status)->toBe(MissionStatus::Open);
 });
@@ -101,7 +101,7 @@ test('on ne peut pas retenir la candidature d\'une autre mission', function () {
     $otherMission = Mission::factory()->create();
     $foreign = Application::factory()->for($otherMission)->create();
 
-    $this->actingAs($this->client)->post(route('missions.accept', [$this->mission, $foreign]))->assertForbidden();
+    $this->actingAs($this->client)->post(route('payments.store', [$this->mission, $foreign]), securePayload())->assertForbidden();
 });
 
 test('on ne peut pas retenir un second candidat', function () {
@@ -109,8 +109,8 @@ test('on ne peut pas retenir un second candidat', function () {
     apply($this->other, $this->mission);
     [$first, $second] = Application::orderBy('id')->get();
 
-    $this->actingAs($this->client)->post(route('missions.accept', [$this->mission, $first]));
-    $this->actingAs($this->client)->post(route('missions.accept', [$this->mission, $second]))->assertForbidden();
+    retain($this, $this->client, $this->mission, $first);
+    $this->actingAs($this->client)->post(route('payments.store', [$this->mission, $second]), securePayload())->assertForbidden();
 
     expect($this->mission->fresh()->freelancer_id)->toBe($this->dev->id);
 });
@@ -187,3 +187,19 @@ test('la candidature exige un délai de 1 à 180 jours ; le client voit prix, d�
         ->assertSee('15 jours')
         ->assertSeeInOrder(['Prix', "140\u{202F}000", 'Délai', '10']);
 });
+
+/** Les données de la 1re étape du paiement simulé. */
+function securePayload(): array
+{
+    return ['provider' => 'wave', 'phone' => '70 000 00 12'];
+}
+
+/** Retient un candidat en sécurisant les fonds (paiement simulé) : opérateur et numéro, puis le code affiché. */
+function retain($test, $client, $mission, $application)
+{
+    $test->actingAs($client)->post(route('payments.store', [$mission, $application]), securePayload());
+
+    return $test->actingAs($client)->post(route('payments.verify', [$mission, $application]), [
+        'code' => session('payments.pending.'.$application->id)['code'] ?? '0000',
+    ]);
+}

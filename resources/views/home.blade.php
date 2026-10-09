@@ -64,9 +64,10 @@
 
         {{-- Bloc 2 : bande de garanties (la réassurance), aplat primary-900 --}}
         <section aria-label="Nos garanties" class="bg-primary-900 text-white">
-            <dl class="mx-auto grid max-w-page gap-6 px-4 py-8 text-center sm:grid-cols-3 sm:px-6">
+            <dl class="mx-auto grid max-w-page gap-6 px-4 py-8 text-center sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
                 @foreach ([
                     ['Payé en Mobile Money', 'Wave, Orange Money, MTN MoMo, Free, Moov'],
+                    ['Fonds sécurisés jusqu\'à la livraison', 'le budget est bloqué, puis versé au dev à la fin (simulé dans cette version)'],
                     [App\Support\Copy::REASSURANCE_RISK, 'votre profil est en ligne en 2 minutes'],
                     ['Une réputation qui vous suit', 'chaque mission et chaque réponse vous rapportent des cauris'],
                 ] as [$title, $line])

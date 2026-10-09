@@ -37,7 +37,7 @@ class MissionController extends Controller
 
     public function show(Request $request, Mission $mission): View
     {
-        $mission->load(['client' => fn ($q) => $q->withCount('missions'), 'client.profile', 'freelancer.profile', 'skills', 'review'])->loadCount('applications');
+        $mission->load(['client' => fn ($q) => $q->withCount('missions'), 'client.profile', 'freelancer.profile', 'skills', 'review', 'payment'])->loadCount('applications');
         $user = $request->user();
 
         return view('missions.show', [

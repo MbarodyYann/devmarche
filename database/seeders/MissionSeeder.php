@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\Mission;
 use App\Models\User;
 use App\Services\MissionService;
+use App\Services\PaymentService;
 use Database\Seeders\Concerns\Timeline;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
@@ -88,13 +89,36 @@ class MissionSeeder extends Seeder
                 // Attribution, puis fin de mission : toujours après les candidatures, jamais dans le futur.
                 $assignedAt = $this->between($lastApplicationAt, 0.3);
                 match ($data['status']) {
-                    'assigned' => $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $applications[$data['freelancer']])),
+                    'assigned' => $this->travelTo($assignedAt, fn () => $this->secure($mission, $applications[$data['freelancer']], $client)),
                     'completed' => $this->complete($mission, $applications[$data['freelancer']], $lastApplicationAt),
                     'cancelled' => $this->travelTo($this->between($lastApplicationAt, 0.4), fn () => $this->missions->cancel($mission)),
                     default => null,
                 };
             }
         });
+    }
+
+    /**
+     * Le client retient son dev en sécurisant les fonds (paiement simulé) : opérateur courant dans son pays,
+     * numéro fictif (série 70 000 0…), jamais un vrai numéro.
+     */
+    private function secure(Mission $mission, Application $application, User $client): void
+    {
+        $providers = match ($client->profile()->value('country')) {
+            'SN' => ['wave', 'orange_money', 'free_money'],
+            'CI' => ['wave', 'orange_money', 'mtn_momo', 'moov_money'],
+            'ML', 'BF' => ['orange_money', 'moov_money', 'wave'],
+            'BJ', 'TG' => ['mtn_momo', 'moov_money'],
+            'CM', 'GN' => ['mtn_momo', 'orange_money'],
+            default => ['orange_money', 'mtn_momo'],
+        };
+
+        app(PaymentService::class)->secure(
+            $mission,
+            $application,
+            $providers[$mission->id % count($providers)],
+            '700000'.str_pad((string) ($mission->id % 1000), 3, '0', STR_PAD_LEFT),
+        );
     }
 
     /**
@@ -110,7 +134,7 @@ class MissionSeeder extends Seeder
         $latestEnd = $this->latest()->subHours(($mission->id % 6) * 19);
         $completedAt = $this->clamp($assignedAt->copy()->addDays($days)->setTime(9 + $mission->id % 9, ($mission->id * 13) % 60)->min($latestEnd));
 
-        $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $application));
+        $this->travelTo($assignedAt, fn () => $this->secure($mission, $application, $mission->client()->firstOrFail()));
         $this->travelTo($this->clamp($completedAt->max($assignedAt->copy()->addDay())), fn () => $this->missions->complete($mission->refresh()));
     }
 

@@ -14,6 +14,9 @@
             <x-card>
                 <div class="flex flex-wrap items-center gap-2">
                     <x-chip :tone="$mission->status->tone()">{{ $mission->status->label() }}</x-chip>
+                    @if ($mission->payment)
+                        <x-chip :tone="$mission->payment->status->tone()" data-payment-status>{{ $mission->payment->status->label() }}</x-chip>
+                    @endif
                     <x-chip tone="neutral">
                         @if ($mission->isRemote())
                             Télétravail
@@ -76,7 +79,7 @@
                         <div class="mt-5 flex flex-col gap-3 rounded-2xl bg-bg-alt p-4 ring-1 ring-line sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 <p class="font-semibold text-ink">{{ $mission->freelancer->name }} travaille sur votre mission.</p>
-                                <p class="text-sm text-ink-muted">Le dev reçoit +20 cauris de réputation.</p>
+                                <p class="text-sm text-ink-muted">Le dev reçoit +20 cauris de réputation{{ $mission->payment?->status === App\Enums\PaymentStatus::Held ? ', et les fonds sécurisés lui sont versés' : '' }}.</p>
                             </div>
                             <form method="post" action="{{ route('missions.complete', $mission) }}">
                                 @csrf
@@ -123,10 +126,8 @@
                                     <div class="flex flex-wrap items-center justify-between gap-3">
                                         <x-chip :tone="$application->status->tone()">{{ $application->status->label() }}</x-chip>
                                         @can('accept', [$mission, $application])
-                                            <form method="post" action="{{ route('missions.accept', [$mission, $application]) }}">
-                                                @csrf
-                                                <x-button type="submit" size="sm">Retenir ce dev</x-button>
-                                            </form>
+                                            {{-- Retenir = sécuriser les fonds (paiement Mobile Money simulé). --}}
+                                            <x-button :href="route('payments.create', [$mission, $application])" size="sm">Retenir ce dev</x-button>
                                         @endcan
                                     </div>
                                 </li>
@@ -159,6 +160,35 @@
                     </div>
                 </dl>
             </x-frame>
+
+            {{-- Paiement simulé (séquestre) : détail pour le client et le dev retenu seulement. --}}
+            @if ($mission->payment && $user && in_array($user->id, [$mission->client_id, $mission->freelancer_id], true))
+                <x-card padding="p-6" data-payment>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="font-sans text-sm font-semibold tracking-normal text-ink-muted">Paiement Mobile Money</h2>
+                        <x-chip :tone="$mission->payment->status->tone()">{{ $mission->payment->status->label() }}</x-chip>
+                    </div>
+                    <p class="mt-3 font-serif text-[28px] font-medium leading-none text-ink">{{ App\Support\Money::fcfa($mission->payment->amount_fcfa) }} <span class="font-sans text-sm text-ink-muted">FCFA</span></p>
+                    <dl class="mt-4 space-y-1.5 text-sm">
+                        <div class="flex justify-between gap-3"><dt class="text-ink-muted">Opérateur</dt><dd class="font-medium text-ink">{{ $mission->payment->providerLabel() }}</dd></div>
+                        <div class="flex justify-between gap-3"><dt class="text-ink-muted">Numéro</dt><dd class="font-medium text-ink">{{ $mission->payment->maskedPhone() }}</dd></div>
+                        <div class="flex justify-between gap-3"><dt class="text-ink-muted">Référence</dt><dd class="font-medium text-ink">{{ $mission->payment->reference }}</dd></div>
+                    </dl>
+                    <p class="mt-4 text-sm text-ink-muted">
+                        @switch($mission->payment->status)
+                            @case(App\Enums\PaymentStatus::Held)
+                                Libéré au dev quand le client confirme la fin de la mission.
+                                @break
+                            @case(App\Enums\PaymentStatus::Released)
+                                Versé au dev à la fin de la mission.
+                                @break
+                            @default
+                                Rendu au client après l'annulation.
+                        @endswitch
+                        Simulation : aucun argent réel n'est débité.
+                    </p>
+                </x-card>
+            @endif
 
             {{-- Qui publie (masqué pour l'auteur : c'est lui) et à qui la mission est confiée. Pour un client,
                  on montre son activité de client, pas des cauris (ils récompensent le travail des devs). --}}

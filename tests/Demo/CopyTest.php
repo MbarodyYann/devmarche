@@ -56,7 +56,7 @@ test('fiche mission, client d\'une mission en cours : confirmer la fin', functio
 
     $this->actingAs($mission->client)->get(route('missions.show', $mission))
         ->assertSee('Confirmer la fin de la mission')
-        ->assertSee('Le dev reçoit +20 cauris de réputation.');
+        ->assertSee('Le dev reçoit +20 cauris de réputation, et les fonds sécurisés lui sont versés.');
 });
 
 test('publier : titre, mécanisme, bouton et réassurance', function () {

@@ -96,9 +96,11 @@ class MissionService
                 'completed_at' => now(),
             ])->save();
 
+            PaymentService::release($mission);
+
             $freelancer = $mission->freelancer()->firstOrFail();
             $this->reputation->award($freelancer, ReputationService::MISSION_COMPLETED, 'mission_completed', $mission);
-            $freelancer->notify(new MissionCompleted($mission));
+            $freelancer->notify(new MissionCompleted($mission, $mission->payment()->value('amount_fcfa')));
         });
     }
 
@@ -106,6 +108,7 @@ class MissionService
     {
         DB::transaction(function () use ($mission) {
             $mission->forceFill(['status' => MissionStatus::Cancelled])->save();
+            PaymentService::refund($mission);
 
             $pending = $mission->applications()->where('status', ApplicationStatus::Pending);
             $applicants = User::whereIn('id', (clone $pending)->select('user_id'))->get();
