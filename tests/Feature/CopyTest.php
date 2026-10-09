@@ -19,17 +19,15 @@ beforeEach(function () {
 
 test('missions : titre, mécanisme et CTA visiteur', function () {
     $this->get('/missions')
-        ->assertSee('Votre prochain client est déjà ici.')
+        ->assertSee('Votre prochain client <em class="font-serif italic text-secondary-400">est déjà ici.</em>', false)
         ->assertSee('Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.')
         ->assertSee(Copy::SIGNUP_CTA)
-        ->assertSee(Copy::RECRUIT_LINK)
-        ->assertSee(Copy::REASSURANCE_RISK)
-        ->assertSee(Copy::REASSURANCE_NEXT);
+        ->assertSee(Copy::RECRUIT_LINK);
 });
 
 test('annuaire : titre, mécanisme et CTA visiteur', function () {
     $this->get('/devs')
-        ->assertSee('Le bon dev est peut-être dans votre ville.')
+        ->assertSee('Le bon dev est peut-être <em class="font-serif italic text-secondary-400">dans votre ville.</em>', false)
         ->assertSee('Filtrez par compétence, pays et disponibilité : les cauris montrent qui a déjà livré des missions et aidé la communauté.')
         ->assertSee(Copy::SIGNUP_CTA);
 });

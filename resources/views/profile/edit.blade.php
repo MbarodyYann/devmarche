@@ -47,6 +47,24 @@
                     <x-select name="availability" :options="$availabilities" :value="$profile->availability->value" required />
                 </x-field>
 
+                <fieldset class="space-y-2">
+                    <legend class="flex w-full items-baseline justify-between text-sm font-medium text-ink">
+                        <span>Langues parlées</span><span class="font-normal text-ink-muted">Facultatif · 6 au maximum</span>
+                    </legend>
+                    @php($spoken = old('languages', $profile->languages ?? []))
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($languageOptions as $code => $label)
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="languages[]" value="{{ $code }}" @checked(in_array($code, $spoken, true)) class="peer sr-only">
+                                <span class="inline-flex min-h-10 items-center rounded-[8px] border border-line bg-bg-alt px-3 text-sm font-medium text-ink-soft transition peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:text-primary-700 peer-focus-visible:outline-2 peer-focus-visible:outline-primary-500 dark:peer-checked:border-secondary-400 dark:peer-checked:bg-secondary-950 dark:peer-checked:text-secondary-300">{{ ucfirst($label) }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('languages')
+                        <p class="flex items-start gap-1.5 text-sm font-medium text-secondary-800 dark:text-secondary-300"><x-icon name="alert" class="mt-0.5 size-4 shrink-0" /> {{ $message }}</p>
+                    @enderror
+                </fieldset>
+
                 <x-field label="Compétences" name="skills" hint="Séparées par des virgules, 12 maximum. Ex. Laravel, Flutter, Wave API" optional>
                     <x-input name="skills" list="competences" :value="$dev->skills->pluck('name')->implode(', ')" autocomplete="off" />
                     <datalist id="competences">

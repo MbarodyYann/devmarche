@@ -13,9 +13,7 @@
             @if ($profile?->headline)
                 <p class="mt-0.5 truncate text-sm text-ink-muted">{{ $profile->headline }}</p>
             @endif
-            @if ($dev->isNewMember())
-                <x-new-badge class="mt-2" />
-            @endif
+            <x-level :user="$dev" class="mt-2" />
         </div>
         <x-reputation :points="$dev->reputation" class="shrink-0" />
     </div>
@@ -29,6 +27,9 @@
             </span>
             <x-chip :tone="$profile->availability->tone()">{{ $profile->availability->label() }}</x-chip>
         </div>
+        @if ($languages = $profile->languagesLabel())
+            <p class="-mt-2 text-sm text-ink-muted">{{ $languages }}</p>
+        @endif
     @endif
 
     <div class="mt-auto border-t border-line pt-4">

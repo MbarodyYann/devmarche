@@ -9,7 +9,7 @@ class QuestionController extends Controller
 {
     public function show(Question $question): View
     {
-        $question->load(['user.profile', 'skills']);
+        $question->load(['user' => fn ($q) => $q->withLevel(), 'user.profile', 'skills']);
 
         // L'acceptée en premier, puis par score, puis par ancienneté.
         $answers = $question->answers()

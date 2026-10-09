@@ -18,7 +18,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Missions')]
-#[Layout('components.layouts.app', ['search' => false])]
+#[Layout('components.layouts.app', ['search' => false, 'pageHero' => [
+    'start' => 'Votre prochain client',
+    'end' => 'est déjà ici.',
+    'subtitle' => 'Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.',
+    'action' => ['route' => 'missions.create', 'label' => 'Publier une mission'],
+]])]
 class Index extends Component
 {
     use WithPagination;

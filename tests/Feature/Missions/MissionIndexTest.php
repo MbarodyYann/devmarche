@@ -97,5 +97,5 @@ test('« pour moi » ne montre que les missions qui correspondent aux compétenc
     Livewire::test(Index::class)->set('forMe', true)
         ->assertSee('Appli de tontine')
         ->assertDontSee('Intégration Wave à Dakar')
-        ->assertSee('Selon vos compétences');
+        ->assertSee('selon vos compétences');
 });

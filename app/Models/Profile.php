@@ -27,6 +27,7 @@ class Profile extends Model
         'portfolio_url',
         'availability',
         'avatar_path',
+        'languages',
     ];
 
     /**
@@ -43,6 +44,7 @@ class Profile extends Model
     {
         return [
             'availability' => Availability::class,
+            'languages' => 'array',
         ];
     }
 
@@ -62,6 +64,23 @@ class Profile extends Model
     public function flag(): string
     {
         return Countries::flag($this->country);
+    }
+
+    /**
+     * « Parle français, wolof » (null si aucune langue renseignée).
+     */
+    public function languagesLabel(): ?string
+    {
+        $names = collect($this->languages ?? [])
+            ->map(fn (string $code) => config("languages.$code"))
+            ->filter()
+            ->values();
+
+        if ($names->isEmpty()) {
+            return null;
+        }
+
+        return 'Parle '.$names->join(', ');
     }
 
     public function avatarUrl(): ?string

@@ -1,33 +1,17 @@
 <div>
-    <x-page-intro eyebrow="Missions" title="Votre prochain client est déjà ici." list>
-        Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.
-    </x-page-intro>
-
-    @guest
-        <x-signup-cta class="mt-8" />
-    @endguest
-
-    @if ($forMe)
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm text-ink-soft">
-            <x-chip tone="info">Selon vos compétences</x-chip>
-            <button type="button" wire:click="$set('forMe', false)" class="font-medium text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">Voir toutes les missions</button>
-        </div>
-    @endif
-
-    @php($total = $this->missions->total())
-    <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
-        <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
-            <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}</span>
-            <span wire:loading>Recherche…</span>
-        </span>
-        <x-segmented label="Statut" model="status" :options="$statuses" />
-    </div>
-
-    {{-- Filtres : sur mobile, seule la ligne compétence + bouton « Filtres » est visible. --}}
+    {{-- En-tête compact dans le layout (pageHero). La carte de filtres chevauche le bas du bandeau. --}}
     @php($activeFilters = collect([$country, $budgetMin, $budgetMax])->filter()->count() + ($sort !== 'recentes' ? 1 : 0))
-    <x-card padding="p-3 sm:p-5" class="mt-4"
+    <x-card padding="p-3 sm:p-5" class="relative z-10 -mt-6 sm:-mt-10"
             x-data="{ open: false, desktop: window.matchMedia('(min-width: 640px)').matches }"
             x-init="window.matchMedia('(min-width: 640px)').addEventListener('change', e => desktop = e.matches)">
+        <div class="mb-3 flex flex-col gap-3 border-b border-line pb-3 sm:flex-row sm:items-center sm:justify-between">
+            @php($total = $this->missions->total())
+            <p class="text-sm font-medium text-ink">
+                <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'missions' : 'mission' }}@if ($forMe) · selon vos compétences <button type="button" wire:click="$set('forMe', false)" class="ml-1 font-semibold text-primary-600 underline-offset-4 hover:underline dark:text-primary-300">voir toutes</button>@endif</span>
+                <span wire:loading>Recherche…</span>
+            </p>
+            <x-segmented label="Statut" model="status" :options="$statuses" />
+        </div>
         <form wire:submit.prevent role="search" aria-label="Filtrer les missions" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
             <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
                 <div class="min-w-0 flex-1">

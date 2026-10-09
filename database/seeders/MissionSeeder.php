@@ -6,6 +6,7 @@ use App\Models\Application;
 use App\Models\Mission;
 use App\Models\User;
 use App\Services\MissionService;
+use Database\Seeders\Concerns\Timeline;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\DB;
  */
 class MissionSeeder extends Seeder
 {
+    use Timeline;
+
     public function __construct(
         private readonly MissionService $missions,
     ) {}
@@ -34,47 +37,71 @@ class MissionSeeder extends Seeder
 
         DB::transaction(function () use ($user) {
             foreach ($this->missions() as $data) {
-                $createdAt = Carbon::now()->subDays($data['days'])->setTime(9 + $data['days'] % 9, 15);
+                $client = $user($data['client']);
 
-                $mission = $this->missions->publish($user($data['client']), [
+                // Publication : plus la mission est « ancienne », plus elle est proche du lancement,
+                // et jamais avant l'inscription du client.
+                $createdAt = $this->at(1 - $data['days'] / 95, $client->created_at->copy()->addHours(3));
+
+                $mission = $this->travelTo($createdAt, fn () => $this->missions->publish($client, [
                     'title' => $data['title'],
                     'description' => $data['description'],
                     'budget_fcfa' => $data['budget'],
                     'country' => $data['country'],
                     'deadline' => isset($data['deadline']) ? now()->addDays($data['deadline'])->toDateString() : null,
-                ], $data['skills']);
-                $mission->forceFill(['created_at' => $createdAt, 'updated_at' => $createdAt])->save();
+                ], $data['skills']));
 
+                // Candidatures : après la publication et après l'inscription du candidat.
                 $applications = [];
+                $lastApplicationAt = $createdAt;
                 foreach ($data['applicants'] ?? [] as $i => $name) {
-                    $application = $mission->applications()->make([
-                        'message' => $this->message($data, $i),
-                        'proposed_fcfa' => (int) round($data['budget'] * [1, 0.9, 1.1, 0.95, 1.05][$i % 5] / 1000) * 1000,
-                    ]);
-                    $application->user()->associate($user($name));
-                    $application->save();
-                    $application->forceFill(['created_at' => $createdAt->copy()->addHours(3 + $i * 5)])->save();
-                    $applications[$name] = $application;
+                    $applicant = $user($name);
+                    $appliedAt = $this->between($createdAt, 0.04 + 0.05 * $i)->max($applicant->created_at->copy()->addHour());
+                    $appliedAt = $this->clamp($appliedAt);
+                    $lastApplicationAt = $lastApplicationAt->max($appliedAt);
+
+                    $applications[$name] = $this->travelTo($appliedAt, function () use ($mission, $data, $i, $applicant) {
+                        $application = $mission->applications()->make([
+                            'message' => $this->message($data, $i),
+                            'proposed_fcfa' => (int) round($data['budget'] * [1, 0.9, 1.1, 0.95, 1.05][$i % 5] / 1000) * 1000,
+                            'delivery_days' => $this->deliveryDays($data['budget'], $i),
+                        ]);
+                        $application->user()->associate($applicant);
+                        $application->save();
+
+                        return $application;
+                    });
                 }
 
+                // Attribution, puis fin de mission : toujours après les candidatures, jamais dans le futur.
+                $assignedAt = $this->between($lastApplicationAt, 0.3);
                 match ($data['status']) {
-                    'assigned' => $this->missions->accept($mission, $applications[$data['freelancer']]),
-                    'completed' => $this->complete($mission, $applications[$data['freelancer']], $createdAt),
-                    'cancelled' => $this->missions->cancel($mission),
+                    'assigned' => $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $applications[$data['freelancer']])),
+                    'completed' => $this->complete($mission, $applications[$data['freelancer']], $assignedAt),
+                    'cancelled' => $this->travelTo($this->between($lastApplicationAt, 0.4), fn () => $this->missions->cancel($mission)),
                     default => null,
                 };
             }
         });
     }
 
-    private function complete(Mission $mission, Application $application, Carbon $createdAt): void
+    private function complete(Mission $mission, Application $application, Carbon $assignedAt): void
     {
-        $this->missions->accept($mission, $application);
-        $this->missions->complete($mission);
-        $mission->forceFill([
-            'assigned_at' => $createdAt->copy()->addDays(2),
-            'completed_at' => $createdAt->copy()->addDays(9),
-        ])->save();
+        $this->travelTo($assignedAt, fn () => $this->missions->accept($mission, $application));
+        $this->travelTo($this->between($assignedAt, 0.6), fn () => $this->missions->complete($mission->refresh()));
+    }
+
+    /** Délai proposé crédible, selon l'ampleur de la mission. */
+    private function deliveryDays(int $budget, int $i): int
+    {
+        $base = match (true) {
+            $budget <= 100_000 => 5,
+            $budget <= 250_000 => 12,
+            $budget <= 400_000 => 21,
+            default => 30,
+        };
+
+        return max(2, $base + [0, -2, 3, 5, -3][$i % 5]);
     }
 
     private function message(array $data, int $i): string
@@ -264,6 +291,63 @@ class MissionSeeder extends Seeder
                 'budget' => 90000, 'country' => 'GN', 'skills' => ['WordPress'],
                 'description' => "Refonte du site et des inscriptions en ligne. Annulée : l'école a obtenu un site offert par sa fédération.",
                 'applicants' => ['Alpha Barry'],
+            ],
+            // Missions terminées des devs les plus expérimentés (niveaux Expert et Référence).
+            [
+                'client' => 'Cheikh Fall', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 88,
+                'title' => 'Revue d\'architecture d\'une API de transfert d\'argent',
+                'budget' => 650000, 'country' => null, 'skills' => ['Go', 'PostgreSQL', 'DevOps'],
+                'description' => "Revue complète de l'architecture avant une levée de fonds : points de défaillance, montée en charge, sauvegardes et sécurité. Rapport priorisé et atelier de restitution avec l'équipe.",
+                'applicants' => ['Jean-Marc N\'Guessan', 'Kouadio Yao'],
+            ],
+            [
+                'client' => 'Aya Koné', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 85,
+                'title' => 'Mise en place de l\'intégration continue pour une appli mobile',
+                'budget' => 280000, 'country' => 'CI', 'skills' => ['DevOps', 'Docker'],
+                'description' => 'Tests automatiques à chaque envoi de code, construction des versions de test et publication sur le store en un clic.',
+                'applicants' => ['Jean-Marc N\'Guessan', 'Yawo Amegbor'],
+            ],
+            [
+                'client' => 'Kossi Mensah', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 80,
+                'title' => 'Montée en charge d\'une billetterie avant un grand concert',
+                'budget' => 450000, 'country' => 'TG', 'skills' => ['Node.js', 'PostgreSQL', 'Docker'],
+                'description' => "Préparer la plateforme à 20 000 connexions simultanées le jour de l'ouverture des ventes : tests de charge, cache, file d'attente virtuelle.",
+                'applicants' => ['Jean-Marc N\'Guessan'],
+            ],
+            [
+                'client' => 'Mathieu Ahouansou', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 75,
+                'title' => 'Audit de sécurité d\'un back-office d\'ONG',
+                'budget' => 320000, 'country' => 'BJ', 'skills' => ['Symfony', 'DevOps'],
+                'description' => "Revue des droits d'accès, des mots de passe, des sauvegardes et des dépendances. Correctifs prioritaires appliqués avec l'équipe.",
+                'applicants' => ['Jean-Marc N\'Guessan', 'Rodrigue Hounsou'],
+            ],
+            [
+                'client' => 'Arnaud Mbarga', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 70,
+                'title' => 'Migration d\'une base MySQL vers PostgreSQL sans interruption',
+                'budget' => 380000, 'country' => null, 'skills' => ['PostgreSQL', 'Docker'],
+                'description' => "Migration d'une base de 40 Go vers PostgreSQL, avec réplication et bascule de nuit en moins de 10 minutes d'interruption.",
+                'applicants' => ['Jean-Marc N\'Guessan'],
+            ],
+            [
+                'client' => 'Paul Fotso', 'status' => 'completed', 'freelancer' => 'Kouadio Yao', 'days' => 86,
+                'title' => 'Paiement MTN MoMo sur une plateforme de caisse',
+                'budget' => 240000, 'country' => 'CM', 'skills' => ['MTN MoMo API', 'Java'],
+                'description' => "Encaissement MTN MoMo en caisse, avec confirmation sur l'écran du vendeur et rapprochement automatique en fin de journée.",
+                'applicants' => ['Kouadio Yao', 'Rodrigue Hounsou'],
+            ],
+            [
+                'client' => 'Bakary Coulibaly', 'status' => 'completed', 'freelancer' => 'Kouadio Yao', 'days' => 78,
+                'title' => 'API de rapprochement bancaire pour une microfinance',
+                'budget' => 420000, 'country' => 'ML', 'skills' => ['Java', 'Spring Boot', 'PostgreSQL'],
+                'description' => 'Rapprocher chaque jour les relevés bancaires et les remboursements Mobile Money, avec la liste des écarts à traiter.',
+                'applicants' => ['Kouadio Yao'],
+            ],
+            [
+                'client' => 'Salimata Sawadogo', 'status' => 'completed', 'freelancer' => 'Kouadio Yao', 'days' => 72,
+                'title' => 'Encaissement des cotisations d\'une coopérative par Mobile Money',
+                'budget' => 260000, 'country' => 'BF', 'skills' => ['Orange Money', 'Java'],
+                'description' => 'Les membres paient leur cotisation par Orange Money ; la coopérative voit en temps réel qui est à jour.',
+                'applicants' => ['Kouadio Yao', 'Boukary Ouédraogo'],
             ],
             [
                 'client' => 'Christelle Ngo Biyong', 'status' => 'open', 'days' => 13,

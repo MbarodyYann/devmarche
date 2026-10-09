@@ -17,7 +17,12 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Questions-réponses')]
-#[Layout('components.layouts.app', ['search' => false])]
+#[Layout('components.layouts.app', ['search' => false, 'pageHero' => [
+    'start' => 'Votre question ne se perdra plus',
+    'end' => 'dans un groupe WhatsApp.',
+    'subtitle' => 'Posez-la en français avec les bons tags : la communauté répond et vote, et la meilleure réponse reste trouvable par tous.',
+    'action' => ['route' => 'questions.create', 'label' => 'Poser ma question'],
+]])]
 class Index extends Component
 {
     use WithPagination;
@@ -74,7 +79,7 @@ class Index extends Component
             ->when($this->tag !== '', fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->where('slug', $this->tag)))
             ->when($this->status === 'sans-reponse', fn (Builder $q) => $q->where('answers_count', 0))
             ->when($this->status === 'resolues', fn (Builder $q) => $q->whereNotNull('accepted_answer_id'))
-            ->with(['skills', 'user.profile']);
+            ->with(['skills', 'user' => fn ($q) => $q->withLevel(), 'user.profile']);
 
         match ($this->sort) {
             'votes' => $query->orderByDesc('score')->latest(),

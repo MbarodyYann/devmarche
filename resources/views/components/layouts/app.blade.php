@@ -1,4 +1,4 @@
-@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null])
+@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null, 'pageHero' => null])
 
 @php
     $navigation = [
@@ -10,6 +10,8 @@
     $meUrl = $me ? route('devs.show', $me) : route('login');
     $meActive = $me ? request()->routeIs('devs.show', 'profile.edit') && request()->route('user')?->is($me) : request()->routeIs('login', 'register');
     $publishUrl = Route::has('missions.create') ? route('missions.create') : null;
+    // Bandeau indigo sous la navigation : hero de l'accueil (slot) ou en-tête compact d'une page de liste.
+    $hasHero = isset($hero) || $pageHero;
 @endphp
 
 <!DOCTYPE html>
@@ -65,12 +67,12 @@
 
     {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
     <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6"
-         @isset($hero)
+         @if ($hasHero)
              x-data="{ onHero: true, scrolled: false }"
              x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
-         @endisset>
-        <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! isset($hero), 'nav-on-hero' => isset($hero)])
-                @isset($hero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endisset>
+         @endif>
+        <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
+                @if ($hasHero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endif>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
                 <x-logo />
             </a>
@@ -156,9 +158,11 @@
     {{-- Bandeau hero pleine largeur (accueil), glissé sous la navigation flottante --}}
     @isset($hero)
         {{ $hero }}
+    @elseif ($pageHero)
+        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" />
     @endisset
 
-    <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! isset($hero), 'pt-0' => isset($hero)])>
+    <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! $hasHero, 'pt-0' => $hasHero])>
         @if (session('status'))
             <div role="status" class="mb-8 flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 font-medium text-ink shadow-card">
                 <span class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-primary-600 text-white dark:bg-secondary-400 dark:text-primary-950">

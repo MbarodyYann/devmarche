@@ -19,7 +19,7 @@ class ProfileController extends Controller
 {
     public function show(User $user): View
     {
-        $user->load(['profile', 'skills']);
+        $user->load(['profile', 'skills'])->loadCount(['assignedMissions as completed_missions_count' => fn ($q) => $q->where('status', MissionStatus::Completed)]);
 
         $completed = $user->assignedMissions()
             ->where('status', MissionStatus::Completed)
@@ -53,13 +53,15 @@ class ProfileController extends Controller
             'countries' => Countries::grouped(),
             'availabilities' => Availability::options(),
             'suggestedSkills' => Skill::query()->orderBy('name')->pluck('name'),
+            'languageOptions' => config('languages'),
         ]);
     }
 
     public function update(UpdateProfileRequest $request, User $user, AvatarService $avatars): RedirectResponse
     {
         $profile = $user->profile;
-        $data = $request->safe()->except(['name', 'avatar', 'skills']);
+        $data = $request->safe()->except(['name', 'avatar', 'skills', 'languages']);
+        $data['languages'] = array_values(array_intersect(array_keys(config('languages')), $request->validated('languages') ?? []));
 
         if ($request->hasFile('avatar')) {
             $oldAvatar = $profile->avatar_path;

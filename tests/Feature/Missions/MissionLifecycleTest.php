@@ -18,6 +18,7 @@ function apply(User $user, Mission $mission, array $data = [])
     return test()->actingAs($user)->post(route('missions.apply', $mission), array_merge([
         'message' => 'Bonjour, j\'ai déjà intégré Wave deux fois cette année, je peux démarrer lundi.',
         'proposed_fcfa' => '140 000',
+        'delivery_days' => 10,
     ], $data));
 }
 
@@ -170,4 +171,19 @@ test('les candidatures sont limitées à 30 par heure', function () {
     }
 
     apply($this->dev, $missions->last())->assertStatus(429);
+});
+
+test('la candidature exige un délai de 1 à 180 jours ; le client voit prix, délai et délai moyen', function () {
+    apply($this->dev, $this->mission, ['delivery_days' => 0])->assertSessionHasErrors('delivery_days');
+    apply($this->dev, $this->mission, ['delivery_days' => 181])->assertSessionHasErrors('delivery_days');
+
+    apply($this->dev, $this->mission, ['delivery_days' => 10]);
+    apply($this->other, $this->mission, ['delivery_days' => 20, 'proposed_fcfa' => '120 000']);
+
+    expect(Application::where('user_id', $this->dev->id)->value('delivery_days'))->toBe(10);
+
+    $this->actingAs($this->client)->get(route('missions.show', $this->mission))
+        ->assertSee('Délai moyen proposé')
+        ->assertSee('15 jours')
+        ->assertSeeInOrder(['Prix', "140\u{202F}000", 'Délai', '10']);
 });

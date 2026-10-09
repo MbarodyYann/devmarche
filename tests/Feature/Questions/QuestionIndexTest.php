@@ -27,7 +27,7 @@ beforeEach(function () {
 test('la page des questions affiche les textes de 11 et les questions récentes en premier', function () {
     $this->get('/questions')
         ->assertOk()
-        ->assertSee('Votre question ne se perdra plus dans un groupe WhatsApp.')
+        ->assertSee('Votre question ne se perdra plus <em class="font-serif italic text-secondary-400">dans un groupe WhatsApp.</em>', false)
         ->assertSee('Posez-la en français avec les bons tags : la communauté répond et vote, et la meilleure réponse reste trouvable par tous.')
         ->assertSeeInOrder(['Sessions USSD', 'Flutter hors connexion', 'Vérifier la signature']);
 });

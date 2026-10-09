@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\DevLevel;
+use App\Enums\MissionStatus;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,9 +18,6 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
-
-    /** Durée pendant laquelle un membre affiche le badge « Nouveau ». */
-    public const NEW_MEMBER_DAYS = 14;
 
     /**
      * @var list<string>
@@ -46,6 +46,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'reputation' => 'integer',
             'is_admin' => 'boolean',
+            'last_seen_at' => 'datetime',
         ];
     }
 
@@ -117,10 +118,55 @@ class User extends Authenticatable
         return $this->hasMany(ReputationEvent::class);
     }
 
+    /**
+     * Nombre de missions terminées en tant que freelance. Utilise la valeur précalculée par
+     * scopeWithLevel() quand elle est là (listes), sinon une requête de comptage.
+     */
+    public function completedMissionsCount(): int
+    {
+        return (int) ($this->attributes['completed_missions_count']
+            ?? $this->assignedMissions()->where('status', MissionStatus::Completed)->count());
+    }
+
+    /**
+     * Précharge ce qu'il faut pour calculer le niveau sans requête par membre.
+     *
+     * @param  Builder<User>  $query
+     */
+    public function scopeWithLevel(Builder $query): void
+    {
+        $query->withCount(['assignedMissions as completed_missions_count' => fn (Builder $q) => $q->where('status', MissionStatus::Completed)]);
+    }
+
+    public function level(): ?DevLevel
+    {
+        return DevLevel::for($this);
+    }
+
+    /** « Nouveau » : moins de 14 jours et pas encore Confirmé (voir DevLevel). */
     public function isNewMember(): bool
     {
-        return $this->created_at !== null
-            && $this->created_at->gt(now()->subDays(self::NEW_MEMBER_DAYS));
+        return $this->level() === DevLevel::Newcomer;
+    }
+
+    /**
+     * Dernière activité lisible : « Actif aujourd'hui », « Actif hier », « Actif il y a 3 j ».
+     * Rien au-delà de 30 jours, ni si l'on ne sait pas.
+     */
+    public function activityLabel(): ?string
+    {
+        if ($this->last_seen_at === null) {
+            return null;
+        }
+
+        $days = (int) $this->last_seen_at->copy()->startOfDay()->diffInDays(now()->startOfDay());
+
+        return match (true) {
+            $days <= 0 => 'Actif aujourd\'hui',
+            $days === 1 => 'Actif hier',
+            $days <= 30 => "Actif il y a $days j",
+            default => null,
+        };
     }
 
     public function initials(): string

@@ -34,6 +34,8 @@ class UpdateProfileRequest extends FormRequest
             'availability' => ['required', Rule::enum(Availability::class)],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=64,min_height=64,max_width=6000,max_height=6000'],
             'skills' => ['nullable', 'string', 'max:600'],
+            'languages' => ['nullable', 'array', 'max:6'],
+            'languages.*' => ['string', Rule::in(array_keys(config('languages')))],
         ];
     }
 
@@ -77,6 +79,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'github_url.starts_with' => 'Le lien GitHub doit commencer par https://github.com/.',
             'avatar.max' => 'La photo ne doit pas dépasser 4 Mo.',
+            'languages.max' => 'Choisissez au maximum 6 langues.',
         ];
     }
 }

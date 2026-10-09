@@ -7,8 +7,8 @@ use App\Models\Question;
 use App\Models\User;
 use App\Services\AnswerService;
 use App\Services\VoteService;
+use Database\Seeders\Concerns\Timeline;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +22,8 @@ use Illuminate\Support\Facades\DB;
  */
 class QuestionSeeder extends Seeder
 {
+    use Timeline;
+
     /** Réputation visée par membre (missions terminées comprises). Les autres restent à leur niveau. */
     private const TARGETS = [
         'Jean-Marc N\'Guessan' => 1480, 'Kouadio Yao' => 1210, 'Cheikh Fall' => 960, 'Fatoumata Camara' => 890,
@@ -53,17 +55,19 @@ class QuestionSeeder extends Seeder
             $allAnswers = collect();
 
             foreach (require __DIR__.'/data/questions.php' as $data) {
-                $askedAt = Carbon::now()->subDays($data['days'])->setTime(8 + $data['days'] % 12, 20);
-                $question = $this->answers->ask($user($data['author']), $data['title'], $data['body'], $data['tags']);
-                $question->forceFill(['created_at' => $askedAt, 'updated_at' => $askedAt])->save();
+                $author = $user($data['author']);
+                // Question : jamais avant l'inscription de son auteur.
+                $askedAt = $this->at(1 - $data['days'] / 95, $author->created_at->copy()->addHours(2));
+                $question = $this->travelTo($askedAt, fn () => $this->answers->ask($author, $data['title'], $data['body'], $data['tags']));
 
                 foreach ($data['answers'] as $i => $answerData) {
-                    $answer = $this->answers->answer($user($answerData['author']), $question, $answerData['body']);
-                    $answeredAt = $askedAt->copy()->addHours(2 + $i * 7);
-                    $answer->forceFill(['created_at' => $answeredAt, 'updated_at' => $answeredAt])->save();
+                    $answerer = $user($answerData['author']);
+                    // Réponse : après la question et après l'inscription de son auteur.
+                    $answeredAt = $this->clamp($this->between($askedAt, 0.05 + 0.08 * $i)->max($answerer->created_at->copy()->addHour()));
+                    $answer = $this->travelTo($answeredAt, fn () => $this->answers->answer($answerer, $question, $answerData['body']));
 
                     if ($answerData['accepted'] ?? false) {
-                        $this->answers->toggleAccepted($question, $answer);
+                        $this->travelTo($this->between($answeredAt, 0.1), fn () => $this->answers->toggleAccepted($question, $answer));
                     }
 
                     $allAnswers->push($answer);
@@ -99,12 +103,19 @@ class QuestionSeeder extends Seeder
     private function voteMany(Collection $users, Question|Answer $votable, int $count, int $offset): int
     {
         $voters = $users->reject(fn (User $u) => $u->id === $votable->user_id)->values();
-        $count = min($count, $voters->count());
 
-        for ($i = 0; $i < $count; $i++) {
-            $this->votes->vote($voters[($offset + $i) % $voters->count()], $votable, 1);
+        $cast = 0;
+        for ($i = 0; $i < $voters->count() && $cast < $count; $i++) {
+            $voter = $voters[($offset + $i) % $voters->count()];
+            // Un vote est postérieur au contenu ET à l'inscription du votant.
+            $votedAt = $this->clamp($this->between($votable->created_at, ($cast + 1) / ($count + 2))->max($voter->created_at->copy()->addMinutes(30)));
+            if ($votedAt->lt($votable->created_at)) {
+                continue;
+            }
+            $this->travelTo($votedAt, fn () => $this->votes->vote($voter, $votable, 1));
+            $cast++;
         }
 
-        return $count;
+        return $cast;
     }
 }

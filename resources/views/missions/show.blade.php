@@ -38,6 +38,9 @@
             @if ($isClient)
                 <x-card>
                     <h2 class="text-[28px]">Choisissez votre dev <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
+                    @if ($applications->whereNotNull('delivery_days')->isNotEmpty())
+                        <p class="mt-1 text-sm text-ink-muted">Délai moyen proposé : <strong class="font-semibold text-ink">{{ (int) round($applications->avg('delivery_days')) }} jours</strong></p>
+                    @endif
                     <p class="mt-2 text-ink-soft">Comparez les prix, les messages et les cauris. Quand vous retenez un dev, les autres candidatures passent automatiquement en « Non retenue ».</p>
 
                     @can('complete', $mission)
@@ -68,8 +71,24 @@
                                             </span>
                                         </a>
                                         <x-reputation :points="$application->user->reputation" />
-                                        <span class="ml-auto font-serif text-xl font-medium text-ink">{{ App\Support\Money::fcfa($application->proposed_fcfa) }} <span class="font-sans text-sm text-ink-muted">FCFA</span></span>
+                                        <x-level :user="$application->user" />
+                                        {{-- Prix et délai côte à côte : le client compare les deux. --}}
+                                        <dl class="ml-auto flex items-end gap-5 text-right">
+                                            <div>
+                                                <dt class="text-xs text-ink-muted">Prix</dt>
+                                                <dd class="font-serif text-xl font-medium text-ink">{{ App\Support\Money::fcfa($application->proposed_fcfa) }} <span class="font-sans text-sm text-ink-muted">FCFA</span></dd>
+                                            </div>
+                                            @if ($application->delivery_days)
+                                                <div>
+                                                    <dt class="text-xs text-ink-muted">Délai</dt>
+                                                    <dd class="font-serif text-xl font-medium text-ink">{{ $application->delivery_days }} <span class="font-sans text-sm text-ink-muted">{{ $application->delivery_days > 1 ? 'jours' : 'jour' }}</span></dd>
+                                                </div>
+                                            @endif
+                                        </dl>
                                     </div>
+                                    @if ($activity = $application->user->activityLabel())
+                                        <p class="text-sm text-ink-muted">{{ $activity }}</p>
+                                    @endif
                                     <p class="whitespace-pre-line text-ink-soft">{{ $application->message }}</p>
                                     <div class="flex flex-wrap items-center justify-between gap-3">
                                         <x-chip :tone="$application->status->tone()">{{ $application->status->label() }}</x-chip>
@@ -135,7 +154,7 @@
                 <x-card padding="p-6" id="postuler">
                     @if ($myApplication)
                         <h2 class="text-2xl">Votre candidature</h2>
-                        <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA. Le client choisira parmi les candidats ; vous verrez le statut ici.</p>
+                        <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA{{ $myApplication->delivery_days ? ', livrée en '.$myApplication->delivery_days.' jours' : '' }}. Le client choisira parmi les candidats ; vous verrez le statut ici.</p>
                         <x-chip :tone="$myApplication->status->tone()" class="mt-4">{{ $myApplication->status->label() }}</x-chip>
                     @elseif (! $mission->isOpen())
                         <h2 class="text-2xl">Candidatures closes</h2>
@@ -155,9 +174,14 @@
                             <x-field label="Votre message" name="message" hint="Votre expérience utile, votre approche, vos disponibilités.">
                                 <x-textarea name="message" rows="5" maxlength="2000" required />
                             </x-field>
-                            <x-field label="Votre prix (FCFA)" name="proposed_fcfa">
-                                <x-input name="proposed_fcfa" inputmode="numeric" :value="App\Support\Money::fcfa($mission->budget_fcfa)" required />
-                            </x-field>
+                            <div class="grid grid-cols-2 gap-3">
+                                <x-field label="Votre prix (FCFA)" name="proposed_fcfa">
+                                    <x-input name="proposed_fcfa" inputmode="numeric" :value="App\Support\Money::fcfa($mission->budget_fcfa)" required />
+                                </x-field>
+                                <x-field label="Délai de livraison (jours)" name="delivery_days">
+                                    <x-input name="delivery_days" type="number" min="1" max="180" inputmode="numeric" placeholder="10" required />
+                                </x-field>
+                            </div>
                             <x-button type="submit" class="w-full">Postuler à cette mission</x-button>
                             <p class="text-center text-sm text-ink-muted">Gratuit · Une seule candidature par mission, soignez-la.</p>
                         </form>

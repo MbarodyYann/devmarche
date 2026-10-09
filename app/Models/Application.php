@@ -22,6 +22,7 @@ class Application extends Model
     protected $fillable = [
         'message',
         'proposed_fcfa',
+        'delivery_days',
     ];
 
     /**
@@ -39,6 +40,7 @@ class Application extends Model
         return [
             'status' => ApplicationStatus::class,
             'proposed_fcfa' => 'integer',
+            'delivery_days' => 'integer',
         ];
     }
 

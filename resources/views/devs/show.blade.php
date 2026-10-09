@@ -43,10 +43,11 @@
                         <x-chip :tone="$profile->availability->tone()">{{ $profile->availability->label() }}</x-chip>
                         <x-chip tone="neutral"><x-icon name="map-pin" class="size-3.5" /> {{ $profile->city }}, {{ $profile->countryName() }} <span aria-hidden="true">{{ $profile->flag() }}</span></x-chip>
                     @endif
-                    @if ($dev->isNewMember())
-                        <x-new-badge />
-                    @endif
+                    <x-level :user="$dev" />
                 </div>
+                @if ($profile?->languagesLabel() || $dev->activityLabel())
+                    <p class="mt-3 text-sm text-ink-muted">{{ collect([$profile?->languagesLabel(), $dev->activityLabel()])->filter()->join(' · ') }}</p>
+                @endif
                 @can('update', $profile)
                     {{-- Sur mobile, le bouton passe sous les puces, en pleine largeur. --}}
                     <div class="mt-5 sm:hidden">

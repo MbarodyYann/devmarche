@@ -45,7 +45,7 @@ class MissionController extends Controller
             'myApplication' => $user ? $mission->applications()->where('user_id', $user->id)->first() : null,
             'applications' => $user?->can('viewApplications', $mission)
                 ? $mission->applications()
-                    ->with('user.profile')
+                    ->with(['user' => fn ($q) => $q->withLevel(), 'user.profile'])
                     ->orderByRaw('case status when ? then 0 when ? then 1 else 2 end', [ApplicationStatus::Accepted->value, ApplicationStatus::Pending->value])
                     ->latest()
                     ->get()

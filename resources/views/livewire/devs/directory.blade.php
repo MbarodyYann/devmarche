@@ -1,31 +1,18 @@
 <div>
-    <x-page-intro eyebrow="Les devs" title="Le bon dev est peut-être dans votre ville." list>
-        Filtrez par compétence, pays et disponibilité : les cauris montrent qui a déjà livré des missions et aidé la communauté.
-    </x-page-intro>
-
-    @guest
-        <x-signup-cta class="mt-8" />
-    @endguest
-
-    {{-- Barre d'outils : compteur à gauche, disponibilité en contrôle segmenté à droite --}}
-    @php($total = $this->devs->total())
-    <div class="mt-6 flex flex-col gap-3 sm:mt-16 sm:flex-row sm:items-center sm:justify-between">
-        <span class="inline-flex w-fit items-center gap-2 rounded-[10px] bg-bg-alt px-3.5 py-2 text-sm font-medium text-ink ring-1 ring-line">
-            <span wire:loading.remove>
-                {{ $total }} {{ $total > 1 ? 'devs' : 'dev' }} {{ $this->hasFilters ? ($total > 1 ? 'trouvés' : 'trouvé') : ($total > 1 ? 'inscrits' : 'inscrit') }}
-            </span>
-            <span wire:loading>Recherche…</span>
-        </span>
-        <x-segmented label="Disponibilité" model="availability" :options="['' => 'Tous'] + $availabilities" />
-    </div>
-
-    {{-- Filtres --}}
-    {{-- Sur mobile, seuls la recherche et le bouton « Filtres » sont visibles : les premiers devs restent à l'écran. --}}
-    @php($activeFilters = collect([$country, $city, $skill])->filter()->count())
-    <x-card padding="p-3 sm:p-5" class="mt-4"
+    {{-- En-tête compact dans le layout (pageHero). La carte de filtres chevauche le bas du bandeau. --}}
+    @php($activeFilters = collect([$country, $city, $skill, $level, $language, $activeWeek])->filter()->count())
+    <x-card padding="p-3 sm:p-5" class="relative z-10 -mt-6 sm:-mt-10"
             x-data="{ open: false, desktop: window.matchMedia('(min-width: 640px)').matches }"
             x-init="window.matchMedia('(min-width: 640px)').addEventListener('change', e => desktop = e.matches)">
-        <form wire:submit.prevent role="search" aria-label="Filtrer les devs" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.5fr)_repeat(3,minmax(0,1fr))] lg:items-end">
+        <div class="mb-3 flex flex-col gap-3 border-b border-line pb-3 sm:flex-row sm:items-center sm:justify-between">
+            @php($total = $this->devs->total())
+            <p class="text-sm font-medium text-ink">
+                <span wire:loading.remove>{{ $total }} {{ $total > 1 ? 'devs' : 'dev' }} {{ $this->hasFilters ? ($total > 1 ? 'trouvés' : 'trouvé') : ($total > 1 ? 'inscrits' : 'inscrit') }}</span>
+                <span wire:loading>Recherche…</span>
+            </p>
+            <x-segmented label="Disponibilité" model="availability" :options="['' => 'Tous'] + $availabilities" />
+        </div>
+        <form wire:submit.prevent role="search" aria-label="Filtrer les devs" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
             <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
                 <div class="min-w-0 flex-1">
                     <label for="filtre-q" class="mb-1.5 block text-sm font-medium text-ink max-sm:sr-only">Recherche</label>
@@ -61,6 +48,18 @@
                 <x-select name="competence" id="filtre-competence" wire:model.live="skill"
                           :options="$this->skillOptions->pluck('name', 'slug')->all()" placeholder="Toutes" />
             </div>
+            <div>
+                <label for="filtre-niveau" class="mb-1.5 block text-sm font-medium text-ink">Niveau</label>
+                <x-select name="niveau" id="filtre-niveau" wire:model.live="level" :options="$levels" placeholder="Tous" />
+            </div>
+            <div>
+                <label for="filtre-langue" class="mb-1.5 block text-sm font-medium text-ink">Langue</label>
+                <x-select name="langue" id="filtre-langue" wire:model.live="language" :options="$this->languageOptions" placeholder="Toutes" />
+            </div>
+            <label class="flex min-h-11 cursor-pointer items-center gap-2 self-end text-sm font-medium text-ink">
+                <input type="checkbox" wire:model.live="activeWeek" class="size-5 rounded border-line accent-primary-600">
+                Actifs cette semaine
+            </label>
             </div>
         </form>
         @if ($this->hasFilters)
