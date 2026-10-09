@@ -112,15 +112,28 @@ class MissionSeeder extends Seeder
 
     private function message(array $data, int $i): string
     {
-        $openers = [
-            'Bonjour, j\'ai déjà réalisé un projet très proche l\'an dernier et je peux vous montrer le code.',
-            'Bonjour ! Votre besoin est clair, je peux démarrer dès lundi et livrer par étapes.',
-            'Bonsoir, je travaille exactement sur cette stack au quotidien. Je propose un premier point de 30 minutes.',
-            'Bonjour, mission intéressante. Je suis disponible à temps plein les trois prochaines semaines.',
-            'Salam, je connais bien ce type d\'intégration et les contraintes de connexion locales.',
+        // Messages écrits à la main, variés (approche, réalisation, question, disponibilité), choisis de façon
+        // stable selon la mission et le rang du candidat.
+        $messages = [
+            "Bonjour, j'ai livré un projet très proche l'an dernier. Je peux vous montrer le dépôt pendant un appel.",
+            "Bonjour ! Je propose de commencer par une maquette cliquable en deux jours, pour valider le parcours avant d'écrire la moindre ligne.",
+            "Bonsoir, une question avant de chiffrer définitivement : vous avez déjà un compte marchand, ou il faut aussi s'occuper de l'ouverture ?",
+            'Disponible dès lundi, à temps plein pendant trois semaines. Je travaille en livraisons hebdomadaires, avec une démo chaque vendredi.',
+            'Salam, je connais bien les coupures réseau côté utilisateurs : je prévois des reprises automatiques et des messages clairs quand la connexion tombe.',
+            'Bonjour, si nous sommes dans la même ville, je peux passer dans vos locaux. Mon dernier projet du même type est en ligne, je vous envoie le lien.',
+            "J'ai lu votre description deux fois : le point délicat, c'est la synchronisation. Je propose de le traiter en premier pour éviter les surprises.",
+            "Bonjour, je préfère être transparent : je suis aussi sur une autre mission jusqu'au 15, donc à mi-temps la première semaine, puis à temps plein.",
+            'Je peux livrer une première version utilisable en dix jours, puis on ajuste ensemble. Les tests automatiques sont inclus dans mon prix.',
+            "Bonjour ! Vous avez un exemple de site ou d'appli dont vous aimez le style ? Ça m'aide à viser juste dès la première maquette.",
+            'Développeur depuis six ans, dont trois en freelance. Mes clients me rappellent surtout pour la maintenance, je reste disponible après la livraison.',
+            'Bonjour, je propose un appel de 20 minutes cette semaine pour cadrer les priorités. Je suis joignable sur WhatsApp en fin de journée.',
+            'Je viens de terminer un travail similaire pour une coopérative. Je connais les pièges de la mise en production.',
+            'Bonsoir, prix ferme, sans supplément caché. Je documente tout pour que votre équipe puisse reprendre le code sans moi.',
+            'Bonjour, je peux aussi former une personne de votre équipe pendant la dernière semaine, si ça vous intéresse.',
+            "Mission qui me plaît beaucoup. Je commencerais par un audit rapide de l'existant, puis je vous envoie un plan en trois étapes.",
         ];
 
-        return $openers[$i % 5].' Compétences utiles ici : '.implode(', ', $data['skills']).'.';
+        return $messages[(crc32($data['title']) + $i * 7) % count($messages)];
     }
 
     /**

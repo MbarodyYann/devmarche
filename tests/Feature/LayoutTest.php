@@ -7,21 +7,17 @@ use Illuminate\Support\Facades\Blade;
 test('la page 404 est en français', function () {
     $this->get('/cette-page-n-existe-pas')
         ->assertNotFound()
-        ->assertSee('Erreur 404')
         ->assertSee('Cette page s\'est perdue en route.', false);
 });
 
-test('l\'annuaire n\'affiche qu\'une seule recherche', function () {
-    $this->get('/devs')
-        ->assertOk()
-        ->assertDontSee('id="recherche-globale"', false)
-        ->assertSee('id="filtre-q"', false);
-});
-
-test('les autres pages gardent la recherche de l\'en-tête', function () {
+test('plus de recherche dans la navigation : chaque liste a la sienne', function () {
     $dev = User::factory()->withProfile()->create();
 
-    $this->get(route('devs.show', $dev))->assertSee('id="recherche-globale"', false);
+    $this->get(route('devs.show', $dev))->assertDontSee('id="recherche-globale"', false);
+
+    foreach (['/missions', '/questions', '/devs'] as $url) {
+        $this->get($url)->assertDontSee('id="recherche-globale"', false)->assertSee('id="filtre-q"', false);
+    }
 });
 
 test('les polices auto-hébergées sont préchargées', function () {
@@ -31,12 +27,12 @@ test('les polices auto-hébergées sont préchargées', function () {
         ->assertDontSee('fonts.googleapis.com', false);
 });
 
-test('le profil affiche la disponibilité en puce et le compteur de cauris', function () {
+test('le profil affiche la disponibilité en puce, et le compteur de cauris seulement s\'il y en a', function () {
     $dev = User::factory()->withProfile(['availability' => Availability::Available])->create();
 
     $this->get(route('devs.show', $dev))
         ->assertSee('Disponible')
-        ->assertSee('Pas encore de cauris');
+        ->assertDontSee('cauris de réputation');
 
     $dev->forceFill(['reputation' => 1240])->save();
 

@@ -62,6 +62,16 @@ class Mission extends Model
     }
 
     /**
+     * Recherche plein texte en français sur le titre et la description (index GIN, voir la migration).
+     *
+     * @param  Builder<Mission>  $query
+     */
+    public function scopeSearch(Builder $query, string $terms): void
+    {
+        $query->whereRaw("to_tsvector('french', title || ' ' || description) @@ websearch_to_tsquery('french', ?)", [$terms]);
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function client(): BelongsTo

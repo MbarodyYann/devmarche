@@ -1,8 +1,10 @@
-@props(['title', 'subtitle' => null, 'eyebrow' => 'Bienvenue', 'demo' => false])
+@props(['title', 'subtitle' => null, 'eyebrow' => null, 'demo' => false])
 
 <div class="mx-auto w-full max-w-md">
     <div class="mb-8 text-center">
-        <p class="eyebrow mb-3">{{ $eyebrow }}</p>
+        @if ($eyebrow)
+            <p class="eyebrow mb-3">{{ $eyebrow }}</p>
+        @endif
         <h1 class="text-[40px] sm:text-5xl">{{ $title }}</h1>
         @if ($subtitle)
             <p class="mt-4 text-ink-soft">{{ $subtitle }}</p>

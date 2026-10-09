@@ -1,11 +1,13 @@
 <?php
 
 /*
-| Page « À propos » : équipe, stack, licences et usage de l'IA (article 6 du règlement CADEV).
+| Page « À propos » : équipe, stack, licences et usage de l'IA.
 |
 | Licences : pour chaque paquet Composer ou npm, la version et la licence sont lues dans composer.lock
 | et package-lock.json (App\Support\Credits) ; on ne les recopie pas à la main. Les autres composants
 | (polices, icônes, base de données) sont décrits ici. Le registre de documentation/06 reprend ce tableau.
+| « license » force la licence affichée : nette/* est sous triple licence (BSD-3-Clause ou GPL au choix),
+| et nous l'utilisons sous BSD-3-Clause (voir documentation/06).
 */
 
 return [
@@ -16,7 +18,7 @@ return [
 
     'stack' => [
         ['name' => 'Laravel 12', 'role' => 'Framework PHP (PHP 8.2)'],
-        ['name' => 'Livewire 3 et Alpine.js', 'role' => 'Filtres instantanés, votes, aperçu Markdown, sans application JavaScript à part'],
+        ['name' => 'Livewire 3 et Alpine.js', 'role' => 'Filtres instantanés, votes, aperçu Markdown'],
         ['name' => 'PostgreSQL', 'role' => 'Base de données et recherche plein texte en français'],
         ['name' => 'Tailwind CSS 4', 'role' => 'Styles, thème clair et sombre'],
         ['name' => 'Pest', 'role' => 'Tests automatisés'],
@@ -31,8 +33,8 @@ return [
         ['package' => 'league/commonmark', 'type' => 'composer', 'name' => 'league/commonmark', 'usage' => 'Rendu Markdown sécurisé'],
         ['package' => 'scrivo/highlight.php', 'type' => 'composer', 'name' => 'highlight.php', 'usage' => 'Coloration du code, côté serveur'],
         ['package' => 'intervention/image', 'type' => 'composer', 'name' => 'Intervention Image', 'usage' => 'Avatars'],
-        ['package' => 'nette/schema', 'type' => 'composer', 'name' => 'nette/schema', 'usage' => 'Dépendance indirecte de Laravel, utilisée sous BSD-3-Clause (triple licence au choix)'],
-        ['package' => 'nette/utils', 'type' => 'composer', 'name' => 'nette/utils', 'usage' => 'Dépendance indirecte de Laravel, utilisée sous BSD-3-Clause (triple licence au choix)'],
+        ['package' => 'nette/schema', 'type' => 'composer', 'name' => 'nette/schema', 'usage' => 'Dépendance indirecte de Laravel', 'license' => 'BSD-3-Clause'],
+        ['package' => 'nette/utils', 'type' => 'composer', 'name' => 'nette/utils', 'usage' => 'Dépendance indirecte de Laravel', 'license' => 'BSD-3-Clause'],
         ['package' => 'pestphp/pest', 'type' => 'composer', 'name' => 'Pest', 'usage' => 'Tests (développement)'],
         ['package' => 'pestphp/pest-plugin-laravel', 'type' => 'composer', 'name' => 'Pest, extension Laravel', 'usage' => 'Tests (développement)'],
         ['package' => 'phpunit/phpunit', 'type' => 'composer', 'name' => 'PHPUnit', 'usage' => 'Tests (développement)'],
@@ -58,7 +60,7 @@ return [
     ],
 
     'ai' => [
-        ['tool' => 'Claude Code (Anthropic)', 'parts' => 'Conception et documentation, écriture du code et des tests, revue de code. Chaque membre de l\'équipe relit le code et sait l\'expliquer.'],
-        ['tool' => 'Générateur d\'images IA', 'parts' => 'Image du haut de l\'accueil (deux devs devant un ordinateur), validée par l\'équipe.'],
+        ['tool' => 'Claude Code (Anthropic)', 'parts' => 'conception, documentation, code, tests et revue de code.'],
+        ['tool' => 'Générateur d\'images IA', 'parts' => 'image d\'illustration de l\'accueil.'],
     ],
 ];

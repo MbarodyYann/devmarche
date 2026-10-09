@@ -4,12 +4,9 @@
         $isAuthor = $user && $user->id === $question->user_id;
     @endphp
 
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <a href="{{ route('questions.index') }}" class="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
-            <x-icon name="arrow-left" class="size-4" /> Toutes les questions
-        </a>
-        <x-share :title="$question->title" :url="route('questions.show', $question)" />
-    </div>
+    <a href="{{ route('questions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
+        <x-icon name="arrow-left" class="size-4" /> Toutes les questions
+    </a>
 
     <div class="mx-auto max-w-4xl space-y-6">
         {{-- La question --}}
@@ -40,6 +37,7 @@
                             @endif
                         </a>
                     </div>
+                    <x-share class="mt-5" :title="$question->title" :url="route('questions.show', $question)" />
                 </div>
             </div>
         </x-card>
@@ -112,7 +110,7 @@
                 </form>
             @else
                 <p class="mt-3 text-ink-soft">Vous connaissez la réponse ? Rejoignez la communauté pour la partager.</p>
-                <x-signup-cta class="mt-5" align="start" />
+                <x-signup-cta class="mt-5" align="start" :recruit="false" />
                 <p class="mt-4 text-sm"><a href="{{ route('login') }}" class="text-ink-muted underline-offset-4 hover:text-ink hover:underline">Déjà membre ? Se connecter</a></p>
             @endauth
         </x-card>

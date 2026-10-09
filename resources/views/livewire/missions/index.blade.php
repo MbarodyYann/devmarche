@@ -1,6 +1,6 @@
 <div>
     {{-- En-tête compact dans le layout (pageHero). La carte de filtres chevauche le bas du bandeau. --}}
-    @php($activeFilters = collect([$country, $budgetMin, $budgetMax])->filter()->count() + ($sort !== 'recentes' ? 1 : 0))
+    @php($activeFilters = collect([$skill, $country, $budgetMin, $budgetMax])->filter()->count() + ($sort !== 'recentes' ? 1 : 0))
     <x-card padding="p-3 sm:p-5" class="relative z-10 -mt-6 sm:-mt-10"
             x-data="{ open: false, desktop: window.matchMedia('(min-width: 640px)').matches }"
             x-init="window.matchMedia('(min-width: 640px)').addEventListener('change', e => desktop = e.matches)">
@@ -12,12 +12,14 @@
             </p>
             <x-segmented label="Statut" model="status" :options="$statuses" />
         </div>
-        <form wire:submit.prevent role="search" aria-label="Filtrer les missions" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
+        <form wire:submit.prevent role="search" aria-label="Chercher une mission" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end">
             <div class="flex items-end gap-2 sm:col-span-2 lg:col-span-1">
                 <div class="min-w-0 flex-1">
-                    <label for="filtre-competence" class="mb-1.5 block text-sm font-medium text-ink max-sm:sr-only">Compétence</label>
-                    <x-select name="competence" id="filtre-competence" wire:model.live="skill"
-                              :options="$this->skillOptions->pluck('name', 'slug')->all()" placeholder="Toutes les compétences" />
+                    <label for="filtre-q" class="mb-1.5 block text-sm font-medium text-ink max-sm:sr-only">Recherche</label>
+                    <div class="relative">
+                        <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
+                        <x-input name="q" id="filtre-q" type="search" wire:model.live.debounce.400ms="q" placeholder="Wave, site vitrine, Flutter…" class="pl-9" />
+                    </div>
                 </div>
                 <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()" aria-controls="filtres-avances"
                         class="btn-outline inline-flex min-h-11 shrink-0 items-center gap-2 rounded-field px-3 text-sm font-semibold sm:hidden">
@@ -28,6 +30,11 @@
                 </button>
             </div>
             <div id="filtres-avances" class="contents" x-show="open || desktop" x-cloak>
+                <div>
+                    <label for="filtre-competence" class="mb-1.5 block text-sm font-medium text-ink">Compétence</label>
+                    <x-select name="competence" id="filtre-competence" wire:model.live="skill"
+                              :options="$this->skillOptions->pluck('name', 'slug')->all()" placeholder="Toutes les compétences" />
+                </div>
                 <div>
                     <label for="filtre-pays" class="mb-1.5 block text-sm font-medium text-ink">Lieu</label>
                     <x-select name="pays" id="filtre-pays" wire:model.live="country" :options="$this->countryOptions" placeholder="Partout" />

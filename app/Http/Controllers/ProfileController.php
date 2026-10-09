@@ -23,8 +23,7 @@ class ProfileController extends Controller
 
         $completed = $user->assignedMissions()
             ->where('status', MissionStatus::Completed)
-            ->with(['client.profile', 'skills'])
-            ->withCount('applications')
+            ->with('client:id,name')
             ->latest('completed_at');
 
         return view('devs.show', [

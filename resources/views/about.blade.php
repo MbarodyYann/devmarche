@@ -1,5 +1,5 @@
-<x-layouts.app title="À propos" description="DevMarché, le projet de l'équipe Baobab Stack (Sénégal) pour le concours CADEV 2026 de Systalink : le projet, l'équipe, la stack, les licences et l'usage de l'IA.">
-    {{-- Page « À propos » : la transparence plaît au jury (lot 4). Données : config/credits.php et les fichiers de verrouillage. --}}
+<x-layouts.app title="À propos" description="DevMarché, par l'équipe Baobab Stack (Sénégal) : le projet, l'équipe, la stack, les licences et l'usage de l'intelligence artificielle.">
+    {{-- Page « À propos ». Données : config/credits.php et les fichiers de verrouillage. --}}
     <x-page-intro eyebrow="À propos" title="Les devs d'Afrique francophone méritaient leur propre place de marché.">
         Missions payées en FCFA, questions-réponses en français et annuaire de devs : une seule plateforme, pensée pour la 3G et le Mobile Money.
     </x-page-intro>
@@ -17,7 +17,7 @@
         {{-- L'équipe --}}
         <section id="equipe" aria-labelledby="equipe-titre" class="scroll-mt-28">
             <h2 id="equipe-titre" class="text-[28px] sm:text-[36px]">L'équipe Baobab Stack</h2>
-            <p class="mt-4 text-lg text-ink-soft">Une équipe du Sénégal, au concours CADEV 2026 organisé par Systalink.</p>
+            <p class="mt-4 text-lg text-ink-soft">Équipe du Sénégal, au concours CADEV 2026 organisé par Systalink.</p>
             <ul class="mt-6 grid gap-4 sm:grid-cols-2">
                 @foreach (config('credits.team') as $member)
                     <li class="min-w-0">
@@ -51,7 +51,6 @@
         {{-- Licences : générées depuis composer.lock, package-lock.json et config/credits.php --}}
         <section id="licences" aria-labelledby="licences-titre" class="scroll-mt-28">
             <h2 id="licences-titre" class="text-[28px] sm:text-[36px]">Licences</h2>
-            <p class="mt-4 text-lg text-ink-soft">Uniquement des licences permissives (MIT, BSD, ISC, OFL…), comme l'exige le règlement. Versions lues dans les fichiers de dépendances du projet.</p>
             {{-- Sur mobile, chaque ligne devient un bloc empilé (pas de défilement horizontal à 360 px). --}}
             <div class="mt-6 overflow-hidden rounded-2xl border border-line">
                 <table class="w-full text-left text-sm" data-licenses>
@@ -86,21 +85,12 @@
         {{-- Déclaration d'usage de l'IA (article 6) --}}
         <section id="ia" aria-labelledby="ia-titre" class="scroll-mt-28">
             <h2 id="ia-titre" class="text-[28px] sm:text-[36px]">Usage de l'intelligence artificielle</h2>
-            <p class="mt-4 text-lg text-ink-soft">Le règlement demande de déclarer les outils d'IA utilisés et les parties concernées. Voici les nôtres.</p>
-            <ul class="mt-6 space-y-4">
+            <ul class="mt-6 space-y-3 text-lg text-ink-soft">
                 @foreach (config('credits.ai') as $item)
-                    <li>
-                        <x-card padding="p-5">
-                            <p class="font-semibold text-ink">{{ $item['tool'] }}</p>
-                            <p class="mt-1 text-ink-soft">{{ $item['parts'] }}</p>
-                        </x-card>
-                    </li>
+                    <li><strong class="font-semibold text-ink">{{ $item['tool'] }}</strong> : {{ $item['parts'] }}</li>
                 @endforeach
             </ul>
         </section>
     </div>
 
-    @guest
-        <x-signup-cta class="mt-20 sm:mt-28" />
-    @endguest
 </x-layouts.app>

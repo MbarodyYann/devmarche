@@ -21,7 +21,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Annuaire des devs')]
-#[Layout('components.layouts.app', ['search' => false, 'pageHero' => [
+#[Layout('components.layouts.app', ['pageHero' => [
     'start' => 'Le bon dev est peut-être',
     'end' => 'dans votre ville.',
     'subtitle' => 'Filtrez par compétence, pays et disponibilité : les cauris montrent qui a déjà livré des missions et aidé la communauté.',
@@ -104,7 +104,7 @@ class Directory extends Component
 
         return collect(config('languages'))
             ->only($spoken)
-            ->map(fn (string $label) => ucfirst($label))
+            ->map(fn (string $label) => Str::ucfirst($label))
             ->all();
     }
 

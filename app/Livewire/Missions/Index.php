@@ -10,6 +10,7 @@ use App\Support\Countries;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -19,7 +20,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Missions')]
-#[Layout('components.layouts.app', ['search' => false, 'pageHero' => [
+#[Layout('components.layouts.app', ['pageHero' => [
     'start' => 'Votre prochain client',
     'end' => 'est déjà ici.',
     'subtitle' => 'Filtrez par compétence et par pays, postulez avec votre prix en 2 minutes : le client compare les profils et vous paie en Mobile Money.',
@@ -33,6 +34,10 @@ class Index extends Component
 
     /** Valeur du filtre pays pour les missions à distance. */
     public const REMOTE = 'teletravail';
+
+    /** Recherche par mots-clés (titre et description, plein texte en français). */
+    #[Url(except: '')]
+    public string $q = '';
 
     #[Url(as: 'competence', except: '')]
     public string $skill = '';
@@ -67,14 +72,14 @@ class Index extends Component
 
     public function resetFilters(): void
     {
-        $this->reset('skill', 'category', 'country', 'budgetMin', 'budgetMax', 'status', 'sort', 'forMe');
+        $this->reset('q', 'skill', 'category', 'country', 'budgetMin', 'budgetMax', 'status', 'sort', 'forMe');
         $this->resetPage();
     }
 
     #[Computed]
     public function hasFilters(): bool
     {
-        return collect([$this->skill, $this->category, $this->country, $this->budgetMin, $this->budgetMax, $this->forMe])->filter()->isNotEmpty()
+        return collect([$this->q, $this->skill, $this->category, $this->country, $this->budgetMin, $this->budgetMax, $this->forMe])->filter()->isNotEmpty()
             || $this->status !== 'open';
     }
 
@@ -106,7 +111,10 @@ class Index extends Component
         $max = $this->amount($this->budgetMax);
         $mySkillIds = $this->forMe && auth()->check() ? auth()->user()->skills()->pluck('skills.id')->all() : null;
 
+        $search = Str::squish($this->q);
+
         return Mission::query()
+            ->when($search !== '', fn (Builder $q) => $q->search($search))
             ->when($status, fn (Builder $q, MissionStatus $status) => $q->where('status', $status))
             ->when($this->skill !== '', fn (Builder $q) => $q->whereHas('skills', fn (Builder $s) => $s->where('slug', $this->skill)))
             ->when(Categories::find($this->category), fn (Builder $q) => Categories::scope($q, $this->category))

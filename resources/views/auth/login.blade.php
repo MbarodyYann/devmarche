@@ -1,5 +1,5 @@
 <x-layouts.app title="Connexion" description="Connectez-vous à DevMarché pour postuler aux missions, répondre aux questions et suivre vos cauris.">
-    <x-auth-card :demo="true" eyebrow="Connexion" title="Content de vous revoir.">
+    <x-auth-card :demo="true" title="Content de vous revoir.">
         <form method="post" action="{{ route('login') }}" class="space-y-5" novalidate>
             @csrf
 

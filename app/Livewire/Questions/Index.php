@@ -17,7 +17,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Title('Questions-réponses')]
-#[Layout('components.layouts.app', ['search' => false, 'pageHero' => [
+#[Layout('components.layouts.app', ['pageHero' => [
     'start' => 'Votre question ne se perdra plus',
     'end' => 'dans un groupe WhatsApp.',
     'subtitle' => 'Posez-la en français avec les bons tags : la communauté répond et vote, et la meilleure réponse reste trouvable par tous.',

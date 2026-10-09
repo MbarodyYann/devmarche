@@ -2,7 +2,6 @@
     <a href="{{ route('questions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
         <x-icon name="arrow-left" class="size-4" /> Retour aux questions
     </a>
-    <p class="eyebrow mb-3">Poser ma question</p>
     <h1 class="text-[40px] sm:text-5xl">Votre question ne se perdra plus dans un groupe WhatsApp.</h1>
     <p class="mt-3 text-ink-soft">Posez-la en français avec les bons tags : la communauté répond et vote, et la meilleure réponse reste trouvable par tous.</p>
 

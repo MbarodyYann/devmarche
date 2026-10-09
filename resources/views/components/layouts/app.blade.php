@@ -1,4 +1,4 @@
-@props(['title' => null, 'search' => true, 'description' => null, 'ogImage' => null, 'pageHero' => null, 'canonical' => null, 'noindex' => false])
+@props(['title' => null, 'description' => null, 'ogImage' => null, 'pageHero' => null, 'canonical' => null, 'noindex' => false])
 
 @php
     $navigation = [
@@ -27,7 +27,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php
-        $fullTitle = ($title ? $title.' · ' : '').'DevMarché';
+        // Sans titre de page (accueil) : le nom suivi de la promesse.
+        $fullTitle = $title ? $title.' · DevMarché' : 'DevMarché · Missions en FCFA pour les devs d\'Afrique francophone';
         // Description : celle de la page, sinon le sous-titre de l'en-tête compact, sinon celle du site.
         $metaDescription = App\Support\Seo::excerpt($description ?? $pageHero['subtitle'] ?? App\Support\Seo::DEFAULT_DESCRIPTION);
         $canonicalUrl = $canonical ?? url()->current();
@@ -122,16 +123,6 @@
             </nav>
 
             <div class="ml-auto flex items-center gap-2 lg:ml-0">
-                @if ($search)
-                    <form action="{{ route('devs.index') }}" method="get" role="search" class="hidden xl:block">
-                        <label for="recherche-globale" class="sr-only">Rechercher un dev</label>
-                        <div class="relative">
-                            <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
-                            <input id="recherche-globale" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher un dev…"
-                                   class="h-10 w-52 rounded-btn border border-line bg-surface pl-9 pr-3 text-sm text-ink placeholder:text-ink-muted focus:border-primary-500 focus:outline-none focus:ring-3 focus:ring-primary-200 dark:focus:ring-primary-800">
-                        </div>
-                    </form>
-                @endif
 
                 <x-theme-toggle />
 
@@ -221,9 +212,8 @@
             </div>
         </div>
         <div class="mx-auto grid max-w-page gap-8 border-t border-line px-4 py-10 sm:grid-cols-[2fr_1fr_1fr] sm:px-6">
-            <div class="space-y-3">
+            <div>
                 <x-logo />
-                <p class="max-w-sm text-sm text-ink-muted">Par et pour les devs d'Afrique francophone.</p>
             </div>
             <nav aria-label="Plateforme" class="space-y-2 text-sm">
                 <p class="font-semibold text-ink">Plateforme</p>
@@ -234,10 +224,9 @@
             <nav aria-label="Le projet" class="space-y-2 text-sm">
                 <p class="font-semibold text-ink">Le projet</p>
                 <a href="{{ route('about') }}" class="block text-ink-muted hover:text-ink">À propos</a>
-                <a href="{{ route('about') }}#equipe" class="block text-ink-muted hover:text-ink">Équipe Baobab Stack</a>
-                <a href="{{ route('about') }}#licences" class="block text-ink-muted hover:text-ink">Licences et usage de l'IA</a>
             </nav>
         </div>
+        <p class="mx-auto max-w-page border-t border-line px-4 py-6 text-sm text-ink-muted sm:px-6">© 2026 DevMarché</p>
     </footer>
 
     {{-- Barre du bas (mobile) : flottante, même matière que la navigation --}}

@@ -4,12 +4,9 @@
         $isClient = $user && $user->id === $mission->client_id;
     @endphp
 
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <a href="{{ route('missions.index') }}" class="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
-            <x-icon name="arrow-left" class="size-4" /> Toutes les missions
-        </a>
-        <x-share :title="$mission->title.' · '.App\Support\Money::fcfa($mission->budget_fcfa).' FCFA'" :url="route('missions.show', $mission)" />
-    </div>
+    <a href="{{ route('missions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
+        <x-icon name="arrow-left" class="size-4" /> Toutes les missions
+    </a>
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         {{-- Contenu --}}
@@ -35,6 +32,7 @@
                         <x-skills :skills="$mission->skills" />
                     </div>
                 @endif
+                <x-share class="mt-6 border-t border-line pt-5" :title="$mission->title.' · '.App\Support\Money::fcfa($mission->budget_fcfa).' FCFA'" :url="route('missions.show', $mission)" />
             </x-card>
 
             {{-- Candidatures : vue du client --}}
@@ -133,25 +131,34 @@
                 </dl>
             </x-frame>
 
-            <x-card padding="p-6">
-                <h2 class="font-sans text-sm font-semibold tracking-normal text-ink-muted">Publiée par</h2>
-                <a href="{{ route('devs.show', $mission->client) }}" class="mt-3 flex items-center gap-3">
-                    <x-avatar :user="$mission->client" />
-                    <span class="min-w-0">
-                        <span class="block truncate font-semibold text-ink">{{ $mission->client->name }}</span>
-                        <span class="block truncate text-sm text-ink-muted">{{ $mission->client->profile?->headline }}</span>
-                    </span>
-                </a>
-                <x-reputation :points="$mission->client->reputation" class="mt-3" />
+            {{-- Qui publie (masqué pour l'auteur : c'est lui) et à qui la mission est confiée. Pour un client,
+                 on montre son activité de client, pas des cauris (ils récompensent le travail des devs). --}}
+            @if (! $isClient || $mission->freelancer)
+                <x-card padding="p-6">
+                    @unless ($isClient)
+                        <h2 class="font-sans text-sm font-semibold tracking-normal text-ink-muted">Publiée par</h2>
+                        <a href="{{ route('devs.show', $mission->client) }}" class="mt-3 flex items-center gap-3">
+                            <x-avatar :user="$mission->client" />
+                            <span class="min-w-0">
+                                <span class="block truncate font-semibold text-ink">{{ $mission->client->name }}</span>
+                                <span class="block truncate text-sm text-ink-muted">{{ $mission->client->profile?->headline }}</span>
+                            </span>
+                        </a>
+                        <p class="mt-3 text-sm text-ink-muted" data-client-activity>
+                            {{ $mission->client->missions_count }} {{ $mission->client->missions_count > 1 ? 'missions publiées' : 'mission publiée' }}
+                            · Membre depuis {{ $mission->client->created_at->translatedFormat('M Y') }}
+                        </p>
+                    @endunless
 
-                @if ($mission->freelancer)
-                    <h2 class="mt-6 border-t border-line pt-5 font-sans text-sm font-semibold tracking-normal text-ink-muted">Confiée à</h2>
-                    <a href="{{ route('devs.show', $mission->freelancer) }}" class="mt-3 flex items-center gap-3">
-                        <x-avatar :user="$mission->freelancer" />
-                        <span class="block truncate font-semibold text-ink">{{ $mission->freelancer->name }}</span>
-                    </a>
-                @endif
-            </x-card>
+                    @if ($mission->freelancer)
+                        <h2 @class(['font-sans text-sm font-semibold tracking-normal text-ink-muted', 'mt-6 border-t border-line pt-5' => ! $isClient])>Confiée à</h2>
+                        <a href="{{ route('devs.show', $mission->freelancer) }}" class="mt-3 flex items-center gap-3">
+                            <x-avatar :user="$mission->freelancer" />
+                            <span class="block truncate font-semibold text-ink">{{ $mission->freelancer->name }}</span>
+                        </a>
+                    @endif
+                </x-card>
+            @endif
 
             @unless ($isClient)
                 <x-card padding="p-6" id="postuler">

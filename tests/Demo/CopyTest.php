@@ -65,13 +65,13 @@ test('publier : titre, mécanisme, bouton et réassurance', function () {
         ->assertSee('Publiez gratuitement : les devs postulent avec leur prix, vous comparez leurs profils et leurs cauris, puis vous choisissez.')
         ->assertSee('Publier ma mission')
         ->assertSee('Gratuit · Aucun paiement avant d\'avoir choisi votre dev.', false)
-        ->assertSee('Montant total en FCFA, sans espace ni point : 150000');
+        ->assertSee('Montant total en FCFA. Ex. 150 000');
 });
 
 test('inscription : le bouton reprend le CTA unique', function () {
     $this->get('/register')
         ->assertSee('Votre profil en ligne en 2 minutes.')
-        ->assertSee('Nom, e-mail, pays et ville : c&#039;est tout. Vous ajouterez vos compétences ensuite.', false)
+        ->assertSee('Nom, e-mail, pays, ville et mot de passe. Vos compétences viendront ensuite.')
         ->assertSee(Copy::SIGNUP_CTA)
         ->assertSee('Déjà membre ? Se connecter');
 });
@@ -88,7 +88,7 @@ test('profil du propriétaire : bienvenue, compétences et première mission', f
         ->assertSee('Bienvenue !')
         ->assertSee('Compléter mon profil')
         ->assertSee('Votre première mission terminée apparaîtra ici, avec +20 cauris.')
-        ->assertSee('Pas encore de cauris : chaque mission terminée et chaque réponse utile en rapportent.');
+        ->assertDontSee('cauris de réputation');
 
     // Sans le message de bienvenue (session neuve), l'encart parle des compétences manquantes.
     $autre = User::factory()->withProfile()->create();

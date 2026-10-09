@@ -24,7 +24,6 @@
             <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <p class="eyebrow mb-2">Profil de dev</p>
                         <h1 class="text-[40px] sm:text-5xl">{{ $dev->name }}</h1>
                     </div>
                     @can('update', $profile)
@@ -96,7 +95,7 @@
                     <ul class="mt-4 divide-y divide-line">
                         @foreach ($answers as $answer)
                             <li class="flex items-start gap-3 py-3">
-                                <span class="w-10 shrink-0 rounded-[6px] bg-bg-alt py-1 text-center text-sm font-semibold tabular-nums text-ink ring-1 ring-line">{{ $answer->score }}</span>
+                                <span class="shrink-0 rounded-[6px] bg-bg-alt px-2 py-1 text-center text-sm font-semibold tabular-nums text-ink ring-1 ring-line">{{ $answer->score }} {{ abs($answer->score) > 1 ? 'votes' : 'vote' }}</span>
                                 <a href="{{ route('questions.show', $answer->question).'#reponse-'.$answer->id }}" class="min-w-0 flex-1 font-medium text-ink hover:text-primary-600 dark:hover:text-primary-300">{{ $answer->question->title }}</a>
                                 @if ($answer->question->accepted_answer_id === $answer->id)
                                     <x-chip tone="done" class="shrink-0">Acceptée</x-chip>
@@ -137,8 +136,18 @@
                     </x-card>
                 @else
                     <ul class="grid gap-4 sm:grid-cols-2">
+                        {{-- Une mission réalisée : pour qui, combien, quand (pas de candidatures ni d'initiales). --}}
                         @foreach ($completedMissions as $mission)
-                            <li class="min-w-0"><x-mission-card :mission="$mission" /></li>
+                            <li class="min-w-0">
+                                <x-card :href="route('missions.show', $mission)" padding="p-5" class="flex h-full flex-col gap-3" data-completed-mission>
+                                    <h3 class="text-[20px] leading-snug">{{ $mission->title }}</h3>
+                                    <p class="text-sm text-ink-muted">Pour {{ $mission->client->name }}</p>
+                                    <div class="mt-auto flex flex-wrap items-end justify-between gap-2 border-t border-line pt-3">
+                                        <x-budget :amount="$mission->budget_fcfa" />
+                                        <span class="text-sm text-ink-muted">Terminée le {{ $mission->completed_at->translatedFormat('j M Y') }}</span>
+                                    </div>
+                                </x-card>
+                            </li>
                         @endforeach
                     </ul>
                 @endif

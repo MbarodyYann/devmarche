@@ -24,7 +24,7 @@ class Credits
                 return [
                     'name' => $item['name'],
                     'version' => ltrim($found['version'] ?? '—', 'v'),
-                    'license' => $found['license'] ?? '—',
+                    'license' => $item['license'] ?? $found['license'] ?? '—',
                     'usage' => $item['usage'],
                 ];
             }, config('credits.packages'));

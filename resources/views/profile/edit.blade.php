@@ -5,7 +5,6 @@
         <a href="{{ route('devs.show', $dev) }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
             <x-icon name="arrow-left" class="size-4" /> Retour au profil
         </a>
-        <p class="eyebrow mb-3">Votre vitrine</p>
         <h1 class="text-[40px] sm:text-5xl">Modifier mon profil</h1>
         <p class="mt-3 text-ink-soft">Un profil complet attire plus de clients et de coéquipiers.</p>
 
@@ -56,7 +55,7 @@
                         @foreach ($languageOptions as $code => $label)
                             <label class="cursor-pointer">
                                 <input type="checkbox" name="languages[]" value="{{ $code }}" @checked(in_array($code, $spoken, true)) class="peer sr-only">
-                                <span class="inline-flex min-h-10 items-center rounded-[8px] border border-line bg-bg-alt px-3 text-sm font-medium text-ink-soft transition peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:text-primary-700 peer-focus-visible:outline-2 peer-focus-visible:outline-primary-500 dark:peer-checked:border-secondary-400 dark:peer-checked:bg-secondary-950 dark:peer-checked:text-secondary-300">{{ ucfirst($label) }}</span>
+                                <span class="inline-flex min-h-10 items-center rounded-[8px] border border-line bg-bg-alt px-3 text-sm font-medium text-ink-soft transition peer-checked:border-primary-600 peer-checked:bg-primary-50 peer-checked:text-primary-700 peer-focus-visible:outline-2 peer-focus-visible:outline-primary-500 dark:peer-checked:border-secondary-400 dark:peer-checked:bg-secondary-950 dark:peer-checked:text-secondary-300">{{ Str::ucfirst($label) }}</span>
                             </label>
                         @endforeach
                     </div>
@@ -85,7 +84,7 @@
 
                 <div class="flex flex-col-reverse items-center gap-3 border-t border-line pt-6 sm:flex-row sm:justify-end">
                     <x-button :href="route('devs.show', $dev)" variant="secondary">Annuler</x-button>
-                    <x-button type="submit">Enregistrer</x-button>
+                    <x-button type="submit">Enregistrer mon profil</x-button>
                 </div>
             </form>
         </x-card>

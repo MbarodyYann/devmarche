@@ -3,7 +3,6 @@
         <a href="{{ route('missions.index') }}" class="mb-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink">
             <x-icon name="arrow-left" class="size-4" /> Retour aux missions
         </a>
-        <p class="eyebrow mb-3">Publier une mission</p>
         <h1 class="text-[40px] sm:text-5xl">Décrivez votre besoin, les devs viennent à vous.</h1>
         <p class="mt-3 text-ink-soft">Publiez gratuitement : les devs postulent avec leur prix, vous comparez leurs profils et leurs cauris, puis vous choisissez.</p>
 
@@ -21,7 +20,7 @@
                 </x-field>
 
                 <div class="grid gap-6 sm:grid-cols-2">
-                    <x-field label="Budget (FCFA)" name="budget_fcfa" hint="Montant total en FCFA, sans espace ni point : 150000">
+                    <x-field label="Budget (FCFA)" name="budget_fcfa" hint="Montant total en FCFA. Ex. 150 000">
                         <x-input name="budget_fcfa" inputmode="numeric" placeholder="150000" required />
                     </x-field>
                     <x-field label="Échéance" name="deadline" optional>

@@ -8,7 +8,9 @@ use Illuminate\Support\Carbon;
 /**
  * Chronologie cohérente du jeu de démonstration.
  *
- * Tout se passe entre le lancement (29 sept. 2026) et maintenant. Chaque action est exécutée
+ * Tout se passe sur les 30 derniers jours (config devmarche.demo_window_days), et jamais avant le
+ * lancement (29 sept. 2026) : la démo réinitialisée chaque nuit reste « fraîche » le jour de la
+ * notation (la mission la plus récente a moins de 24 h). Chaque action est exécutée
  * « à son heure » grâce à Carbon::setTestNow(), pour que les horodatages posés par Eloquent et
  * par les services (attribution, fin de mission, votes, événements de réputation) soient cohérents :
  * un contenu est toujours postérieur à l'inscription de son auteur, une réponse à sa question,
@@ -19,9 +21,11 @@ trait Timeline
     /** « Maintenant » réel, mémorisé avant tout voyage dans le temps. */
     private ?Carbon $timelineEnd = null;
 
+    /** Début de la période de démo : max(lancement, maintenant − 30 jours). */
     protected function launch(): Carbon
     {
-        return Carbon::parse(config('devmarche.launched_at'));
+        return Carbon::parse(config('devmarche.launched_at'))
+            ->max($this->latest()->subDays((int) config('devmarche.demo_window_days')));
     }
 
     /** Dernier instant utilisable (un peu avant maintenant, pour que tout soit « passé »). */
@@ -140,12 +144,14 @@ trait Timeline
      */
     protected function travelTo(Carbon $moment, callable $action): mixed
     {
+        // On restaure l'horloge d'avant (celle d'un test qui simule une date, par exemple).
+        $previous = Carbon::getTestNow();
         Carbon::setTestNow($moment);
 
         try {
             return $action();
         } finally {
-            Carbon::setTestNow();
+            Carbon::setTestNow($previous);
         }
     }
 }

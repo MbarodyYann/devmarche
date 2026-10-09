@@ -17,8 +17,8 @@ beforeEach(function () {
 test('sans APP_DEMO : pas d\'encart, et la connexion démo renvoie 404', function () {
     config(['devmarche.demo' => false]);
 
-    $this->get('/login')->assertOk()->assertDontSee('Démo pour le jury');
-    $this->get('/register')->assertOk()->assertDontSee('Démo pour le jury');
+    $this->get('/login')->assertOk()->assertDontSee('Essayer la démo');
+    $this->get('/register')->assertOk()->assertDontSee('Essayer la démo');
     $this->post('/demo/moussa')->assertNotFound();
     $this->assertGuest();
 });
@@ -27,7 +27,7 @@ test('avec APP_DEMO : encart sur la connexion et l\'inscription, avec les 2 pers
     config(['devmarche.demo' => true]);
 
     $this->get($url)->assertOk()
-        ->assertSee('Démo pour le jury')
+        ->assertSee('Essayer la démo')
         ->assertSee('Entrer comme Aïssatou (startup, Dakar)')
         ->assertSee('Entrer comme Moussa (dev, Thiès)')
         ->assertSee('action="'.route('demo.login', 'moussa').'"', false)

@@ -110,14 +110,15 @@ class ActivitySeeder extends Seeder
 
     public function run(): void
     {
-        DB::statement(<<<'SQL'
-            update users set last_seen_at = least(now() - interval '5 minutes', greatest(
+        // L'heure vient de Laravel (et non du now() de PostgreSQL), pour suivre une date simulée.
+        DB::update(<<<'SQL'
+            update users set last_seen_at = least(?::timestamp, greatest(
                 coalesce(users.last_seen_at, users.created_at + interval '40 minutes'),
                 (select max(created_at) from missions where client_id = users.id),
                 (select max(created_at) from applications where user_id = users.id),
                 (select max(created_at) from questions where user_id = users.id),
                 (select max(created_at) from answers where user_id = users.id)
             ))
-            SQL);
+            SQL, [Carbon::now()->subMinutes(5)->toDateTimeString()]);
     }
 }

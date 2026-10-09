@@ -15,6 +15,9 @@ return [
 
     'launched_at' => env('DEVMARCHE_LAUNCHED_AT', '2026-09-29 08:00:00'),
 
+    /** Les données de démo s'étalent sur ce nombre de jours avant la réinitialisation (jamais avant le lancement). */
+    'demo_window_days' => 30,
+
     /** Un membre est « Nouveau » pendant ce nombre de jours, tant qu'il n'est pas « Confirmé ». */
     'new_member_days' => 14,
 
