@@ -45,6 +45,7 @@ return [
         ['package' => 'laravel/pail', 'type' => 'composer', 'name' => 'Laravel Pail', 'usage' => 'Lecture des journaux (développement)', 'dev' => true],
         ['package' => 'nunomaduro/collision', 'type' => 'composer', 'name' => 'Collision', 'usage' => 'Affichage des erreurs (développement)', 'dev' => true],
         // npm (outils de construction, non distribués)
+        ['package' => 'alpinejs', 'type' => 'npm', 'name' => 'Alpine.js', 'usage' => 'Interactivité des pages sans composant Livewire'],
         ['package' => 'tailwindcss', 'type' => 'npm', 'name' => 'Tailwind CSS', 'usage' => 'Styles'],
         ['package' => '@tailwindcss/vite', 'type' => 'npm', 'name' => 'Tailwind CSS pour Vite', 'usage' => 'Construction des styles'],
         ['package' => 'vite', 'type' => 'npm', 'name' => 'Vite', 'usage' => 'Construction des fichiers CSS et JS'],

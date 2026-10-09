@@ -7,6 +7,7 @@ use App\Support\Copy;
 use App\Support\Credits;
 use App\Support\Demo;
 use App\Support\Money;
+use Livewire\Features\SupportAutoInjectedAssets\SupportAutoInjectedAssets;
 
 /*
 | Passe visuelle (V1 à V9) : ce qui se vérifie dans le HTML et le CSS.
@@ -120,3 +121,21 @@ test('W2 : le titre d\'À propos fait 34 px sur mobile, aligné à gauche', func
 
     expect($html)->toContain('md:text-center')->toContain('text-[34px] sm:text-[64px]');
 });
+
+test('Z2 : Livewire seulement sur les pages qui ont un composant, Alpine seul ailleurs, jamais les deux', function (string $url, bool $livewire) {
+    // L'indicateur de Livewire est statique : avec PHP-FPM il repart de zéro à chaque requête,
+    // mais dans les tests plusieurs requêtes partagent le processus.
+    SupportAutoInjectedAssets::$hasRenderedAComponentThisRequest = false;
+
+    $html = $this->get($url)->assertOk()->getContent();
+
+    expect(str_contains($html, 'livewire/livewire'))->toBe($livewire)
+        ->and(str_contains($html, 'assets/alpine-'))->toBe(! $livewire);
+})->with([
+    'accueil' => ['/', false],
+    'à propos' => ['/a-propos', false],
+    'Le Pouls' => ['/le-pouls', false],
+    'missions (liste Livewire)' => ['/missions', true],
+    'questions (liste Livewire)' => ['/questions', true],
+    'annuaire (liste Livewire)' => ['/devs', true],
+]);

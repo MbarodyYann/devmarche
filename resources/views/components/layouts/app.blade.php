@@ -22,6 +22,9 @@
     if ($heroAction && $me && $heroAction['route'] === 'missions.create') {
         $heroAction = null;
     }
+    // Livewire (qui embarque Alpine) seulement si la page a rendu un composant Livewire ; sinon Alpine seul,
+    // bien plus léger (3G). Le contenu de la page est rendu avant le gabarit : l'indicateur est fiable ici.
+    $usesLivewire = Livewire\Features\SupportAutoInjectedAssets\SupportAutoInjectedAssets::$hasRenderedAComponentThisRequest;
 @endphp
 
 <!DOCTYPE html>
@@ -81,8 +84,12 @@
 
     <link rel="preload" href="/fonts/newsreader-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/fonts/schibsted-grotesk-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
+    @if ($usesLivewire)
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @livewireStyles
+    @else
+        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/alpine.js'])
+    @endif
     {{ $head ?? '' }}
 </head>
 <body class="min-h-dvh pb-safe lg:pb-0">
@@ -363,6 +370,8 @@
         @endif
     </nav>
 
-    @livewireScripts
+    @if ($usesLivewire)
+        @livewireScripts
+    @endif
 </body>
 </html>

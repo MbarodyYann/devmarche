@@ -133,7 +133,7 @@ createdb devmarche_test && createdb devmarche_demo_test
 php artisan test
 ```
 
-358 tests (Pest), environ 25 secondes. Les tests du jeu de démonstration complet (`tests/Demo`) utilisent une base semée une seule fois par lancement.
+365 tests (Pest), environ 25 secondes. Les tests du jeu de démonstration complet (`tests/Demo`) utilisent une base semée une seule fois par lancement.
 
 ## Déploiement
 
