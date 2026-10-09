@@ -46,6 +46,7 @@
     {{-- Anti-flash : applique le thème avant le premier rendu. --}}
     <script>
         (function () {
+            document.documentElement.classList.add('js');
             var theme = null;
             try { theme = localStorage.getItem('theme'); } catch (e) {}
             if (theme === 'dark' || (theme === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -139,9 +140,18 @@
                     </div>
                 @endauth
 
-                {{-- Visiteur : le CTA principal de la page d'accueil, mot pour mot. Membre : l'accent « Publier ». --}}
+                {{-- Visiteur : le CTA principal de la page d'accueil, mot pour mot. Membre : l'accent « Publier ».
+                     Sur les pages qui ont leur propre CTA (data-page-cta), celui de la navigation reste masqué
+                     tant que le CTA de la page est à l'écran, puis apparaît quand il sort par le haut.
+                     Sans JS, il reste visible (classe js posée dans le <head>). --}}
                 @guest
-                    <div class="hidden md:block">
+                    <div class="hidden md:block" data-nav-cta
+                         @if ($hasHero)
+                             data-follows-page-cta
+                             x-data="{ shown: false }"
+                             x-init="const target = document.querySelector('[data-page-cta]'); if (! target) { shown = true; return } new IntersectionObserver(([entry]) => { shown = ! entry.isIntersecting && entry.boundingClientRect.top < 0 }).observe(target)"
+                             x-bind:class="{ 'is-shown': shown }"
+                         @endif>
                         <x-button :href="route('register')" size="sm">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                     </div>
                 @else
@@ -159,7 +169,7 @@
     @isset($hero)
         {{ $hero }}
     @elseif ($pageHero)
-        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" />
+        <x-list-hero :start="$pageHero['start']" :end="$pageHero['end']" :subtitle="$pageHero['subtitle']" :action="$pageHero['action'] ?? null" :recruit="$pageHero['recruit'] ?? true" />
     @endisset
 
     <main id="contenu" @class(['mx-auto max-w-page px-4 pb-16 sm:px-6', 'pt-10 sm:pt-16' => ! $hasHero, 'pt-0' => $hasHero])>

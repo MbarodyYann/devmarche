@@ -37,7 +37,7 @@
                             <x-button :href="route('missions.index', ['pour_moi' => 1])" variant="cta" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::MEMBER_CTA }}</x-button>
                             <a href="{{ route('missions.create') }}" class="text-[15px] text-white/70 underline-offset-4 hover:text-white hover:underline">Publier une mission →</a>
                         @else
-                            <x-button :href="route('register')" variant="cta" size="lg" class="w-full sm:w-auto" data-cta="principal">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                            <x-button :href="route('register')" variant="cta" size="lg" class="w-full sm:w-auto" data-cta="principal" data-page-cta>{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
                             <a href="{{ route('missions.create') }}" class="text-[15px] text-white/70 underline-offset-4 hover:text-white hover:underline">{{ App\Support\Copy::RECRUIT_LINK }}</a>
                         @endauth
                     </div>
