@@ -26,9 +26,18 @@ class ProfileController extends Controller
             ->with('client:id,name')
             ->latest('completed_at');
 
+        $completedCount = (clone $completed)->count();
+        $publishedCount = $user->missions()->count();
+
         return view('devs.show', [
             'dev' => $user,
-            'completedCount' => (clone $completed)->count(),
+            'completedCount' => $completedCount,
+            // Statistiques du cadre repères : missions réalisées (dev), publiées (client), ancienneté.
+            'stats' => collect([
+                ['Missions réalisées', $completedCount, $completedCount > 0 || $publishedCount === 0],
+                ['Missions publiées', $publishedCount, $publishedCount > 0],
+                ['Membre depuis', $user->created_at->translatedFormat('M Y'), true],
+            ])->filter(fn (array $stat) => $stat[2])->values(),
             'completedMissions' => $completed->limit(6)->get(),
             // Ses meilleures réponses d'abord (acceptées, puis par score).
             'answers' => $user->answers()
@@ -39,6 +48,14 @@ class ProfileController extends Controller
                 ->get(),
             'answersCount' => $user->answers()->count(),
             'questions' => $user->questions()->latest()->limit(5)->get(['id', 'title', 'score', 'answers_count', 'accepted_answer_id', 'created_at']),
+            // Missions publiées (côté client), ouvertes en tête.
+            'publishedMissions' => $user->missions()
+                ->with(['skills', 'client.profile'])
+                ->withCount('applications')
+                ->orderByRaw('status = ? desc', [MissionStatus::Open->value])
+                ->latest()
+                ->limit(6)
+                ->get(),
         ]);
     }
 

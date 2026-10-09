@@ -94,12 +94,12 @@
     @endif
 
     {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
-    <div class="sticky top-0 z-40 px-3 pt-3 sm:px-6"
+    <div class="sticky top-0 z-40 px-2 pt-3 sm:px-6"
          @if ($hasHero)
              x-data="{ onHero: true, scrolled: false }"
              x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
          @endif>
-        <header @class(['mx-auto flex h-14 max-w-page items-center gap-4 rounded-nav px-3 transition-colors sm:h-16 sm:px-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
+        <header @class(['mx-auto flex h-14 max-w-page items-center gap-2 rounded-nav px-2 transition-colors sm:h-16 sm:px-4 lg:gap-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
                 @if ($hasHero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endif>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
                 <x-logo :compact="auth()->guest()" />
@@ -124,7 +124,8 @@
 
             <div class="ml-auto flex items-center gap-2 lg:ml-0">
 
-                <x-theme-toggle />
+                {{-- Sous 1 024 px, la bascule de thème est dans le pied de page (place pour le nom et le CTA). --}}
+                <x-theme-toggle class="max-lg:hidden" />
 
                 @auth
                     <div class="relative hidden lg:block" x-data="{ open: false }" x-on:keydown.escape="open = false" x-on:click.outside="open = false">
@@ -226,12 +227,16 @@
                 <a href="{{ route('about') }}" class="block text-ink-muted hover:text-ink">À propos</a>
             </nav>
         </div>
-        <p class="mx-auto max-w-page border-t border-line px-4 py-6 text-sm text-ink-muted sm:px-6">© 2026 DevMarché</p>
+        <div class="mx-auto flex max-w-page items-center justify-between gap-4 border-t border-line px-4 py-4 text-sm text-ink-muted sm:px-6">
+            <p>© 2026 DevMarché</p>
+            <x-theme-toggle class="lg:hidden" />
+        </div>
     </footer>
 
     {{-- Barre du bas (mobile) : flottante, même matière que la navigation --}}
     <nav class="fixed inset-x-3 bottom-3 z-40 lg:hidden" aria-label="Navigation principale" style="margin-bottom: env(safe-area-inset-bottom)">
-        <ul class="nav-glass grid grid-cols-4 rounded-2xl p-1.5 shadow-card-hover">
+        {{-- Opaque : le texte de la page ne doit pas se lire à travers. --}}
+        <ul class="grid grid-cols-4 rounded-2xl border border-line bg-surface p-1.5 shadow-card-hover">
             @foreach ($navigation as $item)
                 @php($active = request()->routeIs($item['active']))
                 <li>

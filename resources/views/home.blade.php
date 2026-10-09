@@ -80,39 +80,40 @@
 
         {{-- Bloc 3 : bande de preuve sociale, chiffres réels mis en cache 10 min --}}
         <section aria-label="DevMarché en chiffres" class="border-b border-line bg-bg-alt">
+            {{-- Les valeurs (Newsreader) sont sur la même ligne de base dans les 5 colonnes ; avatars et drapeaux
+                 viennent dessous, sur leur propre ligne. --}}
             <dl class="mx-auto grid max-w-page grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 text-center sm:px-6 lg:grid-cols-5">
-                <div class="flex flex-col items-center">
+                <div class="flex min-w-0 flex-col items-center">
                     <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Devs inscrits</dt>
-                    <dd class="mt-2 flex items-center gap-2">
-                        <span class="flex -space-x-2" aria-hidden="true">
-                            @foreach ($avatars as $avatar)
-                                <x-avatar :user="$avatar" size="xs" />
-                            @endforeach
-                        </span>
-                        <span class="font-serif text-xl font-medium text-ink" data-stat="devs">{{ $stats['devs'] }}</span>
+                    <dd class="mt-2 font-serif text-xl font-medium leading-7 text-ink" data-stat="devs">{{ $stats['devs'] }}</dd>
+                    <dd class="mt-2 flex -space-x-1.5" aria-hidden="true">
+                        @foreach ($avatars as $avatar)
+                            <x-avatar :user="$avatar" size="stack" class="ring-bg-alt! font-sans! font-semibold!" />
+                        @endforeach
                     </dd>
                 </div>
-                <div class="flex flex-col items-center">
+                <div class="flex min-w-0 flex-col items-center">
                     <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pays</dt>
-                    <dd class="mt-2 font-serif text-xl font-medium text-ink">
-                        <span data-stat="countries">{{ $stats['countries'] }}</span>
-                        <span class="ml-1 font-sans text-base tracking-wider" aria-hidden="true">{{ implode('', $stats['flags']) }}</span>
+                    <dd class="mt-2 font-serif text-xl font-medium leading-7 text-ink" data-stat="countries">{{ $stats['countries'] }}</dd>
+                    <dd class="mt-2 flex flex-nowrap gap-0.5 text-base leading-7" aria-hidden="true">
+                        @foreach ($stats['flags'] as $flag)
+                            <span>{{ $flag }}</span>
+                        @endforeach
                     </dd>
                 </div>
-                <div class="flex flex-col items-center">
+                <div class="flex min-w-0 flex-col items-center">
                     <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Missions publiées</dt>
-                    <dd class="mt-2 font-serif text-xl font-medium text-ink" data-stat="missions">{{ App\Support\Money::fcfa($stats['missions']) }}</dd>
+                    <dd class="mt-2 font-serif text-xl font-medium leading-7 text-ink" data-stat="missions">{{ App\Support\Money::fcfa($stats['missions']) }}</dd>
                 </div>
-                <div class="flex flex-col items-center">
+                <div class="flex min-w-0 flex-col items-center">
                     <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Cauris gagnés</dt>
-                    <dd class="mt-2 flex items-center gap-1.5 font-serif text-xl font-medium text-ink">
-                        <x-cauri class="size-5 text-secondary-400" />
-                        <span data-stat="cauris">{{ App\Support\Money::fcfa($stats['cauris']) }}</span>
+                    <dd class="mt-2 font-serif text-xl font-medium leading-7 text-ink">
+                        <x-cauri class="mr-1 inline-block size-5 align-[-0.2em] text-secondary-400" /><span data-stat="cauris">{{ App\Support\Money::fcfa($stats['cauris']) }}</span>
                     </dd>
                 </div>
-                <div class="col-span-2 flex flex-col items-center lg:col-span-1">
+                <div class="col-span-2 flex min-w-0 flex-col items-center lg:col-span-1">
                     <dt class="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-muted">Pensé pour</dt>
-                    <dd class="mt-2 font-serif text-xl font-medium text-ink">Wave · Orange Money · MTN MoMo</dd>
+                    <dd class="mt-2 font-serif text-xl font-medium leading-7 text-ink">Wave · Orange Money · MTN MoMo</dd>
                 </div>
             </dl>
         </section>

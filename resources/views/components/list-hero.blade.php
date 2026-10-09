@@ -5,7 +5,7 @@
      Aucun CTA visiteur ici : celui de la navigation suffit et reste visible.
      Le bas est laissé libre pour la carte de filtres « à cheval » (pb). --}}
 <section id="hero" @class([
-    'relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-950',
+    'relative -mt-[68px] overflow-hidden bg-primary-800 pt-[68px] text-white sm:-mt-[76px] sm:pt-[76px] dark:bg-primary-900',
 ])>
     <svg data-decor class="pointer-events-none absolute bottom-0 left-0 h-[420px] w-[420px]" viewBox="0 0 760 760" fill="none" aria-hidden="true">
         @foreach ([340, 500, 660] as $radius)

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 class Credits
 {
     /**
-     * @return list<array{name: string, version: string, license: string, usage: string}>
+     * @return list<array{name: string, version: string, license: string, usage: string, dev: bool}>
      */
     public static function licenses(): array
     {
@@ -26,10 +26,11 @@ class Credits
                     'version' => ltrim($found['version'] ?? '—', 'v'),
                     'license' => $item['license'] ?? $found['license'] ?? '—',
                     'usage' => $item['usage'],
+                    'dev' => $item['dev'] ?? false,
                 ];
             }, config('credits.packages'));
 
-            return [...$packages, ...config('credits.assets')];
+            return [...$packages, ...array_map(fn (array $asset) => $asset + ['dev' => false], config('credits.assets'))];
         });
     }
 

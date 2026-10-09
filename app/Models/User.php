@@ -135,18 +135,33 @@ class User extends Authenticatable
      */
     public function scopeWithLevel(Builder $query): void
     {
-        $query->withCount(['assignedMissions as completed_missions_count' => fn (Builder $q) => $q->where('status', MissionStatus::Completed)]);
+        $query->withCount([
+            'assignedMissions as completed_missions_count' => fn (Builder $q) => $q->where('status', MissionStatus::Completed),
+            'answers as dev_answers_count',
+            'applications as dev_applications_count',
+        ]);
     }
 
+    /** Activité de dev : au moins une réponse ou une candidature (un client pur n'en a pas). */
+    public function hasDevActivity(): bool
+    {
+        if (array_key_exists('dev_answers_count', $this->attributes)) {
+            return $this->attributes['dev_answers_count'] + $this->attributes['dev_applications_count'] > 0;
+        }
+
+        return $this->answers()->exists() || $this->applications()->exists();
+    }
+
+    /** Niveau affiché : seulement pour un membre qui a une activité de dev. */
     public function level(): ?DevLevel
     {
-        return DevLevel::for($this);
+        return $this->hasDevActivity() ? DevLevel::for($this) : null;
     }
 
-    /** « Nouveau » : moins de 14 jours et pas encore Confirmé (voir DevLevel). */
+    /** « Nouveau » (badge « soyez sympa » des Q&R) : moins de 14 jours et pas encore Confirmé (voir DevLevel). */
     public function isNewMember(): bool
     {
-        return $this->level() === DevLevel::Newcomer;
+        return DevLevel::for($this) === DevLevel::Newcomer;
     }
 
     /**

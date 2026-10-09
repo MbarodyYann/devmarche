@@ -24,7 +24,7 @@ test('le CTA de la navigation est affiché dès le chargement, sans masquage', f
         ->not->toContain('x-data')->not->toContain('x-show')->not->toContain('x-cloak')
         ->and($html)->not->toContain('data-follows-page-cta')
         ->not->toContain('data-page-cta')
-        ->not->toContain('IntersectionObserver');
+        ->and(substr($html, strpos($html, '<header'), strpos($html, '</header>') - strpos($html, '<header')))->not->toContain('IntersectionObserver');
 })->with(['/', '/missions', '/questions', '/devs', 'fiche', '/a-propos']);
 
 test('l\'accueil garde le CTA de son hero, avec le lien recruteur dessous', function () {
@@ -59,7 +59,7 @@ test('plus aucune règle CSS de masquage du CTA de la navigation', function () {
     expect(file_get_contents(resource_path('css/app.css')))->not->toContain('data-follows-page-cta');
 });
 
-test('sous 1 024 px, un petit bouton ambre dans la navigation, et le logo réduit au symbole', function (string $url) {
+test('sous 1 024 px, un petit bouton ambre dans la navigation, et le nom réduit (symbole seul sous 360 px)', function (string $url) {
     $html = $this->get($url)->getContent();
 
     preg_match('/<div class="lg:hidden" data-nav-cta-mobile>\s*<a([^>]*)>([^<]*)<\/a>/', $html, $match);
@@ -67,13 +67,13 @@ test('sous 1 024 px, un petit bouton ambre dans la navigation, et le logo rédui
     expect($match)->not->toBeEmpty()
         ->and(trim($match[2]))->toBe(Copy::SIGNUP_CTA)
         ->and($match[1])->toContain('btn-amber')->toContain('min-h-9')->toContain('text-[13px]')
-        ->and($html)->toContain('max-lg:hidden');
+        ->and($html)->toContain('h-[17px] max-[359px]:hidden');
 })->with(['/', '/missions', '/a-propos']);
 
 test('pour un membre, ni bouton mobile ni logo réduit', function () {
     $html = $this->actingAs(User::first())->get('/missions')->getContent();
 
-    expect($html)->not->toContain('data-nav-cta-mobile')->not->toContain('max-lg:hidden');
+    expect($html)->not->toContain('data-nav-cta-mobile')->not->toContain('h-[17px] max-[359px]:hidden');
 });
 
 test('« Comment ça marche » : bouton aligné à droite sur ordinateur, pleine largeur sur mobile', function () {

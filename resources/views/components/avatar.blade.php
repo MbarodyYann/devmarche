@@ -3,6 +3,7 @@
 {{-- Avatar rond : photo, ou fond uni primary-50 avec les initiales en Newsreader. --}}
 @php
     $dimensions = match ($size) {
+        'stack' => 'size-7 text-[11px]',
         'xs' => 'size-8 text-sm',
         'sm' => 'size-9 text-sm',
         'lg' => 'size-24 text-3xl sm:size-28',

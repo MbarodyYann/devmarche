@@ -3,6 +3,7 @@
 use App\Enums\DevLevel;
 use App\Enums\MissionStatus;
 use App\Livewire\Devs\Directory;
+use App\Models\Application;
 use App\Models\Mission;
 use App\Models\User;
 use Livewire\Livewire;
@@ -10,6 +11,8 @@ use Livewire\Livewire;
 function devWith(int $reputation, int $completed, int $daysAgo = 3, string $name = 'Dev'): User
 {
     $user = User::factory()->withProfile()->create(['name' => $name, 'reputation' => $reputation, 'created_at' => now()->subDays($daysAgo)]);
+    // Une activité de dev (candidature) : sans elle, aucun niveau n'est affiché.
+    Application::factory()->for($user)->create();
     Mission::factory()->count($completed)->create()->each(fn (Mission $m) => $m->forceFill([
         'status' => MissionStatus::Completed, 'freelancer_id' => $user->id, 'assigned_at' => now(), 'completed_at' => now(),
     ])->save());
@@ -54,4 +57,14 @@ test('l\'annuaire filtre par niveau exact', function () {
 
 test('les options du filtre sont dans l\'ordre décroissant', function () {
     expect(array_values(DevLevel::options()))->toBe(['Référence', 'Expert', 'Confirmé', 'Nouveau']);
+});
+
+test('un client pur (ni réponse ni candidature) n\'a pas d\'étiquette de niveau', function () {
+    $client = User::factory()->withProfile()->create(['created_at' => now()->subDays(2)]);
+    Mission::factory()->for($client, 'client')->create();
+
+    expect($client->level())->toBeNull()
+        ->and($client->isNewMember())->toBeTrue();
+
+    Livewire::test(Directory::class)->set('level', 'nouveau')->assertDontSee($client->name);
 });

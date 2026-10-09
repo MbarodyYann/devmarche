@@ -6,6 +6,7 @@
 | Licences : pour chaque paquet Composer ou npm, la version et la licence sont lues dans composer.lock
 | et package-lock.json (App\Support\Credits) ; on ne les recopie pas à la main. Les autres composants
 | (polices, icônes, base de données) sont décrits ici. Le registre de documentation/06 reprend ce tableau.
+| « dev » : outil de développement, non utilisé par l'application en ligne (repliés sur la page).
 | « license » force la licence affichée : nette/* est sous triple licence (BSD-3-Clause ou GPL au choix),
 | et nous l'utilisons sous BSD-3-Clause (voir documentation/06).
 */
@@ -29,26 +30,26 @@ return [
         ['package' => 'laravel/framework', 'type' => 'composer', 'name' => 'Laravel', 'usage' => 'Framework'],
         ['package' => 'livewire/livewire', 'type' => 'composer', 'name' => 'Livewire (avec Alpine.js, MIT)', 'usage' => 'Interactivité'],
         ['package' => 'laravel/fortify', 'type' => 'composer', 'name' => 'Laravel Fortify', 'usage' => 'Authentification'],
-        ['package' => 'laravel/tinker', 'type' => 'composer', 'name' => 'Laravel Tinker', 'usage' => 'Console de développement'],
+        ['package' => 'laravel/tinker', 'type' => 'composer', 'name' => 'Laravel Tinker', 'usage' => 'Console de développement', 'dev' => true],
         ['package' => 'league/commonmark', 'type' => 'composer', 'name' => 'league/commonmark', 'usage' => 'Rendu Markdown sécurisé'],
         ['package' => 'scrivo/highlight.php', 'type' => 'composer', 'name' => 'highlight.php', 'usage' => 'Coloration du code, côté serveur'],
         ['package' => 'intervention/image', 'type' => 'composer', 'name' => 'Intervention Image', 'usage' => 'Avatars'],
         ['package' => 'nette/schema', 'type' => 'composer', 'name' => 'nette/schema', 'usage' => 'Dépendance indirecte de Laravel', 'license' => 'BSD-3-Clause'],
         ['package' => 'nette/utils', 'type' => 'composer', 'name' => 'nette/utils', 'usage' => 'Dépendance indirecte de Laravel', 'license' => 'BSD-3-Clause'],
-        ['package' => 'pestphp/pest', 'type' => 'composer', 'name' => 'Pest', 'usage' => 'Tests (développement)'],
-        ['package' => 'pestphp/pest-plugin-laravel', 'type' => 'composer', 'name' => 'Pest, extension Laravel', 'usage' => 'Tests (développement)'],
-        ['package' => 'phpunit/phpunit', 'type' => 'composer', 'name' => 'PHPUnit', 'usage' => 'Tests (développement)'],
-        ['package' => 'mockery/mockery', 'type' => 'composer', 'name' => 'Mockery', 'usage' => 'Tests (développement)'],
-        ['package' => 'fakerphp/faker', 'type' => 'composer', 'name' => 'Faker', 'usage' => 'Données de test (développement)'],
-        ['package' => 'laravel/pint', 'type' => 'composer', 'name' => 'Laravel Pint', 'usage' => 'Style du code (développement)'],
-        ['package' => 'laravel/pail', 'type' => 'composer', 'name' => 'Laravel Pail', 'usage' => 'Lecture des journaux (développement)'],
-        ['package' => 'nunomaduro/collision', 'type' => 'composer', 'name' => 'Collision', 'usage' => 'Affichage des erreurs (développement)'],
+        ['package' => 'pestphp/pest', 'type' => 'composer', 'name' => 'Pest', 'usage' => 'Tests (développement)', 'dev' => true],
+        ['package' => 'pestphp/pest-plugin-laravel', 'type' => 'composer', 'name' => 'Pest, extension Laravel', 'usage' => 'Tests (développement)', 'dev' => true],
+        ['package' => 'phpunit/phpunit', 'type' => 'composer', 'name' => 'PHPUnit', 'usage' => 'Tests (développement)', 'dev' => true],
+        ['package' => 'mockery/mockery', 'type' => 'composer', 'name' => 'Mockery', 'usage' => 'Tests (développement)', 'dev' => true],
+        ['package' => 'fakerphp/faker', 'type' => 'composer', 'name' => 'Faker', 'usage' => 'Données de test (développement)', 'dev' => true],
+        ['package' => 'laravel/pint', 'type' => 'composer', 'name' => 'Laravel Pint', 'usage' => 'Style du code (développement)', 'dev' => true],
+        ['package' => 'laravel/pail', 'type' => 'composer', 'name' => 'Laravel Pail', 'usage' => 'Lecture des journaux (développement)', 'dev' => true],
+        ['package' => 'nunomaduro/collision', 'type' => 'composer', 'name' => 'Collision', 'usage' => 'Affichage des erreurs (développement)', 'dev' => true],
         // npm (outils de construction, non distribués)
         ['package' => 'tailwindcss', 'type' => 'npm', 'name' => 'Tailwind CSS', 'usage' => 'Styles'],
         ['package' => '@tailwindcss/vite', 'type' => 'npm', 'name' => 'Tailwind CSS pour Vite', 'usage' => 'Construction des styles'],
         ['package' => 'vite', 'type' => 'npm', 'name' => 'Vite', 'usage' => 'Construction des fichiers CSS et JS'],
         ['package' => 'laravel-vite-plugin', 'type' => 'npm', 'name' => 'Laravel Vite Plugin', 'usage' => 'Construction des fichiers CSS et JS'],
-        ['package' => 'concurrently', 'type' => 'npm', 'name' => 'concurrently', 'usage' => 'Lancement des outils de développement'],
+        ['package' => 'concurrently', 'type' => 'npm', 'name' => 'concurrently', 'usage' => 'Lancement des outils de développement', 'dev' => true],
     ],
 
     'assets' => [

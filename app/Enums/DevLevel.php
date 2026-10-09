@@ -76,6 +76,9 @@ enum DevLevel: string
         $completed = '(select count(*) from missions where missions.freelancer_id = users.id and missions.status = \'completed\')';
         $newSince = now()->subDays((int) config('devmarche.new_member_days'));
 
+        // Le niveau ne concerne que les membres qui ont une activité de dev (une réponse ou une candidature).
+        $query->where(fn (Builder $q) => $q->whereHas('answers')->orWhereHas('applications'));
+
         match ($this) {
             self::Reference => $query->where('reputation', '>=', 1000)->whereRaw("$completed >= 5"),
             self::Expert => $query->where('reputation', '>=', 500)->whereRaw("$completed >= 3")

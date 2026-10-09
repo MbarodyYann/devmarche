@@ -51,29 +51,17 @@
         {{-- Licences : générées depuis composer.lock, package-lock.json et config/credits.php --}}
         <section id="licences" aria-labelledby="licences-titre" class="scroll-mt-28">
             <h2 id="licences-titre" class="text-[28px] sm:text-[36px]">Licences</h2>
-            {{-- Sur mobile, chaque ligne devient un bloc empilé (pas de défilement horizontal à 360 px). --}}
-            <div class="mt-6 overflow-hidden rounded-2xl border border-line">
-                <table class="w-full text-left text-sm" data-licenses>
-                    <thead class="bg-bg-alt text-ink max-sm:hidden">
-                        <tr>
-                            <th scope="col" class="px-4 py-3 font-semibold">Composant</th>
-                            <th scope="col" class="px-4 py-3 font-semibold">Version</th>
-                            <th scope="col" class="px-4 py-3 font-semibold">Licence</th>
-                            <th scope="col" class="px-4 py-3 font-semibold">Usage</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-line max-sm:block">
-                        @foreach (App\Support\Credits::licenses() as $row)
-                            <tr class="max-sm:block max-sm:px-4 max-sm:py-3">
-                                <th scope="row" class="font-medium text-ink max-sm:block sm:px-4 sm:py-3">{{ $row['name'] }}</th>
-                                <td class="text-ink-muted max-sm:inline sm:px-4 sm:py-3 sm:whitespace-nowrap">{{ $row['version'] }}<span class="sm:hidden" aria-hidden="true"> · </span></td>
-                                <td class="text-ink-soft max-sm:inline sm:px-4 sm:py-3">{{ $row['license'] }}</td>
-                                <td class="text-ink-soft max-sm:mt-1 max-sm:block sm:px-4 sm:py-3">{{ $row['usage'] }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            @php($licenses = collect(App\Support\Credits::licenses()))
+            <x-licenses-table class="mt-6" :rows="$licenses->reject(fn ($row) => $row['dev'])" />
+            {{-- Les outils de développement (tests, style, console) ne tournent pas en ligne : repliés par défaut. --}}
+            @php($tools = $licenses->filter(fn ($row) => $row['dev']))
+            <details class="group mt-4" data-dev-tools>
+                <summary class="flex min-h-11 cursor-pointer list-none items-center gap-2 font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                    <x-icon name="chevron-down" class="size-4 transition group-open:rotate-180 motion-reduce:transition-none" />
+                    Outils de développement ({{ $tools->count() }})
+                </summary>
+                <x-licenses-table class="mt-3" :rows="$tools" />
+            </details>
         </section>
 
         {{-- Marques de tiers citées sur le site (« Pensé pour ») --}}

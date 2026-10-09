@@ -37,7 +37,7 @@
 
             {{-- Candidatures : vue du client --}}
             @if ($isClient)
-                <x-card>
+                <x-card id="candidatures" class="scroll-mt-24">
                     <h2 class="text-[28px]">Choisissez votre dev <span class="text-ink-muted">({{ $applications->count() }})</span></h2>
                     @if ($applications->whereNotNull('delivery_days')->isNotEmpty())
                         <p class="mt-1 text-sm text-ink-muted">Délai moyen proposé : <strong class="font-semibold text-ink">{{ (int) round($applications->avg('delivery_days')) }} jours</strong></p>
@@ -145,8 +145,8 @@
                             </span>
                         </a>
                         <p class="mt-3 text-sm text-ink-muted" data-client-activity>
-                            {{ $mission->client->missions_count }} {{ $mission->client->missions_count > 1 ? 'missions publiées' : 'mission publiée' }}
-                            · Membre depuis {{ $mission->client->created_at->translatedFormat('M Y') }}
+                            <span class="whitespace-nowrap">{{ $mission->client->missions_count }} {{ $mission->client->missions_count > 1 ? 'missions publiées' : 'mission publiée' }} ·</span>
+                            <span class="whitespace-nowrap">Membre depuis {{ $mission->client->created_at->translatedFormat('M Y') }}</span>
                         </p>
                     @endunless
 
@@ -161,7 +161,7 @@
             @endif
 
             @unless ($isClient)
-                <x-card padding="p-6" id="postuler">
+                <x-card padding="p-6" id="postuler" class="scroll-mt-24">
                     @if ($myApplication)
                         <h2 class="text-2xl">Votre candidature</h2>
                         <p class="mt-3 text-ink-soft">Candidature envoyée le {{ $myApplication->created_at->translatedFormat('j M') }} pour {{ App\Support\Money::fcfa($myApplication->proposed_fcfa) }} FCFA{{ $myApplication->delivery_days ? ', livrée en '.$myApplication->delivery_days.' jours' : '' }}. Le client choisira parmi les candidats ; vous verrez le statut ici.</p>
@@ -200,4 +200,36 @@
             @endunless
         </aside>
     </div>
+
+    {{-- Barre d'action collante sous 1 024 px (au-dessus de la barre du bas) : le budget et l'action,
+         pour ne pas avoir à descendre sous une longue description. Elle s'efface quand la carte
+         d'action est à l'écran. --}}
+    @php
+        $barTarget = $isClient ? 'candidatures' : 'postuler';
+        $showBar = $isClient ? $applications->isNotEmpty() : ($mission->isOpen() && ! $myApplication);
+    @endphp
+    @if ($showBar)
+        <div class="h-20 lg:hidden" aria-hidden="true"></div>
+        <div data-action-bar
+             x-data="{ hidden: false }"
+             x-init="const target = document.getElementById('{{ $barTarget }}'); if (target) new IntersectionObserver(([entry]) => hidden = entry.isIntersecting).observe(target)"
+             x-bind:class="hidden && 'pointer-events-none translate-y-3 opacity-0'"
+             x-bind:aria-hidden="hidden.toString()"
+             class="fixed inset-x-2 z-30 transition duration-200 motion-reduce:transition-none lg:hidden"
+             style="bottom: calc(5.75rem + env(safe-area-inset-bottom))">
+            <div class="mx-auto flex max-w-page items-center justify-between gap-3 rounded-2xl border border-line bg-surface px-3 py-2 shadow-card-hover">
+                <p class="min-w-0 whitespace-nowrap">
+                    <span class="font-serif text-xl font-medium tabular-nums text-ink">{{ App\Support\Money::fcfa($mission->budget_fcfa) }}</span>
+                    <span class="text-sm text-ink-muted max-[359px]:sr-only">FCFA</span>
+                </p>
+                @if ($isClient)
+                    <x-button href="#candidatures" size="xs">Voir les candidatures ({{ $applications->count() }})</x-button>
+                @elseif (! $user)
+                    <x-button :href="route('register')" size="xs">{{ App\Support\Copy::SIGNUP_CTA }}</x-button>
+                @else
+                    <x-button href="#postuler" size="xs">Postuler à cette mission</x-button>
+                @endif
+            </div>
+        </div>
+    @endif
 </x-layouts.app>

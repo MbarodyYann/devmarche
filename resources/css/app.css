@@ -288,13 +288,19 @@
     border: 1px solid rgb(255 255 255 / 0.6);
 
     &:where(.dark, .dark *) {
+        background-color: color-mix(in srgb, var(--color-primary-950) 97%, transparent);
         border-color: var(--color-line);
     }
 
+    /* Verre à 90 % : les liens restent lisibles par-dessus n'importe quelle section (claire ou sombre). */
     @media (min-width: 768px) {
-        background-color: color-mix(in srgb, var(--color-bg-alt) 60%, transparent);
+        background-color: color-mix(in srgb, var(--color-bg-alt) 90%, transparent);
         -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
+
+        &:where(.dark, .dark *) {
+            background-color: color-mix(in srgb, var(--color-primary-950) 90%, transparent);
+        }
     }
 }
 
@@ -350,7 +356,7 @@
         border-color: rgb(255 255 255 / 0.6);
 
         @media (min-width: 768px) {
-            background-color: color-mix(in srgb, var(--color-bg-alt) 60%, transparent);
+            background-color: color-mix(in srgb, var(--color-bg-alt) 90%, transparent);
             -webkit-backdrop-filter: blur(12px);
             backdrop-filter: blur(12px);
         }
@@ -363,7 +369,12 @@
         --color-line: rgb(255 255 255 / 0.08);
         --color-surface: #141c38;
         --color-bg-alt: #10172e;
+        background-color: color-mix(in srgb, var(--color-primary-950) 97%, transparent);
         border-color: var(--color-line);
+
+        @media (min-width: 768px) {
+            background-color: color-mix(in srgb, var(--color-primary-950) 90%, transparent);
+        }
     }
 }
 

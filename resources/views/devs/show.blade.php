@@ -59,17 +59,25 @@
             </div>
         </x-card>
 
-        <x-frame class="flex min-w-0 flex-col justify-between gap-6 bg-surface p-6 sm:p-8">
+        {{-- Cadre repères : les cauris s'il y en a, puis les statistiques. Sans cauris, cadre compact. --}}
+        <x-frame :class="Arr::toCssClasses([
+            'flex min-w-0 flex-col bg-surface p-6',
+            'justify-between gap-6 sm:p-8' => $dev->reputation > 0,
+            'lg:self-start' => $dev->reputation <= 0,
+        ])">
             <x-reputation :points="$dev->reputation" size="lg" />
-            <dl class="grid grid-cols-2 divide-x divide-line border-t border-line pt-4 text-sm">
-                <div class="pr-4">
-                    <dt class="text-ink-muted">Missions réalisées</dt>
-                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">{{ $completedCount }}</dd>
-                </div>
-                <div class="pl-4">
-                    <dt class="text-ink-muted">Membre depuis</dt>
-                    <dd class="mt-1 font-serif text-2xl font-medium text-ink">{{ $dev->created_at->translatedFormat('M Y') }}</dd>
-                </div>
+            <dl @class([
+                'grid divide-x divide-line text-sm',
+                'grid-cols-2' => $stats->count() === 2,
+                'grid-cols-3' => $stats->count() === 3,
+                'border-t border-line pt-4' => $dev->reputation > 0,
+            ]) data-profile-stats>
+                @foreach ($stats as [$label, $value])
+                    <div @class(['min-w-0', 'pl-4' => ! $loop->first, 'pr-4' => ! $loop->last])>
+                        <dt class="text-ink-muted">{{ $label }}</dt>
+                        <dd class="mt-1 whitespace-nowrap font-serif text-2xl font-medium text-ink">{{ $value }}</dd>
+                    </div>
+                @endforeach
             </dl>
         </x-frame>
     </section>
@@ -85,6 +93,7 @@
                 @endif
             </x-card>
 
+            @if ($answers->isNotEmpty() || $isOwner)
             <x-card>
                 <h2 class="text-[28px] sm:text-[32px]">Réponses <span class="text-ink-muted">({{ $answersCount }})</span></h2>
                 @if ($answers->isEmpty())
@@ -105,6 +114,7 @@
                     </ul>
                 @endif
             </x-card>
+            @endif
 
             @if ($questions->isNotEmpty())
                 <x-card>
@@ -123,6 +133,18 @@
                 </x-card>
             @endif
 
+            @if ($publishedMissions->isNotEmpty())
+                <section data-published-missions>
+                    <h2 class="mb-4 text-[28px] sm:text-[32px]">Missions publiées</h2>
+                    <ul class="grid gap-4 sm:grid-cols-2">
+                        @foreach ($publishedMissions as $mission)
+                            <li class="min-w-0"><x-mission-card :mission="$mission" /></li>
+                        @endforeach
+                    </ul>
+                </section>
+            @endif
+
+            @if ($completedMissions->isNotEmpty() || $isOwner)
             <section>
                 <h2 class="mb-4 text-[28px] sm:text-[32px]">Missions réalisées</h2>
                 @if ($completedMissions->isEmpty())
@@ -152,6 +174,7 @@
                     </ul>
                 @endif
             </section>
+            @endif
         </div>
 
         <aside class="min-w-0 space-y-6">
