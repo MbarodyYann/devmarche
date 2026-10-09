@@ -13,7 +13,10 @@
             @if ($profile?->headline)
                 <p class="mt-0.5 truncate text-sm text-ink-muted">{{ $profile->headline }}</p>
             @endif
-            <x-level :user="$dev" class="mt-2" />
+            <div class="mt-2 flex flex-wrap items-center gap-2">
+                <x-level :user="$dev" />
+                <x-rating :average="$dev->reviews_avg" :count="(int) $dev->reviews_count" />
+            </div>
         </div>
         <x-reputation :points="$dev->reputation" class="shrink-0" />
     </div>

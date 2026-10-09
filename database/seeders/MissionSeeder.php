@@ -341,7 +341,7 @@ class MissionSeeder extends Seeder
                 'applicants' => ['Jean-Marc N\'Guessan', 'Rodrigue Hounsou'],
             ],
             [
-                'client' => 'Arnaud Mbarga', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 70,
+                'client' => 'Aya Koné', 'status' => 'completed', 'freelancer' => 'Jean-Marc N\'Guessan', 'days' => 70,
                 'title' => 'Migration d\'une base MySQL vers PostgreSQL sans interruption',
                 'budget' => 380000, 'country' => null, 'skills' => ['PostgreSQL', 'Docker'],
                 'description' => "Migration d'une base de 40 Go vers PostgreSQL, avec réplication et bascule de nuit en moins de 10 minutes d'interruption.",

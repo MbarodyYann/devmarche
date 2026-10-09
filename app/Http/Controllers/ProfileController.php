@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Availability;
 use App\Enums\MissionStatus;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\Review;
 use App\Models\Skill;
 use App\Models\User;
 use App\Services\AvatarService;
@@ -29,8 +30,24 @@ class ProfileController extends Controller
         $completedCount = (clone $completed)->count();
         $publishedCount = $user->missions()->count();
 
+        // Avis reçus : moyenne, répartition 5 → 1, moyennes des 3 critères, puis la liste.
+        $reviews = $user->receivedReviews()->with(['reviewer:id,name', 'mission:id,title,budget_fcfa,assigned_at,completed_at'])->latest()->get();
+        $loyalClients = $user->assignedMissions()
+            ->select('client_id')
+            ->groupBy('client_id')
+            ->havingRaw('count(*) >= 2')
+            ->pluck('client_id');
+
         return view('devs.show', [
             'dev' => $user,
+            'reviews' => $reviews,
+            'reviewStats' => $reviews->isEmpty() ? null : [
+                'average' => $reviews->avg('rating'),
+                'count' => $reviews->count(),
+                'distribution' => collect(range(5, 1))->mapWithKeys(fn (int $stars) => [$stars => $reviews->where('rating', $stars)->count()])->all(),
+                'criteria' => collect(Review::CRITERIA)->map(fn (string $label, string $field) => $reviews->avg($field))->all(),
+            ],
+            'loyalClients' => $loyalClients,
             'completedCount' => $completedCount,
             // Statistiques du cadre repères : missions réalisées (dev), publiées (client), ancienneté.
             'stats' => collect([

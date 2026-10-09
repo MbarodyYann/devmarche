@@ -59,7 +59,7 @@ test('V4 : barre d\'action collante sur la fiche mission, selon le visiteur', fu
     // Mission terminée : pas de barre.
     $done = Mission::where('status', MissionStatus::Completed)->first();
     auth()->logout();
-    $this->get(route('missions.show', $done))->assertDontSee('data-action-bar', false);
+    $this->get(route('missions.show', $done))->assertDontSee('<div data-action-bar', false);
 });
 
 test('V5 : profil d\'un client pour un visiteur (missions publiées, ni sections vides, ni niveau, ni cauris)', function () {

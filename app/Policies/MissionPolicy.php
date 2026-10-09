@@ -66,4 +66,13 @@ class MissionPolicy
     {
         return $mission->client_id === $user->id;
     }
+
+    /** Noter le freelance : seul le client, une mission terminée, une seule fois. */
+    public function review(User $user, Mission $mission): bool
+    {
+        return $mission->client_id === $user->id
+            && $mission->status === MissionStatus::Completed
+            && $mission->freelancer_id !== null
+            && ! $mission->review()->exists();
+    }
 }

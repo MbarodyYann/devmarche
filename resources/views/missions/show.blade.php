@@ -35,6 +35,34 @@
                 <x-share class="mt-6 border-t border-line pt-5" :title="$mission->title.' · '.App\Support\Money::fcfa($mission->budget_fcfa).' FCFA'" :url="route('missions.show', $mission)" />
             </x-card>
 
+            {{-- Avis : le client note le freelance une fois la mission terminée ; l'avis est ensuite public. --}}
+            @can('review', $mission)
+                <x-card id="avis" class="scroll-mt-24">
+                    <h2 class="text-[28px]">Comment s'est passée la mission avec {{ $mission->freelancer->name }} ?</h2>
+                    <p class="mt-2 text-ink-soft">Votre note et votre commentaire apparaissent sur son profil, avec le budget et la durée de la mission.</p>
+                    <form method="post" action="{{ route('missions.review', $mission) }}" class="mt-6 space-y-5">
+                        @csrf
+                        <x-star-input name="rating" label="Note globale" />
+                        <div class="grid gap-5 sm:grid-cols-3">
+                            @foreach (App\Models\Review::CRITERIA as $field => $label)
+                                <x-star-input :name="$field" :label="$label" />
+                            @endforeach
+                        </div>
+                        <x-field label="Votre commentaire" name="comment" :optional="true" hint="Ce qui s'est bien passé, ce qui pourrait l'être mieux.">
+                            <x-textarea name="comment" rows="4" maxlength="1000" />
+                        </x-field>
+                        <x-button type="submit" class="w-full sm:w-auto">Publier mon avis</x-button>
+                    </form>
+                </x-card>
+            @endcan
+
+            @if ($mission->review)
+                <x-card id="avis" class="scroll-mt-24" data-mission-review>
+                    <h2 class="text-[28px]">Avis du client</h2>
+                    <x-review-detail :review="$mission->review" class="mt-4" />
+                </x-card>
+            @endif
+
             {{-- Candidatures : vue du client --}}
             @if ($isClient)
                 <x-card id="candidatures" class="scroll-mt-24">
@@ -72,6 +100,7 @@
                                             </span>
                                         </a>
                                         <x-reputation :points="$application->user->reputation" />
+                                        <x-rating :average="$application->user->reviews_avg" :count="$application->user->reviews_count" />
                                         <x-level :user="$application->user" />
                                         {{-- Prix et délai côte à côte : le client compare les deux. --}}
                                         <dl class="ml-auto flex items-end gap-5 text-right">
@@ -206,7 +235,7 @@
          d'action est à l'écran. --}}
     @php
         $barTarget = $isClient ? 'candidatures' : 'postuler';
-        $showBar = $isClient ? $applications->isNotEmpty() : ($mission->isOpen() && ! $myApplication);
+        $showBar = $mission->isOpen() && ($isClient ? $applications->isNotEmpty() : ! $myApplication);
     @endphp
     @if ($showBar)
         <div class="h-20 lg:hidden" aria-hidden="true"></div>

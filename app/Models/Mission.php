@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Mission extends Model
 {
@@ -59,6 +60,16 @@ class Mission extends Model
     protected function markdownFields(): array
     {
         return ['description' => 'description_html'];
+    }
+
+    /**
+     * Avis du client sur le freelance (une fois la mission terminée).
+     *
+     * @return HasOne<Review, $this>
+     */
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
     }
 
     /**

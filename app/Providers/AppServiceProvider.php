@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Answer;
 use App\Models\Mission;
 use App\Models\Question;
+use App\Models\Review;
 use App\Policies\VotePolicy;
 use App\Services\MarkdownRenderer;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -41,11 +42,13 @@ class AppServiceProvider extends ServiceProvider
             'question' => Question::class,
             'answer' => Answer::class,
             'mission' => Mission::class,
+            'review' => Review::class,
         ]);
 
         // Les identifiants sont numériques : évite une erreur de cast PostgreSQL sur /devs/abc.
         Route::pattern('user', '[0-9]+');
         Route::pattern('mission', '[0-9]+');
+        Route::pattern('review', '[0-9]+');
         Route::pattern('application', '[0-9]+');
         Route::pattern('question', '[0-9]+');
         Route::pattern('answer', '[0-9]+');

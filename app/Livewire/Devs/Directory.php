@@ -155,6 +155,7 @@ class Directory extends Component
             })
             ->with(['profile', 'skills'])
             ->withLevel()
+            ->withReviewStats()
             ->orderByDesc('reputation')
             ->orderBy('name')
             ->paginate(self::PER_PAGE);

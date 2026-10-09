@@ -43,6 +43,9 @@
                         <x-chip tone="neutral"><x-icon name="map-pin" class="size-3.5" /> {{ $profile->city }}, {{ $profile->countryName() }} <span aria-hidden="true">{{ $profile->flag() }}</span></x-chip>
                     @endif
                     <x-level :user="$dev" />
+                    @if ($reviewStats)
+                        <a href="#avis"><x-rating :average="$reviewStats['average']" :count="$reviewStats['count']" /></a>
+                    @endif
                 </div>
                 @if ($profile?->languagesLabel() || $dev->activityLabel())
                     <p class="mt-3 text-sm text-ink-muted">{{ collect([$profile?->languagesLabel(), $dev->activityLabel()])->filter()->join(' · ') }}</p>
@@ -92,6 +95,48 @@
                     <p class="mt-4 text-ink-muted">{{ $dev->name }} n'a pas encore écrit de présentation.</p>
                 @endif
             </x-card>
+
+            {{-- Avis des clients : moyenne, répartition, critères, puis chaque avis avec sa mission. --}}
+            @if ($reviewStats)
+                <x-card id="avis" class="scroll-mt-24" data-reviews>
+                    <h2 class="text-[28px] sm:text-[32px]">Avis <span class="text-ink-muted">({{ $reviewStats['count'] }})</span></h2>
+                    <div class="mt-5 grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-10">
+                        <div class="flex flex-col items-start gap-1">
+                            <span class="font-serif text-[56px] font-medium leading-none tabular-nums text-ink">{{ number_format($reviewStats['average'], 1, ',', '') }}</span>
+                            <x-stars :value="$reviewStats['average']" />
+                            <span class="text-sm text-ink-muted">{{ $reviewStats['count'] }} avis</span>
+                        </div>
+                        <div class="min-w-0 space-y-4">
+                            <ul class="space-y-1.5" aria-label="Répartition des notes">
+                                @foreach ($reviewStats['distribution'] as $stars => $count)
+                                    <li class="flex items-center gap-3 text-sm">
+                                        <span class="w-14 shrink-0 text-ink-muted">{{ $stars }} {{ $stars > 1 ? 'étoiles' : 'étoile' }}</span>
+                                        <span class="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-bg-alt ring-1 ring-line" aria-hidden="true">
+                                            <span class="block h-full rounded-full bg-secondary-400" style="width: {{ round($count / $reviewStats['count'] * 100) }}%"></span>
+                                        </span>
+                                        <span class="w-6 shrink-0 text-right tabular-nums text-ink">{{ $count }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            <dl class="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-3">
+                                @foreach (App\Models\Review::CRITERIA as $field => $label)
+                                    <div class="flex items-center justify-between gap-2 sm:flex-col sm:items-start">
+                                        <dt class="text-ink-muted">{{ $label }}</dt>
+                                        <dd class="font-semibold text-ink">{{ number_format($reviewStats['criteria'][$field], 1, ',', '') }}/5</dd>
+                                    </div>
+                                @endforeach
+                            </dl>
+                        </div>
+                    </div>
+                    <ul class="mt-6 divide-y divide-line border-t border-line">
+                        @foreach ($reviews as $review)
+                            <li class="py-5 last:pb-0">
+                                <x-review-detail :review="$review" :context="true" :loyal="$loyalClients->contains($review->reviewer_id)" />
+                            </li>
+                        @endforeach
+                    </ul>
+                </x-card>
+            @endif
 
             @if ($answers->isNotEmpty() || $isOwner)
             <x-card>

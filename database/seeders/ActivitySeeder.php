@@ -117,7 +117,8 @@ class ActivitySeeder extends Seeder
                 (select max(created_at) from missions where client_id = users.id),
                 (select max(created_at) from applications where user_id = users.id),
                 (select max(created_at) from questions where user_id = users.id),
-                (select max(created_at) from answers where user_id = users.id)
+                (select max(created_at) from answers where user_id = users.id),
+                (select max(created_at) from reviews where reviewer_id = users.id)
             ))
             SQL, [Carbon::now()->subMinutes(5)->toDateTimeString()]);
     }

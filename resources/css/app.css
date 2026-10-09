@@ -272,6 +272,46 @@
     }
 }
 
+/* Saisie par étoiles (x-star-input) : radios en ordre 5 → 1, affichés de gauche à droite 1 → 5. */
+@utility star-input {
+    display: inline-flex;
+    flex-direction: row-reverse;
+    gap: 0.125rem;
+
+    & input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        opacity: 0;
+    }
+
+    & label {
+        display: inline-flex;
+        min-width: 2.75rem;
+        min-height: 2.75rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-btn);
+        color: var(--color-primary-200);
+        cursor: pointer;
+
+        &:where(.dark, .dark *) {
+            color: var(--color-primary-700);
+        }
+    }
+
+    & input:checked ~ label,
+    & label:hover,
+    & label:hover ~ label {
+        color: var(--color-secondary-400);
+    }
+
+    & input:focus-visible + label {
+        outline: 2px solid var(--color-primary-600);
+        outline-offset: 2px;
+    }
+}
+
 /* Trame de points discrète : petit SVG en fond, teinte de l'encre (claire ou sombre). */
 @utility dots {
     background-image: url('/images/dots.svg');
@@ -379,6 +419,30 @@
 
         @media (min-width: 1024px) {
             background-color: color-mix(in srgb, var(--color-primary-950) 90%, transparent);
+        }
+    }
+}
+
+/* Navigation collée au bord haut sous 1 024 px dès le défilement : même hauteur totale (la marge haute
+   passe dans l'en-tête), coins carrés, pleine largeur. Le rendu flottant reste sur ordinateur. */
+@utility nav-stuck {
+    @media (max-width: 1023.98px) {
+        /* !important : l'emporte sur pt-3 / px-2 du conteneur, posés en classes utilitaires. */
+        padding-top: 0 !important;
+        padding-inline: 0 !important;
+
+        & > header {
+            height: 4.25rem;
+            padding-top: 0.75rem;
+            padding-inline: 1rem;
+            border-radius: 0;
+            border-top-width: 0;
+            border-inline-width: 0;
+
+            @media (min-width: 640px) {
+                height: 4.75rem;
+                padding-inline: 2.5rem;
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\DemoLoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MissionApplicationController;
 use App\Http\Controllers\MissionController;
+use App\Http\Controllers\MissionReviewController;
 use App\Http\Controllers\MissionStatusController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
@@ -44,6 +45,7 @@ Route::middleware('auth')->group(function () {
         ->name('missions.accept');
     Route::post('/missions/{mission}/terminer', [MissionStatusController::class, 'complete'])->name('missions.complete');
     Route::post('/missions/{mission}/annuler', [MissionStatusController::class, 'cancel'])->name('missions.cancel');
+    Route::post('/missions/{mission}/avis', [MissionReviewController::class, 'store'])->middleware('throttle:20,1')->name('missions.review');
 });
 
 // Devs

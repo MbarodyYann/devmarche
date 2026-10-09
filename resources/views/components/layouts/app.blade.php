@@ -94,11 +94,12 @@
     @endif
 
     {{-- Navigation flottante. Sur une page avec bandeau hero, elle passe en version claire tant qu'on est sur le bandeau. --}}
+    {{-- Sous 1 024 px, dès le premier défilement, la barre se colle au bord haut (nav-stuck) : plus d'espace
+         au-dessus où le contenu défilerait. La hauteur totale ne change pas, donc rien ne saute. --}}
     <div class="sticky top-0 z-40 px-2 pt-3 sm:px-6"
-         @if ($hasHero)
-             x-data="{ onHero: true, scrolled: false }"
-             x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
-         @endif>
+         x-data="{ onHero: {{ $hasHero ? 'true' : 'false' }}, scrolled: false }"
+         x-init="const hero = document.getElementById('hero'); const update = () => { scrolled = window.scrollY > 0; onHero = !! hero && window.scrollY < hero.offsetHeight - 80 }; update(); window.addEventListener('scroll', update, { passive: true })"
+         x-bind:class="{ 'nav-stuck': scrolled }">
         <header @class(['mx-auto flex h-14 max-w-page items-center gap-2 rounded-nav px-2 sm:h-16 lg:transition-colors sm:px-4 lg:gap-4', 'nav-glass' => ! $hasHero, 'nav-on-hero' => $hasHero])
                 @if ($hasHero) x-bind:class="{ 'is-glass': scrolled && onHero, 'is-scrolled': ! onHero }" @endif>
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
@@ -265,7 +266,8 @@
         </ul>
 
         @if ($publishUrl && $me)
-            <a href="{{ $publishUrl }}" class="btn-amber absolute -top-16 right-1 inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
+            {{-- Masqué quand la page a sa propre barre d'action (fiche mission), pour ne pas la chevaucher. --}}
+            <a href="{{ $publishUrl }}" data-fab class="btn-amber absolute -top-16 right-1 [body:has([data-action-bar])_&]:hidden inline-flex size-13 items-center justify-center rounded-2xl" aria-label="Publier une mission">
                 <x-icon name="plus" class="size-6" />
             </a>
         @endif

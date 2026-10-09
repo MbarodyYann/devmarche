@@ -37,7 +37,7 @@ class MissionController extends Controller
 
     public function show(Request $request, Mission $mission): View
     {
-        $mission->load(['client' => fn ($q) => $q->withCount('missions'), 'client.profile', 'freelancer.profile', 'skills'])->loadCount('applications');
+        $mission->load(['client' => fn ($q) => $q->withCount('missions'), 'client.profile', 'freelancer.profile', 'skills', 'review'])->loadCount('applications');
         $user = $request->user();
 
         return view('missions.show', [
@@ -45,7 +45,7 @@ class MissionController extends Controller
             'myApplication' => $user ? $mission->applications()->where('user_id', $user->id)->first() : null,
             'applications' => $user?->can('viewApplications', $mission)
                 ? $mission->applications()
-                    ->with(['user' => fn ($q) => $q->withLevel(), 'user.profile'])
+                    ->with(['user' => fn ($q) => $q->withLevel()->withReviewStats(), 'user.profile'])
                     ->orderByRaw('case status when ? then 0 when ? then 1 else 2 end', [ApplicationStatus::Accepted->value, ApplicationStatus::Pending->value])
                     ->latest()
                     ->get()

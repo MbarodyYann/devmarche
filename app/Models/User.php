@@ -142,6 +142,26 @@ class User extends Authenticatable
         ]);
     }
 
+    /**
+     * Avis reçus en tant que freelance.
+     *
+     * @return HasMany<Review, $this>
+     */
+    public function receivedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'reviewee_id');
+    }
+
+    /**
+     * Précharge la moyenne et le nombre d'avis reçus (« ★ 4,8 (6) »).
+     *
+     * @param  Builder<User>  $query
+     */
+    public function scopeWithReviewStats(Builder $query): void
+    {
+        $query->withAvg('receivedReviews as reviews_avg', 'rating')->withCount('receivedReviews as reviews_count');
+    }
+
     /** Activité de dev : au moins une réponse ou une candidature (un client pur n'en a pas). */
     public function hasDevActivity(): bool
     {
