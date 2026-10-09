@@ -86,7 +86,7 @@ test('le hero a une seule image, placée après le CTA, chargée en priorité, s
 
     expect(substr_count($hero, '<img'))->toBe(1)
         ->and(strpos($hero, '<img'))->toBeGreaterThan(strpos($hero, 'data-cta="principal"'))
-        ->and($hero)->toContain('loading="lazy"')
+        ->and($hero)->toContain('loading="eager" fetchpriority="high"')
         ->toContain('decoding="async"')
         ->toContain('alt="Deux développeurs travaillent ensemble devant un ordinateur"')
         ->toContain('width="960" height="540"')
