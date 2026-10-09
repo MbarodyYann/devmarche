@@ -1,4 +1,4 @@
-@props(['title' => null])
+@props(['title' => null, 'search' => true])
 
 @php
     $navigation = [
@@ -33,85 +33,89 @@
         })();
     </script>
 
-    <link rel="preload" href="/fonts/bricolage-grotesque-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/danfo-latin-elsh.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/jetbrains-mono-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     {{ $head ?? '' }}
 </head>
 <body class="min-h-dvh pb-safe md:pb-0">
-    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-btn focus:bg-surface focus:px-4 focus:py-2">
+    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:border-2 focus:border-ink focus:bg-surface focus:px-4 focus:py-2">
         Aller au contenu
     </a>
 
-    {{-- Barre du haut --}}
-    <header class="sticky top-0 z-30 border-b border-border bg-bg/95 backdrop-blur supports-[backdrop-filter]:bg-bg/85">
-        <div class="mx-auto flex h-16 max-w-page items-center gap-4 px-4 sm:px-6">
+    {{-- Barre du haut, puis la bande peinte de la carrosserie --}}
+    <header class="sticky top-0 z-30 bg-bg">
+        <div class="mx-auto flex h-16 max-w-page items-center gap-6 px-4 sm:px-6">
             <a href="{{ route('home') }}" class="shrink-0" aria-label="DevMarché, accueil">
-                <x-logo class="h-6 w-auto sm:h-7" />
+                <x-logo class="h-7 w-auto sm:h-8" />
             </a>
 
-            <nav class="ml-4 hidden items-center gap-1 md:flex" aria-label="Navigation principale">
+            <nav class="hidden h-full items-stretch gap-5 md:flex" aria-label="Navigation principale">
                 @foreach ($navigation as $item)
-                    <a href="{{ route($item['route']) }}"
+                    @php($active = request()->routeIs($item['active']))
+                    <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
                        @class([
-                           'rounded-btn px-3 py-2 font-semibold transition-colors',
-                           'bg-secondary-soft text-secondary' => request()->routeIs($item['active']),
-                           'text-ink-muted hover:text-ink' => ! request()->routeIs($item['active']),
-                       ])
-                       @if (request()->routeIs($item['active'])) aria-current="page" @endif>{{ $item['label'] }}</a>
+                           'flex items-center border-b-4 pt-1 font-bold transition-colors',
+                           'border-primary text-ink' => $active,
+                           'border-transparent text-ink-muted hover:border-ink hover:text-ink' => ! $active,
+                       ])>{{ $item['label'] }}</a>
                 @endforeach
             </nav>
 
-            <form action="{{ route('devs.index') }}" method="get" role="search" class="ml-auto hidden w-full max-w-xs lg:block">
-                <label for="recherche-globale" class="sr-only">Rechercher un dev</label>
-                <div class="relative">
-                    <x-icon name="search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
-                    <input id="recherche-globale" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher un dev…"
-                           class="h-10 w-full rounded-full border border-border bg-surface pl-9 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/25">
-                </div>
-            </form>
+            @if ($search)
+                <form action="{{ route('devs.index') }}" method="get" role="search" class="ml-auto hidden w-full max-w-60 lg:block">
+                    <label for="recherche-globale" class="sr-only">Rechercher un dev</label>
+                    <div class="relative">
+                        <x-icon name="search" class="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-ink-muted" />
+                        <input id="recherche-globale" type="search" name="q" value="{{ request('q') }}" placeholder="Rechercher un dev…"
+                               class="h-10 w-full rounded-field border-2 border-ink bg-surface pl-8 pr-3 text-sm text-ink placeholder:text-ink-muted focus:shadow-hard-primary focus:outline-none">
+                    </div>
+                </form>
+            @endif
 
-            <div class="ml-auto flex items-center gap-1 lg:ml-0">
+            <div @class(['flex items-center gap-2', 'ml-auto' => true, 'lg:ml-0' => $search])>
                 <x-theme-toggle />
 
                 @auth
                     <div class="relative hidden md:block" x-data="{ open: false }" x-on:keydown.escape="open = false" x-on:click.outside="open = false">
                         <button type="button" x-on:click="open = ! open" x-bind:aria-expanded="open.toString()"
-                                class="flex items-center gap-2 rounded-full p-1 pr-3 hover:bg-secondary-soft">
+                                class="flex items-center gap-2 rounded-btn border-2 border-transparent p-1 pr-2 hover:border-ink">
                             <x-avatar :user="$me" size="sm" />
                             <x-reputation :points="$me->reputation" />
                             <span class="sr-only">Ouvrir le menu du compte</span>
                         </button>
-                        <div x-cloak x-show="open" x-transition.opacity
-                             class="absolute right-0 mt-2 w-56 rounded-card border border-border bg-surface p-1.5 shadow-card">
-                            <p class="truncate px-3 py-2 text-sm text-ink-muted">{{ $me->name }}</p>
-                            <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 hover:bg-secondary-soft">
+                        <div x-cloak x-show="open"
+                             class="absolute right-0 mt-2 w-60 rounded-block border-2 border-ink bg-surface shadow-hard">
+                            <p class="etiquette truncate border-b-2 border-ink px-3 py-2 text-ink-muted">{{ $me->name }}</p>
+                            <a href="{{ route('devs.show', $me) }}" class="flex items-center gap-2 px-3 py-2.5 font-medium hover:bg-accent/25">
                                 <x-icon name="user" class="size-4" /> Mon profil
                             </a>
-                            <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 rounded-btn px-3 py-2 hover:bg-secondary-soft">
+                            <a href="{{ route('profile.edit', $me) }}" class="flex items-center gap-2 px-3 py-2.5 font-medium hover:bg-accent/25">
                                 <x-icon name="pencil" class="size-4" /> Modifier mon profil
                             </a>
-                            <form method="post" action="{{ route('logout') }}">
+                            <form method="post" action="{{ route('logout') }}" class="border-t border-ink">
                                 @csrf
-                                <button type="submit" class="flex w-full items-center gap-2 rounded-btn px-3 py-2 text-left hover:bg-secondary-soft">
+                                <button type="submit" class="flex w-full items-center gap-2 px-3 py-2.5 text-left font-medium hover:bg-accent/25">
                                     <x-icon name="log-out" class="size-4" /> Se déconnecter
                                 </button>
                             </form>
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="hidden rounded-btn px-3 py-2 font-semibold text-ink-muted hover:text-ink md:inline-flex">Connexion</a>
+                    <a href="{{ route('login') }}" class="hidden px-2 font-bold text-ink underline decoration-2 underline-offset-4 hover:decoration-primary md:inline">Connexion</a>
                     <div class="hidden md:block">
                         <x-button :href="route('register')" size="sm">Créer un compte</x-button>
                     </div>
                 @endauth
             </div>
         </div>
+        <div class="bande-peinte" aria-hidden="true"></div>
     </header>
 
     <main id="contenu" class="mx-auto max-w-page px-4 py-6 sm:px-6 sm:py-10">
         @if (session('status'))
-            <div role="status" class="mb-6 flex items-center gap-2 rounded-card border border-success/30 bg-success/10 px-4 py-3 font-medium text-success">
+            <div role="status" class="mb-6 flex items-center gap-2 rounded-block border-2 border-success bg-surface px-4 py-3 font-bold text-success">
                 <x-icon name="check" class="size-5 shrink-0" />
                 {{ session('status') }}
             </div>
@@ -120,28 +124,27 @@
         {{ $slot }}
     </main>
 
-    <footer class="relative mt-10 overflow-hidden border-t border-border">
-        <div class="frise absolute inset-x-0 top-0 h-12" aria-hidden="true"></div>
-        <div class="relative mx-auto flex max-w-page flex-col gap-2 px-4 pb-8 pt-16 text-sm text-ink-muted sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div class="flex items-center gap-3">
-                <x-logo class="h-5 w-auto" />
-                <span>Par et pour les devs d'Afrique francophone.</span>
+    <footer class="filet mt-12">
+        <div class="mx-auto flex max-w-page flex-col gap-3 px-4 pb-10 pt-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <x-logo class="h-6 w-auto" />
+                <span class="text-ink-muted">Par et pour les devs d'Afrique francophone.</span>
             </div>
-            <p>Projet de l'équipe Baobab Stack · CADEV 2026</p>
+            <p class="etiquette text-ink-muted">Équipe Baobab Stack · CADEV 2026</p>
         </div>
     </footer>
 
-    {{-- Barre de navigation du bas (mobile) --}}
-    <nav class="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:hidden" aria-label="Navigation principale">
+    {{-- Barre de navigation du bas (mobile) : aplat indigo, onglet actif marqué en or --}}
+    <nav class="fixed inset-x-0 bottom-0 z-30 border-t-2 border-ink bg-secondary pb-[env(safe-area-inset-bottom)] text-bg md:hidden" aria-label="Navigation principale">
         <ul class="relative grid grid-cols-4">
             @foreach ($navigation as $item)
                 @php($active = request()->routeIs($item['active']))
                 <li>
                     <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
                        @class([
-                           'flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium',
-                           'text-primary-strong' => $active,
-                           'text-ink-muted' => ! $active,
+                           'flex h-16 flex-col items-center justify-center gap-1 border-t-[3px] text-sm font-bold',
+                           'border-accent' => $active,
+                           'border-transparent opacity-80' => ! $active,
                        ])>
                         <x-icon :name="$item['icon']" class="size-6" />
                         {{ $item['label'] }}
@@ -151,9 +154,9 @@
             <li>
                 <a href="{{ $meUrl }}" @if ($meActive) aria-current="page" @endif
                    @class([
-                       'flex h-16 flex-col items-center justify-center gap-1 text-sm font-medium',
-                       'text-primary-strong' => $meActive,
-                       'text-ink-muted' => ! $meActive,
+                       'flex h-16 flex-col items-center justify-center gap-1 border-t-[3px] text-sm font-bold',
+                       'border-accent' => $meActive,
+                       'border-transparent opacity-80' => ! $meActive,
                    ])>
                     <x-icon name="user" class="size-6" />
                     Moi
@@ -163,7 +166,7 @@
 
         @if (Route::has('missions.create'))
             <a href="{{ route('missions.create') }}"
-               class="absolute -top-7 right-4 inline-flex size-14 items-center justify-center rounded-full bg-primary text-on-primary shadow-lg ring-4 ring-bg"
+               class="absolute -top-8 right-4 inline-flex size-14 items-center justify-center rounded-btn border-2 border-ink bg-primary text-on-primary shadow-hard"
                aria-label="Publier une mission">
                 <x-icon name="plus" class="size-7" />
             </a>

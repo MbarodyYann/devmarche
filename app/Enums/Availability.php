@@ -18,14 +18,26 @@ enum Availability: string
     }
 
     /**
-     * Variante de pastille de statut (voir le composant x-status-pill).
+     * Libellé court du tampon (voir le composant x-stamp).
+     */
+    public function stamp(): string
+    {
+        return match ($this) {
+            self::Available => 'Dispo',
+            self::Busy => 'Occupé',
+            self::Employed => 'En poste',
+        };
+    }
+
+    /**
+     * Couleur d'encre du tampon (voir 08-design.md).
      */
     public function tone(): string
     {
         return match ($this) {
             self::Available => 'success',
-            self::Busy => 'primary',
-            self::Employed => 'muted',
+            self::Busy => 'muted',
+            self::Employed => 'secondary',
         };
     }
 

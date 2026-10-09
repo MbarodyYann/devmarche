@@ -1,16 +1,16 @@
 @props(['title', 'subtitle' => null])
 
 <div class="mx-auto w-full max-w-md">
-    <div class="mb-6 text-center">
-        <h1 class="text-2xl sm:text-3xl">{{ $title }}</h1>
+    <div class="mb-6">
+        <h1 class="text-3xl sm:text-4xl">{{ $title }}</h1>
         @if ($subtitle)
-            <p class="mt-2 text-ink-muted">{{ $subtitle }}</p>
+            <p class="mt-3 text-ink-muted">{{ $subtitle }}</p>
         @endif
     </div>
-    <x-card padding="p-6 sm:p-8">
+    <x-block padding="p-5 sm:p-7" main>
         {{ $slot }}
-    </x-card>
+    </x-block>
     @isset($footer)
-        <p class="mt-6 text-center text-ink-muted">{{ $footer }}</p>
+        <p class="mt-6 text-ink-muted">{{ $footer }}</p>
     @endisset
 </div>
