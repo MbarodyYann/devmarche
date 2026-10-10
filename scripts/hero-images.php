@@ -1,7 +1,7 @@
 <?php
 
 /*
-| Régénère les images du hero en WebP depuis les sources PNG (documentation/assets/).
+| Régénère les images du hero en WebP depuis les sources PNG (documentation/assets/, hors dépôt).
 | Usage : php scripts/hero-images.php
 | Outil de développement (PHP Imagick). Les sources ne sont jamais servies telles quelles.
 |

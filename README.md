@@ -89,8 +89,6 @@ PostgreSQL 16 : users, profiles, skills, missions, applications, payments, revie
                 questions, answers, votes, reputation_events, notifications, reports
 ```
 
-Le détail : [documentation/03-architecture.md](documentation/03-architecture.md) et [documentation/04-modele-donnees.md](documentation/04-modele-donnees.md).
-
 ## Installation locale
 
 Prérequis : PHP 8.2 (extensions pgsql, mbstring, intl, gd), Composer, Node.js 20 ou plus, PostgreSQL 16.
@@ -137,9 +135,7 @@ php artisan test
 
 ## Déploiement
 
-Guide pas à pas, fichiers Nginx, PHP-FPM et systemd, script `deploy/deploy.sh` : [documentation/12-deploiement.md](documentation/12-deploiement.md).
-
-Sécurité, accessibilité et performance : [documentation/13-securite.md](documentation/13-securite.md).
+Fichiers Nginx, PHP-FPM et systemd, et script `deploy/deploy.sh` : dossier [deploy/](deploy/).
 
 ## Licences
 

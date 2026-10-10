@@ -5,10 +5,10 @@
 |
 | Licences : pour chaque paquet Composer ou npm, la version et la licence sont lues dans composer.lock
 | et package-lock.json (App\Support\Credits) ; on ne les recopie pas à la main. Les autres composants
-| (polices, icônes, base de données) sont décrits ici. Le registre de documentation/06 reprend ce tableau.
+| (polices, icônes, base de données) sont décrits ici.
 | « dev » : outil de développement, non utilisé par l'application en ligne (repliés sur la page).
 | « license » force la licence affichée : nette/* est sous triple licence (BSD-3-Clause ou GPL au choix),
-| et nous l'utilisons sous BSD-3-Clause (voir documentation/06).
+| et nous l'utilisons sous BSD-3-Clause.
 */
 
 return [

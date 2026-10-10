@@ -3,7 +3,6 @@
 # Déploiement de DevMarché (idempotent : on peut le relancer sans risque).
 # À lancer sur le serveur, par l'utilisateur « devmarche », depuis n'importe où :
 #     /var/www/devmarche/deploy/deploy.sh
-# Guide complet : documentation/12-deploiement.md
 # ---------------------------------------------------------------------------
 set -euo pipefail
 
