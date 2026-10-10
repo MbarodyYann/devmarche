@@ -46,7 +46,7 @@ test('À propos : pas de CTA, liste IA sans justification, licences sans phrase 
     expect($html)->not->toContain(Copy::SIGNUP_CTA)
         ->not->toContain(Copy::RECRUIT_LINK)
         ->toContain('Équipe du Sénégal, au concours CADEV 2026 organisé par Systalink.')
-        ->toContain('Claude Code (Anthropic)</strong> : conception, documentation, code, tests et revue de code.')
+        ->toContain('Claude Code (Anthropic)</strong> : code, tests et revue de code.')
         ->toContain('ChatGPT (OpenAI)</strong> : image de l&#039;accueil.')
         ->toContain('Filtres instantanés, votes, aperçu Markdown<')
         ->not->toContain('relit le code')
