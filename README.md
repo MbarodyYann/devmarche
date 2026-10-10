@@ -148,7 +148,7 @@ Toutes les dépendances sont sous licence permissive (MIT, BSD, ISC, SIL OFL). L
 ## Usage de l'intelligence artificielle
 
 - Claude Code (Anthropic) : conception, documentation, code, tests et revue de code.
-- Générateur d'images IA : image d'illustration de l'accueil.
+- ChatGPT (OpenAI) : image d'illustration de l'accueil.
 
 ## Équipe
 

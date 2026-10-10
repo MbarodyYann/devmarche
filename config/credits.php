@@ -63,6 +63,6 @@ return [
 
     'ai' => [
         ['tool' => 'Claude Code (Anthropic)', 'parts' => 'conception, documentation, code, tests et revue de code.'],
-        ['tool' => 'Générateur d\'images IA', 'parts' => 'image d\'illustration de l\'accueil.'],
+        ['tool' => 'ChatGPT (OpenAI)', 'parts' => 'image de l\'accueil.'],
     ],
 ];

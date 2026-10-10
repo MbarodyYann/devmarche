@@ -47,7 +47,7 @@ test('À propos : pas de CTA, liste IA sans justification, licences sans phrase 
         ->not->toContain(Copy::RECRUIT_LINK)
         ->toContain('Équipe du Sénégal, au concours CADEV 2026 organisé par Systalink.')
         ->toContain('Claude Code (Anthropic)</strong> : conception, documentation, code, tests et revue de code.')
-        ->toContain('d&#039;images IA</strong> : image d&#039;illustration de l&#039;accueil.')
+        ->toContain('ChatGPT (OpenAI)</strong> : image de l&#039;accueil.')
         ->toContain('Filtres instantanés, votes, aperçu Markdown<')
         ->not->toContain('relit le code')
         ->not->toContain('validée par')

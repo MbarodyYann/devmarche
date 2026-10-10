@@ -16,7 +16,7 @@ test('la page présente le projet, l\'équipe, la stack, les licences et l\'usag
         'Licences',
         'Usage de l\'intelligence artificielle',
         'Claude Code (Anthropic)',
-        'Générateur d\'images IA',
+        'ChatGPT (OpenAI)', 'image de l\'accueil.',
     ])->assertSee('CADEV 2026')->assertSee('Systalink');
 });
 
