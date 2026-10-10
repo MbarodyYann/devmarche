@@ -43,7 +43,8 @@ class ActivitySeeder extends Seeder
     public function plan(Collection $users): array
     {
         $now = Carbon::now();
-        $ceiling = $now->copy()->subMinutes(5);
+        // Juste après minuit, le plafond reste dans la journée : les comptes de démo restent « aujourd'hui ».
+        $ceiling = $now->copy()->subMinutes(5)->max($now->copy()->startOfDay());
         $demo = [DevSeeder::DEMO_DEV_EMAIL, DevSeeder::DEMO_STARTUP_EMAIL];
         $joined = $users->mapWithKeys(fn (User $u) => [$u->name => $u->created_at]);
 
@@ -109,7 +110,7 @@ class ActivitySeeder extends Seeder
         }
 
         foreach ($users->filter(fn (User $u) => in_array($u->email, $demo, true)) as $user) {
-            $planned[$user->id] = $now->copy()->subMinutes(10 + ($user->id * 37) % 60)->max($earliest[$user->name])->min($ceiling);
+            $planned[$user->id] = $now->copy()->subMinutes(10 + ($user->id * 37) % 60)->max($now->copy()->startOfDay())->max($earliest[$user->name])->min($ceiling);
         }
 
         return $planned;
